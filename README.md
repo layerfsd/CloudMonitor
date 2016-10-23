@@ -1,4 +1,4 @@
-##软降名称：CloudMonitor
+##软件名称：CloudMonitor
 ### 开发日期：2016.9.19 -- 2016.12.21  ###
 ### 联系邮箱：albertofwb@gmail.com     ###
 
