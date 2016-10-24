@@ -114,7 +114,11 @@ public:
 	bool	RegisterClient();
 
 	// 从服务端获取一个文件
-	bool	GetFile(string &FileName);
+	bool	GetFile(string &sfleName);
+
+	// 向服务端 一个文件
+	bool	UploadFile(SFile &file);
+
 
 	// 向服务端发送一条日志消息
 	bool	SendSensitiveLog(const char *pureName, const char *text);
@@ -130,6 +134,7 @@ private:
 	string		message;
 	string		macList;
 	string		hdsList;
+	string		workDir;
 	char		tmpBuf[MAXBUF];
 	int			statu;
 };
@@ -137,19 +142,14 @@ private:
 
 
 int InitSSL(char *ip, int port);
-int SSLSend(char *buf, int len);
-int SSLRecv(char *buf, int len);
-
 int EndSSL();
-int SendFile(char *fileName);
-
-
-//char *HashFile(char *fileName);
-int argsParse(char ac, char **av, Args *con);
-
- 
 int IsCnt2Internet();
 
-bool GetReplyInfo(HeadPacket &pkt);
+//int SSLSend(char *buf, int len);
+//int SSLRecv(char *buf, int len);
+//int SendFile(char *fileName);
+//char *HashFile(char *fileName);
+//int argsParse(char ac, char **av, Args *con);
+//bool GetReplyInfo(HeadPacket &pkt);
 
 #endif // _HEADER_H__

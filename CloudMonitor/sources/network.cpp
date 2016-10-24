@@ -11,6 +11,9 @@ namespace session
 	const char*		CMD_END			= "END";
 	const char*		CMD_DNF			= "DNF";
 	const char*		CMD_RPL			= "RPL";
+	const char*		CMD_UPD			= "UPD";
+
+	const char*		FILE_KEEP_DIR	= "DATA\\";
 
 	const int		STATUE_CONNECTED	= 1;
 	const int		STATUE_DISCONNECTED = 2;
@@ -105,17 +108,6 @@ int InitSSL(char *ip, int port)
 }
 
 
-int SSLSend(char *buf, int len)
-{
-	return SSL_write(hdl.ssl, buf, len);
-}
-
-
-int SSLRecv(char *buf, int len)
-{
-	return SSL_read(hdl.ssl, buf, len);
-}
-
 
 int EndSSL()
 {
@@ -143,25 +135,25 @@ int SSLIsWorking()
 
 
 
-int SendFile(char *fileName)
-{
-	char    buf[MAXBUF];
-	int     ret = 0;
-	size_t     fsize = 0;
-	FILE*   fp = NULL;
-
-	GetFileSize(fileName, &fsize);
-	while (fsize) {
-		printf("resume %d bytes\n", fsize);
-		ret = fread(buf, 1, MAXBUF, fp);
-		fsize -= ret;
-		SSLSend(buf, ret);
-	}
-	printf("resume %d bytes\n", fsize);
-	printf("transform %s done.\n", fileName);
-
-	return 0;
-}
+//int SendFile(char *fileName)
+//{
+//	char    buf[MAXBUF];
+//	int     ret = 0;
+//	size_t     fsize = 0;
+//	FILE*   fp = NULL;
+//
+//	GetFileSize(fileName, &fsize);
+//	while (fsize) {
+//		printf("resume %d bytes\n", fsize);
+//		ret = fread(buf, 1, MAXBUF, fp);
+//		fsize -= ret;
+//		SSLSend(buf, ret);
+//	}
+//	printf("resume %d bytes\n", fsize);
+//	printf("transform %s done.\n", fileName);
+//
+//	return 0;
+//}
 
 
 int IsCnt2Internet()
@@ -247,7 +239,31 @@ inline int n2hi(int num)
 User::User(const char *userName)
 {
 	this->statu = STATUE_DISCONNECTED;
+
+	memset(tmpBuf, 0, sizeof(tmpBuf));
+	if (GetCurrentDirectory(MAX_PATH, tmpBuf))  //得到当前工作路径
+	{// failed get current dir
+		this->workDir = tmpBuf;
+		this->workDir += '\\';
+	}
+	this->workDir += FILE_KEEP_DIR;
+
+	// if not exists workDir
+	// try to mkdir
+	if (-1 == _access(this->workDir.c_str(), 0))
+	{
+		cout << "making workDir: " << workDir << endl;
+		if (0 != _mkdir(this->workDir.c_str()))
+		{
+			cout << "mkdir failed!!!!...\n" << endl;
+		}
+		else
+		{
+			cout << "mkdir success!!!!...\n" << endl;
+		}
+	}
 	strncpy(this->userName, userName, MAX_USERNAME);
+	cout << "workdir: " << workDir << endl;
 }
 
 
@@ -450,6 +466,7 @@ inline bool IsHashEqual(const char* fileName, char* hash)
 	return !memcmp(localFileHash, hash, HASH_SIZE);
 }
 
+
 // 当服务端存在请求的文件时,为了防止获取到重复文件
 // 检查服务端所存放的文件是否与本地的文件哈希值相同
 // 如果不同,则说明本地不存在雷同文件,继续接受
@@ -486,10 +503,46 @@ bool User::GetFile(string &FileName)
 		this->SendInfo(CMD_RPL, "BEGIN");
 	}
 	
-	int	fileSize = atoi(pkt.text);
 	GetReplyInfo();
+	int	fileSize = atoi(pkt.text);
 	cout << FileName << " size: " << pkt.text << endl;
 	cout << "atoi: " << fileSize << endl;
 
+	string saveFilePath = this->workDir + FileName;
+
+	if (fileSize <= 0)
+	{
+		return false;
+	}
+	FILE *fp = NULL;
+
+	if ((fp = fopen(saveFilePath.c_str(), "wb")) == NULL)
+	{
+		return false;
+	}
+
+	int restSize = fileSize;
+	int recvSize = 0;
+
+	while (restSize > 0)
+	{
+		memset(tmpBuf, 0, sizeof(tmpBuf));
+		recvSize = SSL_read(hdl.ssl, tmpBuf, MAXBUF);
+		fwrite(tmpBuf, 1, recvSize, fp);
+		restSize -= recvSize;
+	}
+	cout << "Get [" << saveFilePath << "] Done!" << endl;
+	fclose(fp);
+	return true;
+}
+
+
+bool User::UploadFile(SFile &file)
+{
+	cout << "Sending " << file.fileName << "to server..." << endl;
+	this->SendInfo(CMD_UPD, file.fileName.c_str());
+	this->SendInfo(CMD_RPL, file.fileHash.c_str());
+	
+	this->GetReplyInfo();
 	return true;
 }

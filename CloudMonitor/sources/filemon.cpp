@@ -53,27 +53,57 @@ int GetFileSize(const char *FileName, size_t *FileSize)
 	return 0;
 }
 
-/*
-关键字列表 分隔符设置为 '\n'
-行数、最大行长度
-*/
-int ReadKeywords(const char *FileName, vector<Keyword> &kw)
+
+bool LoadHashList(string &path, vector<HashItem> hashList)
+{
+	FILE *fp = NULL;
+	char *FileBuf = NULL;
+	const char *FileName = path.c_str();
+
+	if ((fp = fopen(FileName, "r")) == NULL)
+	{
+		perror(FileName);
+		return false;
+	}
+
+	int			cnt = 0;
+	HashItem	tp;
+
+	while (!feof(fp))
+	{
+		cnt += 1;
+		fscanf(fp, "%s %s %d\n", tp.path, tp.hash, &tp.times);
+		printf("%3d path:%s hash:%s times:%d\n", cnt, tp.path, tp.hash, tp.times);
+		hashList.push_back(tp);
+	}
+
+	fclose(fp);
+	return true;
+}
+
+
+bool StoreHashList(string &path, vector<HashItem> hashList)
+{
+	return true;
+}
+
+
+bool LoadKeywords(string  &filePath, vector<Keyword> &kw)
 {
 	FILE *fp = NULL;
 	char *FileBuf = NULL;
 	int   TotalLine = 0;
-
+	const char *FileName = filePath.c_str();
 
 	//GetFileSize(FileName, &FileSize);
 	if ((fp = fopen(FileName, "r")) == NULL)
 	{
 		perror(FileName);
-		return -1;
+		return false;
 	}
 	
 	fscanf(fp, "%d\n", &TotalLine);
 	printf("Get TotalLine: %d\n", TotalLine);
-
 
 	int   line = 0;
 	Keyword tp;
@@ -89,7 +119,7 @@ int ReadKeywords(const char *FileName, vector<Keyword> &kw)
 	}
 
 	fclose(fp);
-	return 0;
+	return true;
 }
 
 
@@ -110,7 +140,6 @@ void DumpByte(const char *str)
 	}
 	putchar('\n');
 }
-
 
 int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 {
@@ -223,3 +252,26 @@ bool HashFile(const char *fileName, char *buf)
 	return true;
 }
 
+bool fsFilter(SFile &sf, vector<Keyword> &kw, string &localFilePath, string &message)
+{
+
+	sf.localPath = localFilePath;
+	
+	// 从全路径中获取文件名
+	// eg: D:\work\test.docx --> test.docx
+	sf.fileName = localFilePath.substr(localFilePath.rfind('\\') + 1);
+
+	// 生成临时文件名 eg: test.docx.txt
+	sf.txtName = sf.fileName + TXT_SUFFIX;
+	
+	// 生成临时文件的路径 eg: D:\TMP\test.docx.txt
+	sf.txtPath = TMP_DIR + sf.txtName;
+
+	// 生成加密文件的文件名 eg: test.docx.aes
+	sf.encName = sf.fileName + ENC_SUFFIX;
+
+	// 生成加密文件的路径 eg: D:\TMP\test.docx.aes
+	sf.encPath = TMP_DIR + sf.encName;
+
+	return true;
+}

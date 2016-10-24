@@ -15,10 +15,24 @@ using namespace std;
 
 #define FULL_DEBUG			0
 #define DEBUG_PARSE_FILE	1
-#define SESSION				1
+#define SESSION				0
 
 int main(int argc, char *argv[])
 {
+	string keywordPath = KEYWORD_PATH;
+	string hashPath = HASHLST_PATH;
+	string sensiFilePath;
+	string logMessage;
+
+	vector<Keyword> kw;
+	vector<Connection> cons;
+	vector<Service> KeyPorts;
+	// map<filePath, fileHash>
+	vector<HashItem> hashList;
+
+	SFile file;
+
+
 #if FULL_DEBUG
 	char mac[32];
 	vector<Connection> cons;
@@ -47,18 +61,12 @@ int main(int argc, char *argv[])
 
 
 #if DEBUG_PARSE_FILE
-	vector<Keyword> kw;
-	string message;
-
-	char docName[] = "res\\safe.doc";
-	char *pureName = strrchr(docName, '\\')+1;
-	char genName[] = "safe.txt";
-	char keywordFile[] = "res\\keywords.txt";
-
-	ReadKeywords(keywordFile, kw);
-	ParseFile2Text(docName, genName);
-	KeywordFilter(kw, genName, message);
-	cout << message << endl;
+	if (!LoadKeywords(keywordPath, kw))
+	{
+		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
+	}
+	//LoadHashList(hashPath, hashList);
+	fsFilter(file, kw, sensiFilePath, logMessage);
 #endif
 
 #if SESSION
@@ -77,7 +85,8 @@ int main(int argc, char *argv[])
 	}
 	app.SendSensitiveLog(pureName, message.c_str());
 
-	app.GetFile(string("keywords.txt"));
+	//app.GetFile(string("keywords.txt"));
+	app.UploadFile(file);
 	app.EndSession();
 
 	EndSSL();
