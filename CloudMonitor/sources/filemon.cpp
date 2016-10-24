@@ -1,4 +1,5 @@
 #include "FileMon.h"
+#include "parsedoc.h"
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -252,18 +253,16 @@ bool HashFile(const char *fileName, char *buf)
 	return true;
 }
 
-bool fsFilter(SFile &sf, vector<Keyword> &kw, string &localFilePath, string &message)
-{
 
-	sf.localPath = localFilePath;
-	
+inline bool initSFile(SFile &sf)
+{
 	// 从全路径中获取文件名
 	// eg: D:\work\test.docx --> test.docx
-	sf.fileName = localFilePath.substr(localFilePath.rfind('\\') + 1);
+	sf.fileName = sf.localPath.substr(sf.localPath.rfind('\\') + 1);
 
 	// 生成临时文件名 eg: test.docx.txt
 	sf.txtName = sf.fileName + TXT_SUFFIX;
-	
+
 	// 生成临时文件的路径 eg: D:\TMP\test.docx.txt
 	sf.txtPath = TMP_DIR + sf.txtName;
 
@@ -272,6 +271,49 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, string &localFilePath, string &mes
 
 	// 生成加密文件的路径 eg: D:\TMP\test.docx.aes
 	sf.encPath = TMP_DIR + sf.encName;
+	
+	return true;
+}
 
+
+inline void _showSFile(SFile &sf)
+{
+	cout << "localPath: " << sf.localPath << endl;
+	cout << "fileName: " << sf.fileName << endl;
+
+	cout << "txtName: " << sf.txtName << endl;
+	cout << "txtPath: " << sf.txtPath << endl;
+
+	cout << "encName: " << sf.encName << endl;
+	cout << "encPath: " << sf.encPath << endl;
+}
+
+
+bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string &message)
+{	
+	if (-1 ==_access(sf.localPath.c_str(), 0))
+	{
+		cout << sf.localPath << "not exists!!!" << endl;
+		return false;
+	}
+	if (kw.size() <= 0)
+	{
+		return false;
+	}
+
+	initSFile(sf);
+	_showSFile(sf);
+	char localPath[_MAX_PATH], txtPath[_MAX_PATH];
+	
+	strncpy(localPath, sf.localPath.c_str(), _MAX_PATH);
+	strncpy(txtPath, sf.txtName.c_str(), _MAX_PATH);
+
+	ParseFile2Text(localPath, txtPath);
+	if (!KeywordFilter(kw, txtPath, message))
+	{
+		cout << "Find nothing from: " << sf.localPath << endl;
+		return false;
+	}
+	
 	return true;
 }

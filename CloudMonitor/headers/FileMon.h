@@ -36,6 +36,13 @@
 
 using namespace std;
 
+
+enum LogType
+{
+	FILE_COPY2USB = 1,
+	FILE_NETEDIT,
+};
+
 struct HashItem
 {
 	char  path[_MAX_PATH];		//路径
@@ -96,7 +103,7 @@ struct SFile
 };
 
 // 文件内容过滤
-bool fsFilter(SFile &file, vector<Keyword> &kw, string &localFilePath, string &message);
+bool fsFilter(SFile &file, vector<Keyword> &kw, vector<HashItem> &hashList, string &message);
 
 // 从本地加载哈希索引
 bool LoadHashList(string &path, vector<HashItem> hashList);
@@ -132,8 +139,6 @@ int KeywordFilter(vector<Keyword> &kw, char *filePath, string &message);
 // 显示一个 buffer的十六进制形式
 // 这是一个开发过程中的调试函数,正式程序中不需要
 void DumpByte(const char *str);
-
-
 
 
 #endif // _FILEMON_H__

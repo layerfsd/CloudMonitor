@@ -23,6 +23,9 @@
 
 #define WORK_DIRECTORY  "TMP"
 
+#include "FileMon.h"
+
+//int ParseFile2Text(SFile &sf);
 int ParseFile2Text(char *FileName, char *TextName);
 
 #endif

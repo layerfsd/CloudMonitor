@@ -65,8 +65,9 @@ int main(int argc, char *argv[])
 	{
 		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
 	}
-	//LoadHashList(hashPath, hashList);
-	fsFilter(file, kw, sensiFilePath, logMessage);
+	LoadHashList(hashPath, hashList);
+	file.localPath = "C:\\Users\\tiny\\Downloads\\Ìâ¿â.doc";
+	fsFilter(file, kw, hashList, logMessage);
 #endif
 
 #if SESSION
@@ -83,7 +84,7 @@ int main(int argc, char *argv[])
 		cout << "Auth Failed!" << endl;
 		return 1;
 	}
-	app.SendSensitiveLog(pureName, message.c_str());
+	app.SendLog(pureName, message.c_str());
 
 	//app.GetFile(string("keywords.txt"));
 	app.UploadFile(file);

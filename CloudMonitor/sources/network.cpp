@@ -415,19 +415,21 @@ bool User::Authentication()
 }
 
 
-bool User::SendSensitiveLog(const char* pureName, const char* text)
+bool User::SendLog(const char* pureName, LogType lt, const char* text)
 {
 	time_t t = time(0);   // get time now
 	struct tm* now = localtime(&t);
 	char   tmp[MAX_LOG_SIZE];
 
-	// 一次性获取时间,并且将敏感文件的文件名拼入同一块缓存
-	sprintf(tmp, "%d-%02d-%02d %02d:%02d %s",
+	// 一次性获取时间
+	// 并且将日志类型及敏感文件的文件名拼入同一块缓存
+	sprintf(tmp, "%d-%02d-%02d %02d:%02d\n%d %s",
 		now->tm_year + 1900,
 		now->tm_mon + 1,
 		now->tm_mday,
 		now->tm_hour,
 		now->tm_min,
+		lt,
 		pureName);
 
 
