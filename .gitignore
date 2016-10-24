@@ -7,6 +7,12 @@
 *.userosscache
 *.sln.docstates
 
+# Test Data Files
+*.txt
+*.doc
+*.docx
+*.zip
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -21,6 +27,15 @@
 bld/
 [Bb]in/
 [Oo]bj/
+CloudMonitor/7-Zip
+CloudMonitor/CloudMonitor
+CloudMonitor/Debug
+CloudMonitor/DATA
+CloudMonitor/Release
+CloudMonitor/res
+CloudMonitor/TMP
+CloudMonitor/UnitTest
+
 
 # Visual Studio 2015 cache/options directory
 .vs/
