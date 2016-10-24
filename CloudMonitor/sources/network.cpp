@@ -546,5 +546,6 @@ bool User::UploadFile(SFile &file)
 	this->SendInfo(CMD_RPL, file.fileHash.c_str());
 	
 	this->GetReplyInfo();
+
 	return true;
 }

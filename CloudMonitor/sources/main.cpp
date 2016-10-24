@@ -15,7 +15,7 @@ using namespace std;
 
 #define FULL_DEBUG			0
 #define DEBUG_PARSE_FILE	1
-#define SESSION				0
+#define SESSION				1
 
 int main(int argc, char *argv[])
 {
@@ -84,10 +84,10 @@ int main(int argc, char *argv[])
 		cout << "Auth Failed!" << endl;
 		return 1;
 	}
-	app.SendLog(pureName, message.c_str());
+	app.SendLog(file.fileName.c_str(), FILE_NETEDIT, logMessage.c_str());
 
-	//app.GetFile(string("keywords.txt"));
-	app.UploadFile(file);
+	app.GetFile(string("keywords.txt"));
+	//app.UploadFile(file);
 	app.EndSession();
 
 	EndSSL();

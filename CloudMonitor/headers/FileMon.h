@@ -141,4 +141,8 @@ int KeywordFilter(vector<Keyword> &kw, char *filePath, string &message);
 void DumpByte(const char *str);
 
 
+// http://blog.csdn.net/chenjiayi_yun/article/details/45603773
+// c++×Ö·û´®±àÂëGBKµ½UTF8µÄ×ª»»
+string GBKToUTF8(const char* strGBK);
+
 #endif // _FILEMON_H__

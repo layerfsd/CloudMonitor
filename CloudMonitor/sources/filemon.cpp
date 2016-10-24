@@ -1,5 +1,8 @@
 #include "FileMon.h"
 #include "parsedoc.h"
+
+#include <windows.h>
+
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -258,6 +261,8 @@ inline bool initSFile(SFile &sf)
 {
 	// 从全路径中获取文件名
 	// eg: D:\work\test.docx --> test.docx
+
+	sf.localPath = GBKToUTF8(sf.localPath.c_str());
 	sf.fileName = sf.localPath.substr(sf.localPath.rfind('\\') + 1);
 
 	// 生成临时文件名 eg: test.docx.txt
@@ -286,6 +291,23 @@ inline void _showSFile(SFile &sf)
 
 	cout << "encName: " << sf.encName << endl;
 	cout << "encPath: " << sf.encPath << endl;
+}
+
+
+string GBKToUTF8(const char* strGBK)
+{
+	int len = MultiByteToWideChar(CP_ACP, 0, strGBK, -1, NULL, 0);
+	wchar_t* wstr = new wchar_t[len + 1];
+	memset(wstr, 0, len + 1);
+	MultiByteToWideChar(CP_ACP, 0, strGBK, -1, wstr, len);
+	len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+	char* str = new char[len + 1];
+	memset(str, 0, len + 1);
+	WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, len, NULL, NULL);
+	string strTemp = str;
+	if (wstr) delete[] wstr;
+	if (str) delete[] str;
+	return strTemp;
 }
 
 
