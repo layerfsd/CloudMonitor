@@ -40,11 +40,12 @@ int ExtractDocxFile(char *FileName, char *TextName)
 	{
 		_pclose(pPipe);
 	}
-	if (!_access(TextName, 0))
-	{
-		remove(TextName);
-	}
-	return rename(DOCX_FILE_NAME, TextName);
+	//if (!_access(TextName, 0))
+	//{
+	//	remove(TextName);
+	//}
+	rename(DOCX_FILE_NAME, TextName);
+	return true;
 }
 
 int GetFileType(char *FileName)

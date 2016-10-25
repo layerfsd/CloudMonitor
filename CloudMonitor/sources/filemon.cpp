@@ -47,7 +47,9 @@ int GetFileSize(const char *FileName, size_t *FileSize)
 	FILE *fp;
 
 	if ((fp = fopen(FileName, "rb")) == NULL)
+	{
 		return -1;
+	}
 	fseek(fp, 0, SEEK_END);
 	*FileSize = ftell(fp);
 
@@ -145,6 +147,26 @@ void DumpByte(const char *str)
 	putchar('\n');
 }
 
+
+string GBKToUTF8(const char* strGBK)
+{
+	int len = MultiByteToWideChar(CP_ACP, 0, strGBK, -1, NULL, 0);
+	wchar_t* wstr = new wchar_t[len + 1];
+	memset(wstr, 0, len + 1);
+	MultiByteToWideChar(CP_ACP, 0, strGBK, -1, wstr, len);
+	len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+	char* str = new char[len + 1];
+	memset(str, 0, len + 1);
+	WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, len, NULL, NULL);
+	string strTemp = str;
+	if (wstr) delete[] wstr;
+	if (str) delete[] str;
+	return strTemp;
+}
+
+
+
+
 int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 {
 	char    *FileBuf;
@@ -219,9 +241,10 @@ bool HashFile(const char *fileName, char *buf)
 
 	size_t fileSize = 0;
 
-	if (!GetFileSize(fileName, &fileSize))
+	if (0 != GetFileSize(fileName, &fileSize))
 	{
 		// file not exists
+		cout << "file not exists " << fileName << endl;
 		return false;
 	}
 
@@ -234,7 +257,7 @@ bool HashFile(const char *fileName, char *buf)
 
 	MD5_Init(&c);
 
-	if (!DumpFromFile(fileName, pData, fileSize))
+	if (0 != DumpFromFile(fileName, pData, fileSize))
 	{
 		return false;
 	}
@@ -257,26 +280,56 @@ bool HashFile(const char *fileName, char *buf)
 }
 
 
-inline bool initSFile(SFile &sf)
+bool initSFile(SFile &sf)
 {
+	/*
+	经测试发现,如果在本地打开文件前,改变其文件路径编码 gbk -> utf8 会导致找不到文件
+	sf.localPath = GBKToUTF8(sf.localPath.c_str());
+	*/
+
 	// 从全路径中获取文件名
 	// eg: D:\work\test.docx --> test.docx
-
-	sf.localPath = GBKToUTF8(sf.localPath.c_str());
 	sf.fileName = sf.localPath.substr(sf.localPath.rfind('\\') + 1);
+	// 转换文件名编码,  gbk -> utf8 
+	sf.fileName = GBKToUTF8(sf.fileName.c_str());
+	char buf[HASH_SIZE+1];
+	size_t fsize = 0;
+
+	if (0 != GetFileSize(sf.localPath.c_str(), &fsize))
+	{
+		cout << "GetFileSize() error!" << endl;
+		return false;
+	}
+	sf.fileSize = fsize;
+
+	memset(buf, 0, HASH_SIZE + 1);
+	if (HashFile(sf.localPath.c_str(), buf))
+	{
+		sf.fileHash = buf;
+		//cout << "HashFile() " << sf.localPath << sf.fileHash << endl;
+	}
+	else
+	{
+		//cout << "HashFile() " << sf.localPath << " error" << endl;
+		return false;
+	}
 
 	// 生成临时文件名 eg: test.docx.txt
 	sf.txtName = sf.fileName + TXT_SUFFIX;
 
 	// 生成临时文件的路径 eg: D:\TMP\test.docx.txt
-	sf.txtPath = TMP_DIR + sf.txtName;
+	//sf.txtPath = TMP_DIR + sf.txtName;
+	sf.txtPath = sf.txtName;
 
 	// 生成加密文件的文件名 eg: test.docx.aes
-	sf.encName = sf.fileName + ENC_SUFFIX;
+	//sf.encName = sf.fileName + ENC_SUFFIX;
 
 	// 生成加密文件的路径 eg: D:\TMP\test.docx.aes
-	sf.encPath = TMP_DIR + sf.encName;
-	
+	//sf.encPath = TMP_DIR + sf.encName;
+	sf.encName = sf.fileName;
+	sf.encPath = sf.localPath;
+	sf.encSize = sf.fileSize;
+
 	return true;
 }
 
@@ -294,23 +347,6 @@ inline void _showSFile(SFile &sf)
 }
 
 
-string GBKToUTF8(const char* strGBK)
-{
-	int len = MultiByteToWideChar(CP_ACP, 0, strGBK, -1, NULL, 0);
-	wchar_t* wstr = new wchar_t[len + 1];
-	memset(wstr, 0, len + 1);
-	MultiByteToWideChar(CP_ACP, 0, strGBK, -1, wstr, len);
-	len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
-	char* str = new char[len + 1];
-	memset(str, 0, len + 1);
-	WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, len, NULL, NULL);
-	string strTemp = str;
-	if (wstr) delete[] wstr;
-	if (str) delete[] str;
-	return strTemp;
-}
-
-
 bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string &message)
 {	
 	if (-1 ==_access(sf.localPath.c_str(), 0))
@@ -320,10 +356,14 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 	}
 	if (kw.size() <= 0)
 	{
+		// 字典为空
 		return false;
 	}
 
-	initSFile(sf);
+	if (!initSFile(sf))
+	{
+		return false;
+	}
 	_showSFile(sf);
 	char localPath[_MAX_PATH], txtPath[_MAX_PATH];
 	
@@ -336,6 +376,6 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 		cout << "Find nothing from: " << sf.localPath << endl;
 		return false;
 	}
-	
+	cout << "matched: " << message << endl;
 	return true;
 }

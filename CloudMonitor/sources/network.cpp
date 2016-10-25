@@ -12,6 +12,10 @@ namespace session
 	const char*		CMD_DNF			= "DNF";
 	const char*		CMD_RPL			= "RPL";
 	const char*		CMD_UPD			= "UPD";
+	const char*		CMD_BGN			= "BEGIN";
+	
+	const char*		INVALID_ACCOUNT = "INVALID";
+	const int		INVALID_STR_LEN = strlen(INVALID_ACCOUNT);
 
 	const char*		FILE_KEEP_DIR	= "DATA\\";
 
@@ -26,7 +30,9 @@ namespace session
 	const int		AUTH_FAILED_LEN  = strlen(AUTH_FAILED);
 	const int		DNF_SUCCESS_LEN = strlen(DNF_SUCCESS);
 
-	const int		authStrLen		 = strlen(AuthString);
+	const int		authStrLen = strlen(AuthString);
+	const int		CMD_BGN_LEN = strlen(CMD_BGN);
+
 };
 
 using namespace session;
@@ -388,6 +394,10 @@ bool User::RegisterClient()
 	return IsRegistOK(this->pkt.text);
 }
 
+inline bool IsInvalidUser(const char *status)
+{
+	return !memcmp(status, INVALID_ACCOUNT, INVALID_STR_LEN);
+}
 
 bool User::Authentication()
 {
@@ -403,6 +413,12 @@ bool User::Authentication()
 	// 尝试登陆
 	SendInfo(CMD_ATH, userName);
 	GetReplyInfo();
+
+	if (IsInvalidUser(pkt.text))
+	{
+		cout << "Invalid user: " << this->userName;
+		return false;
+	}
 
 	if (IsLoginOK(pkt.text) || RegisterClient())
 	{
@@ -538,6 +554,10 @@ bool User::GetFile(string &FileName)
 	return true;
 }
 
+inline bool IsServerWantThis(const char *rpl)
+{
+	return !memcmp(rpl, CMD_BGN, CMD_BGN_LEN);
+}
 
 bool User::UploadFile(SFile &file)
 {
@@ -546,6 +566,45 @@ bool User::UploadFile(SFile &file)
 	this->SendInfo(CMD_RPL, file.fileHash.c_str());
 	
 	this->GetReplyInfo();
+	if (!IsServerWantThis(pkt.text))
+	{
+		// 如果服务端已经存在当前文件了
+		return true;
+	}
+	
+	char fsize[16];
+	sprintf(fsize, "%d", file.encSize);
+	this->SendInfo(CMD_RPL, fsize);
+
+	FILE *fp = NULL;
+	if ((fp = fopen(file.encPath.c_str(), "rb")) == NULL)
+	{
+		return false;
+	}
+	else
+	{
+		cout << "open " << file.encPath << "OK" << endl;
+	}
+
+	int restSize = file.encSize;
+	int readSize = 0;
+	// 调试,计算发送次数
+	int cnt = 0;
+	while (restSize > 0)
+	{
+		//cout << "Remaining " << restSize << " bytes to transform..." << endl;
+		memset(tmpBuf, 0, sizeof(tmpBuf));
+		readSize = fread(tmpBuf, 1, MAXBUF, fp);
+		//cout << "sending " << readSize << "bytes " << endl;
+		// 读多少,发多少
+		//SSL_write(hdl.ssl, tmpBuf, MAXBUF);
+		SSL_write(hdl.ssl, tmpBuf, readSize);
+		cnt += 1;
+		restSize -= readSize;
+	}
+	cout << "sent " << cnt << " times." << endl;
+	cout << "Sent [" << file.encPath << "] Done!" << endl;
+	fclose(fp);
 
 	return true;
 }

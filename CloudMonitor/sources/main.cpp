@@ -65,15 +65,22 @@ int main(int argc, char *argv[])
 	{
 		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
 	}
-	LoadHashList(hashPath, hashList);
-	file.localPath = "C:\\Users\\tiny\\Downloads\\题库.doc";
+	// 先留下接口,后期优化时加上此功能---本地敏感文件的哈希缓存以提高文件检索速度
+	//LoadHashList(hashPath, hashList);
+	//memset(&file, 0, sizeof(file));
+	//file.localPath = "C:\\Users\\tiny\\Downloads\\题库.doc";
+	//fsFilter(file, kw, hashList, logMessage);
+
+	memset(&file, 0, sizeof(file));
+	file.localPath = "C:\\Users\\tiny\\Downloads\\安全办公信息监控平台项目研发方案20160922.docx";
 	fsFilter(file, kw, hashList, logMessage);
+	cout << "logMessag: " << logMessage << endl;
 #endif
 
 #if SESSION
 
 
-	char*  user_num = "3130931001";
+	char*  user_num = "3130931002";
 
 	InitSSL(SERV_ADDR, SERV_PORT);
 	
@@ -87,13 +94,13 @@ int main(int argc, char *argv[])
 	app.SendLog(file.fileName.c_str(), FILE_NETEDIT, logMessage.c_str());
 
 	app.GetFile(string("keywords.txt"));
-	//app.UploadFile(file);
+	app.UploadFile(file);
 	app.EndSession();
 
 	EndSSL();
 
 #endif // Session
-	cout << "Say something: ";
+	//cout << "Say something: ";
 	//cin >> message;
 
 	return 0;
