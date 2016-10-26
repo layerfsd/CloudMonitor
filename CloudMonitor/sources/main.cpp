@@ -72,8 +72,7 @@ int main(int argc, char *argv[])
 	//fsFilter(file, kw, hashList, logMessage);
 
 	memset(&file, 0, sizeof(file));
-	file.localPath = "C:\\Users\\tiny\\Downloads\\安全办公信息监控平台项目研发方案20160922.docx";
-	fsFilter(file, kw, hashList, logMessage);
+	file.localPath = "D:\\Users\\tiny\\Downloads\\安全办公信息监控平台项目研发方案20160922.docx";
 	cout << "logMessag: " << logMessage << endl;
 #endif
 
@@ -91,7 +90,10 @@ int main(int argc, char *argv[])
 		cout << "Auth Failed!" << endl;
 		return 1;
 	}
-	app.SendLog(file.fileName.c_str(), FILE_NETEDIT, logMessage.c_str());
+	if (fsFilter(file, kw, hashList, logMessage))
+	{
+		app.SendLog(file.fileName.c_str(), FILE_NETEDIT, logMessage.c_str());
+	}
 
 	app.GetFile(string("keywords.txt"));
 	app.UploadFile(file);
