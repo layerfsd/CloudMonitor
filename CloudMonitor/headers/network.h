@@ -140,10 +140,29 @@ private:
 };
 
 
+// 进程间通信,一开始打算用UDP,实际测试后发现不稳定
+// 放弃使用 UDP 通信方式,改为以下 "有名管道"通信.
+//int InitUdp(SOCKET& sockSrv);
+//void FreeUdp(SOCKET& sockSrv);
+
 
 int InitSSL(char *ip, int port);
 int EndSSL();
 int IsCnt2Internet();
+
+
+
+static const char*  pPipeName = "\\\\.\\pipe\\CloudMonitor";
+
+//创建命名管道
+bool CreateNamedPipeInServer();
+
+// 异步获取管道消息
+bool GetNamedPipeMessage(char* pReadBuf);
+
+
+DWORD WINAPI ThreadProc(LPVOID lpParam);
+
 
 //int SSLSend(char *buf, int len);
 //int SSLRecv(char *buf, int len);

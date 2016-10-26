@@ -27,7 +27,6 @@ int main(int argc, char *argv[])
 	vector<Keyword> kw;
 	vector<Connection> cons;
 	vector<Service> KeyPorts;
-	// map<filePath, fileHash>
 	vector<HashItem> hashList;
 
 	SFile file;
@@ -60,21 +59,13 @@ int main(int argc, char *argv[])
 #endif
 
 
-#if DEBUG_PARSE_FILE
 	if (!LoadKeywords(keywordPath, kw))
 	{
 		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
+		return -1;
 	}
 	// 先留下接口,后期优化时加上此功能---本地敏感文件的哈希缓存以提高文件检索速度
 	//LoadHashList(hashPath, hashList);
-	//memset(&file, 0, sizeof(file));
-	//file.localPath = "C:\\Users\\tiny\\Downloads\\题库.doc";
-	//fsFilter(file, kw, hashList, logMessage);
-
-	memset(&file, 0, sizeof(file));
-	file.localPath = "D:\\Users\\tiny\\Downloads\\安全办公信息监控平台项目研发方案20160922.docx";
-	cout << "logMessag: " << logMessage << endl;
-#endif
 
 #if SESSION
 
@@ -88,22 +79,41 @@ int main(int argc, char *argv[])
 	if (!app.Authentication())
 	{
 		cout << "Auth Failed!" << endl;
-		return 1;
-	}
-	if (fsFilter(file, kw, hashList, logMessage))
-	{
-		app.SendLog(file.fileName.c_str(), FILE_NETEDIT, logMessage.c_str());
+		return -1;
 	}
 
-	app.GetFile(string("keywords.txt"));
-	app.UploadFile(file);
+	cout << "CreateNamedPipeInServer..." << endl;
+	CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);
+	//cout << "CreateNamedPipeInServer Success" << endl;
+
+	char lpath[MAX_PATH];
+	while (true)
+	{
+		cout << "while looping ..." << endl;
+		if (!GetNamedPipeMessage(lpath))
+		{
+			cout << "No message from NamePipe..." << endl;
+		}
+		else
+		{
+			memset(&file, 0, sizeof(file));
+			file.localPath = lpath;
+			if (fsFilter(file, kw, hashList, logMessage))
+			{
+				cout << "logMessag: " << logMessage << endl;
+				app.UploadFile(file);
+				app.SendLog(file.fileName.c_str(), FILE_NETEDIT, logMessage.c_str());
+			}
+		}
+
+		Sleep(5000);
+	}
+	//app.GetFile(string("keywords.txt"));
 	app.EndSession();
 
 	EndSSL();
 
 #endif // Session
-	//cout << "Say something: ";
-	//cin >> message;
 
 	return 0;
 }
