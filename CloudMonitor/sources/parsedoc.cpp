@@ -45,7 +45,7 @@ int ExtractDocxFile(char *FileName, char *TextName)
 	//	remove(TextName);
 	//}
 	rename(DOCX_FILE_NAME, TextName);
-	return true;
+	return 0;
 }
 
 int GetFileType(char *FileName)
