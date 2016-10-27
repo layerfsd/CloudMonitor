@@ -127,6 +127,8 @@ public:
 	bool	GetRegistInf();
 
 	bool	EndSession();
+
+	bool	HeartBeat();
 	
 private:
 	HeadPacket	pkt;

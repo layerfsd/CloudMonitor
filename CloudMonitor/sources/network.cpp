@@ -17,25 +17,26 @@ namespace session
 	const char*		CMD_RPL			= "RPL";
 	const char*		CMD_UPD			= "UPD";
 	const char*		CMD_BGN			= "BEGIN";
-	
-	const char*		INVALID_ACCOUNT = "INVALID";
-	const int		INVALID_STR_LEN = strlen(INVALID_ACCOUNT);
+	const char*     CMD_HBT			= "HEART BEAT";
 
 	const char*		FILE_KEEP_DIR	= "DATA\\";
-
-	const int		STATUE_CONNECTED	= 1;
-	const int		STATUE_DISCONNECTED = 2;
+	const char*		INVALID_ACCOUNT = "INVALID";
 
 	const char*		AUTH_FAILED		= "FAILED";
 	const char*		AUTH_SUCCESS	= "OK";
 	const char*		DNF_SUCCESS		= "OK";
 
-	const int		AUTH_SUCCESS_LEN = strlen(AUTH_SUCCESS);
-	const int		AUTH_FAILED_LEN  = strlen(AUTH_FAILED);
-	const int		DNF_SUCCESS_LEN = strlen(DNF_SUCCESS);
 
-	const int		authStrLen = strlen(AuthString);
-	const int		CMD_BGN_LEN = strlen(CMD_BGN);
+	const int		INVALID_STR_LEN		= strlen(INVALID_ACCOUNT);
+	const int		STATUE_CONNECTED	= 1;
+	const int		STATUE_DISCONNECTED = 2;
+
+	const int		AUTH_SUCCESS_LEN	= strlen(AUTH_SUCCESS);
+	const int		AUTH_FAILED_LEN		= strlen(AUTH_FAILED);
+	const int		DNF_SUCCESS_LEN		= strlen(DNF_SUCCESS);
+
+	const int		authStrLen		    = strlen(AuthString);
+	const int		CMD_BGN_LEN		    = strlen(CMD_BGN);
 
 };
 
@@ -43,6 +44,18 @@ using namespace session;
 
 int InitSSL(char *ip, int port)
 {
+
+
+	char strModule[MAX_PATH];
+	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
+	cout << strModule << endl;
+
+	strcat(strModule, "//..//");     //设置为当前工作路径为当时的上一级
+	SetCurrentDirectory(strModule);
+	GetCurrentDirectory(sizeof(strModule), strModule);
+
+
+
 	int ret;
 	int cnt;
 
@@ -611,6 +624,12 @@ bool User::UploadFile(SFile &file)
 	fclose(fp);
 
 	return true;
+}
+
+
+bool User::HeartBeat()
+{
+	return this->SendInfo(CMD_HBT, CMD_HBT);
 }
 
 

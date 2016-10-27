@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
 	SFile file;
 
 
+
 #if FULL_DEBUG
 	char mac[32];
 	vector<Connection> cons;
@@ -59,6 +60,25 @@ int main(int argc, char *argv[])
 #endif
 
 
+#if SESSION
+
+
+	char*  user_num = "3130931002";
+
+	if (0 != InitSSL(SERV_ADDR, SERV_PORT))
+	{
+		return -1;
+	}
+	
+	User app(user_num);
+	// 验证账号	
+	if (!app.Authentication())
+	{
+		cout << "Auth Failed!" << endl;
+		return -1;
+	}
+
+
 	if (!LoadKeywords(keywordPath, kw))
 	{
 		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
@@ -67,22 +87,8 @@ int main(int argc, char *argv[])
 	// 先留下接口,后期优化时加上此功能---本地敏感文件的哈希缓存以提高文件检索速度
 	//LoadHashList(hashPath, hashList);
 
-#if SESSION
 
-
-	char*  user_num = "3130931002";
-
-	InitSSL(SERV_ADDR, SERV_PORT);
-	
-	User app(user_num);
-	
-	if (!app.Authentication())
-	{
-		cout << "Auth Failed!" << endl;
-		return -1;
-	}
-
-	cout << "CreateNamedPipeInServer..." << endl;
+	//cout << "CreateNamedPipeInServer..." << endl;
 	CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);
 	//cout << "CreateNamedPipeInServer Success" << endl;
 
