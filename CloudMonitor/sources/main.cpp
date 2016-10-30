@@ -15,7 +15,21 @@ using namespace std;
 
 #define FULL_DEBUG			0
 #define DEBUG_PARSE_FILE	1
-#define SESSION				1
+#define SESSION				0
+
+
+inline void InitDir()
+{
+
+	char strModule[MAX_PATH];
+	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
+	cout << strModule << endl;
+
+	strcat(strModule, "//..//");     //设置为当前工作路径为当时的上一级
+	SetCurrentDirectory(strModule);
+	GetCurrentDirectory(sizeof(strModule), strModule);
+	return;
+}
 
 int main(int argc, char *argv[])
 {
@@ -31,7 +45,17 @@ int main(int argc, char *argv[])
 
 	SFile file;
 
+	InitDir();
 
+#if DEBUG_PARSE_FILE
+	file.localPath = "F:\\NutStore\\SSL传输\\ClientPython2CPP.txt";
+	if (!LoadKeywords(keywordPath, kw))
+	{
+		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
+		return -1;
+	}
+	int ret = fsFilter(file, kw, hashList, logMessage);
+#endif
 
 #if FULL_DEBUG
 	char mac[32];
@@ -63,7 +87,8 @@ int main(int argc, char *argv[])
 #if SESSION
 
 
-	char*  user_num = "3130931002";
+//	char*  user_num = "3130931002";
+	char*  user_num = "1234567";
 
 	if (0 != InitSSL(SERV_ADDR, SERV_PORT))
 	{
@@ -92,15 +117,15 @@ int main(int argc, char *argv[])
 	CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);
 	//cout << "CreateNamedPipeInServer Success" << endl;
 
+
+#if 1
 	char lpath[MAX_PATH];
+	int cnt = 0;
 	while (true)
 	{
-		cout << "while looping ..." << endl;
-		if (!GetNamedPipeMessage(lpath))
-		{
-			cout << "No message from NamePipe..." << endl;
-		}
-		else
+		//cout << "while looping ..." << endl;
+		//if (!GetNamedPipeMessage(lpath))
+		if (GetInformMessage(lpath, MAX_PATH))
 		{
 			memset(&file, 0, sizeof(file));
 			file.localPath = lpath;
@@ -111,9 +136,22 @@ int main(int argc, char *argv[])
 				app.SendLog(file.fileName.c_str(), FILE_NETEDIT, logMessage.c_str());
 			}
 		}
+		else
+		{
+			//cout << "No message from NamePipe..." << endl;
+		}
 
-		Sleep(5000);
+
+
+		cnt += 1;
+		if (cnt >= 1000)
+		{
+			cnt = 0;
+			app.HeartBeat();
+		}
+		Sleep(50);
 	}
+#endif
 	//app.GetFile(string("keywords.txt"));
 	app.EndSession();
 

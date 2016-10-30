@@ -2,6 +2,7 @@
 #include "FileMon.h"
 
 static SSL_Handler hdl = { 0 };
+static SOCKET GLOBALclntSock;
 
 static HANDLE  hNamedPipe;
 static bool    Accept = false;
@@ -17,7 +18,7 @@ namespace session
 	const char*		CMD_RPL			= "RPL";
 	const char*		CMD_UPD			= "UPD";
 	const char*		CMD_BGN			= "BEGIN";
-	const char*     CMD_HBT			= "HEART BEAT";
+	const char*     CMD_HBT			= "HBT";
 
 	const char*		FILE_KEEP_DIR	= "DATA\\";
 	const char*		INVALID_ACCOUNT = "INVALID";
@@ -44,17 +45,6 @@ using namespace session;
 
 int InitSSL(char *ip, int port)
 {
-
-
-	char strModule[MAX_PATH];
-	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
-	cout << strModule << endl;
-
-	strcat(strModule, "//..//");     //设置为当前工作路径为当时的上一级
-	SetCurrentDirectory(strModule);
-	GetCurrentDirectory(sizeof(strModule), strModule);
-
-
 
 	int ret;
 	int cnt;
@@ -638,11 +628,12 @@ bool CreateNamedPipeInServer()
 {
 	HANDLE                    hEvent;
 	OVERLAPPED                ovlpd;
+	DWORD					  cnt = 1;
 	//首先需要创建命名管道
 	//这里创建的是双向模式且使用重叠模式的命名管道
 	hNamedPipe = CreateNamedPipe(pPipeName,
 		PIPE_ACCESS_INBOUND | FILE_FLAG_OVERLAPPED,
-		0, 1, 1024, 1024, 0, NULL);
+		0, cnt, 1024, 1024, 0, NULL);
 	if (INVALID_HANDLE_VALUE == hNamedPipe)
 	{
 		hNamedPipe = NULL;
@@ -651,35 +642,46 @@ bool CreateNamedPipeInServer()
 	}
 	//添加事件以等待客户端连接命名管道
 	//该事件为手动重置事件，且初始化状态为无信号状态
-	hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-	if (!hEvent)
+
+#if SHIT
+	 nt = 10;
+	while (cnt--)
 	{
-		cout << "创建事件失败 ..." << endl << endl;
-		return false;
-	}
-	memset(&ovlpd, 0, sizeof(OVERLAPPED));
-	//将手动重置事件传递给 ovlap 参数
-	ovlpd.hEvent = hEvent;
-	//等待客户端连接
-	if (!ConnectNamedPipe(hNamedPipe, &ovlpd))
-	{
-		if (ERROR_IO_PENDING != GetLastError())
+#endif
+		hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+		if (!hEvent)
+		{
+			cout << "创建事件失败 ..." << endl << endl;
+			return false;
+		}
+		memset(&ovlpd, 0, sizeof(OVERLAPPED));
+		//将手动重置事件传递给 ovlap 参数
+		ovlpd.hEvent = hEvent;
+
+
+		//等待客户端连接
+		if (!ConnectNamedPipe(hNamedPipe, &ovlpd))
+		{
+			if (ERROR_IO_PENDING != GetLastError())
+			{
+				CloseHandle(hNamedPipe);
+				CloseHandle(hEvent);
+				cout << "等待客户端连接失败 ..." << endl << endl;
+				return false;
+			}
+		}
+		//等待事件 hEvent 失败
+		if (WAIT_FAILED == WaitForSingleObject(hEvent, INFINITE))
 		{
 			CloseHandle(hNamedPipe);
 			CloseHandle(hEvent);
-			cout << "等待客户端连接失败 ..." << endl << endl;
+			cout << "等待对象失败 ..." << endl << endl;
 			return false;
 		}
-	}
-	//等待事件 hEvent 失败
-	if (WAIT_FAILED == WaitForSingleObject(hEvent, INFINITE))
-	{
-		CloseHandle(hNamedPipe);
 		CloseHandle(hEvent);
-		cout << "等待对象失败 ..." << endl << endl;
-		return false;
+#if SHIT
 	}
-	CloseHandle(hEvent);
+#endif
 
 	return true;
 }
@@ -716,10 +718,114 @@ bool GetNamedPipeMessage(char* pReadBuf)
 }
 
 
+int InitTcp()
+{
+	SOCKET serversoc;
+	SOCKADDR_IN serveraddr;
+	SOCKADDR_IN clientaddr;
+	int len;
+
+	WSADATA wsa;
+	WSAStartup(MAKEWORD(1, 1), &wsa);	//initial Ws2_32.dll by a process
+	if ((serversoc = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) <= 0)	//create a tcp socket
+	{
+		printf("Create socket fail!\n");
+		return -1;
+	}
+
+	//	int iResult;
+	//	u_long iMode = 0;
+	//	iResult = ioctlsocket(serversoc, FIONBIO, &iMode);
+	//	if (iResult != NO_ERROR)
+	//	{
+	//		printf("ioctlsocket failed with error: %d\n", iResult);
+	//	}
+
+
+	serveraddr.sin_family = AF_INET;
+	serveraddr.sin_port = htons(50006);
+	serveraddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
+
+	if (bind(serversoc, (SOCKADDR *)&serveraddr, sizeof(serveraddr)) != 0)
+	{
+		printf("Bind fail!\n");
+		return -1;
+	}
+
+	//start listen, maximum length of the queue of pending connections is 1
+	printf("Start listen...\n");
+	if (listen(serversoc, 1) != 0)
+	{
+		printf("Listen fail!\n");
+		return -1;
+	}
+
+	len = sizeof(SOCKADDR_IN);
+
+	SOCKET clnt;
+	while (1)
+	{
+		//waiting for connecting
+		if ((clnt = accept(serversoc, (SOCKADDR *)&clientaddr, &len)) <= 0)
+		{
+			printf("Accept fail!\n");
+		}
+		else
+		{
+			Accept = true;
+			GLOBALclntSock = clnt;
+			printf("Connected\n");
+		}
+	}
+	return 0;
+
+}
+
+void FreeTcp()
+{
+	return;
+}
+
+
+bool GetInformMessage(char *buf, size_t bufSize)
+{
+	int ret = 0;
+
+	//printf("GLOBALclntSock: %d\n", GLOBALclntSock);
+	if (Accept)
+	{
+		printf("Accept is true!\n");
+		printf("GLOBALclntSock: %d\n", GLOBALclntSock);
+
+		ret = recv(GLOBALclntSock, buf, MAXBUF, 0);
+		send(GLOBALclntSock, buf, MAXBUF, 0);
+
+		//printf("ret = %d buf: %s\n", ret, buf);
+
+		if (ret <= 0)
+		{
+			// closesocket(GLOBALclntSock);
+			memset(buf, 0, bufSize);
+			Accept = false;
+		}
+		else
+		{
+			buf[ret] = 0;
+			printf("get %s\n", buf);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+
 DWORD WINAPI ThreadProc(LPVOID lpParam)
 {
 	cout << "sub thread started\n" << endl;
-	CreateNamedPipeInServer();
+	//CreateNamedPipeInServer();
+	InitTcp();
 	Accept = true;
 	return 0;
 }
