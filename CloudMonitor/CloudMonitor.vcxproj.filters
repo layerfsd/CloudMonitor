@@ -46,6 +46,9 @@
     <ClCompile Include="sources\parsedoc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="sources\process.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\doc2txt.h">
@@ -64,6 +67,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="headers\parsedoc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\process.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

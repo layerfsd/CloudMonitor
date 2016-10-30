@@ -3,6 +3,8 @@
 #include "NetMon.h"
 #include "parsedoc.h"
 #include "FileMon.h"
+#include "process.h"
+
 
 #include <iostream>
 
@@ -14,7 +16,7 @@ using namespace std;
 #pragma comment(lib, "iphlpapi.lib")	// 获取网络连接状况
 
 #define FULL_DEBUG			0
-#define DEBUG_PARSE_FILE	1
+#define DEBUG_PARSE_FILE	0
 #define SESSION				0
 
 
@@ -42,10 +44,13 @@ int main(int argc, char *argv[])
 	vector<Connection> cons;
 	vector<Service> KeyPorts;
 	vector<HashItem> hashList;
+	vector<Process> plst;
 
 	SFile file;
 
 	InitDir();
+	GetProcessList(plst);
+	ShowProcessList(plst);
 
 #if DEBUG_PARSE_FILE
 	file.localPath = "F:\\NutStore\\SSL传输\\ClientPython2CPP.txt";
