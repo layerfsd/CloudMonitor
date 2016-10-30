@@ -15,6 +15,8 @@ using namespace std;
 #pragma comment(lib,"libssl.lib")		// ssl 安全信道
 #pragma comment(lib, "iphlpapi.lib")	// 获取网络连接状况
 
+
+#define CONTROL				1
 #define FULL_DEBUG			0
 #define DEBUG_PARSE_FILE	0
 #define SESSION				0
@@ -25,11 +27,11 @@ inline void InitDir()
 
 	char strModule[MAX_PATH];
 	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
-	cout << strModule << endl;
-
 	strcat(strModule, "//..//");     //设置为当前工作路径为当时的上一级
 	SetCurrentDirectory(strModule);
 	GetCurrentDirectory(sizeof(strModule), strModule);
+
+	cout << "Working Dir: " << strModule << endl;
 	return;
 }
 
@@ -49,8 +51,26 @@ int main(int argc, char *argv[])
 	SFile file;
 
 	InitDir();
-	GetProcessList(plst);
+
+#if CONTROL
+	string	message;
+	if (!GetProcessList(plst))
+	{
+		return 1;
+	}
+	plst[0].shutdown = true;
+
+	if (KillProcess(plst))
+	{
+		GenKillResult(plst, message);
+		cout << "kill result: [" << message << "]" << endl;
+	}
+	else
+	{
+		cout << "No Process to kill ..." << endl;
+	}
 	ShowProcessList(plst);
+#endif
 
 #if DEBUG_PARSE_FILE
 	file.localPath = "F:\\NutStore\\SSL传输\\ClientPython2CPP.txt";

@@ -35,5 +35,13 @@ struct Process
 //  Forward declarations:
 BOOL GetProcessList(vector<Process>& plst);
 bool ShowProcessList(vector<Process>& plst);
-int  KillProcess(vector<Process>& plst, vector<int>& klst);
+
+// 根据进程序号杀死一个进程,
+// shutdown 标志决定是否要杀掉一个进程
+// KillAll 为真时,则杀掉所有监控进程
+int  KillProcess(vector<Process>& plst, bool KillAll = false);
+
+// 获取成功关闭进程的序号
+bool GenKillResult(vector<Process>& plst, string& message);
+//int  KillProcess(vector<Process>& plst, string& message, bool KillAll = false);
 #endif // ! _PROCESS_H__

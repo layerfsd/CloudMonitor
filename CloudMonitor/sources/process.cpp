@@ -1,5 +1,8 @@
 #include "process.h"
 #include <stdio.h>
+#include <iostream>
+
+using namespace std;
 
 static char *monProcessList[] = {
 	"QQ.exe",
@@ -39,7 +42,7 @@ bool ShowProcessList(vector<Process>& plst)
 }
 
 
-int  KillProcess(vector<Process>& plst)
+int  KillProcess(vector<Process>& plst, bool KillAll)
 {
 	if (plst.size() <= 0)
 	{
@@ -51,7 +54,7 @@ int  KillProcess(vector<Process>& plst)
 
 	for (size_t i = 0; i < plst.size(); i++)
 	{
-		if (plst[i].shutdown)
+		if (KillAll || plst[i].shutdown)
 		{
 			hnh = OpenProcess(PROCESS_ALL_ACCESS, FALSE, plst[i].pid);
 			if (NULL != hnh)
@@ -60,6 +63,10 @@ int  KillProcess(vector<Process>& plst)
 				{
 					cnt += 1;
 					plst[i].status = CLOSED;
+				}
+				else
+				{
+					printError(plst[i].name);
 				}
 				CloseHandle(hnh);
 			}
@@ -72,6 +79,30 @@ int  KillProcess(vector<Process>& plst)
 
 	return cnt;
 }
+
+
+bool GenKillResult(vector<Process>& plst, string& message)
+{
+	if (plst.size() <= 0)
+	{
+		cout << "Empty Killing List ..." << endl;
+		return false;
+	}
+
+	char buf[8];
+	for (size_t i = 0; i < plst.size(); i++)
+	{
+		if (CLOSED == plst[i].status)
+		{
+			memset(buf, 0, sizeof(buf));
+			sprintf(buf, "%d ", plst[i].seq);
+			message += buf;
+		}
+	}
+
+	return false;
+}
+
 
 BOOL GetProcessList(vector<Process>& plst)
 {
@@ -103,6 +134,7 @@ BOOL GetProcessList(vector<Process>& plst)
 	// Now walk the snapshot of processes, and
 	// display information about each process in turn
 	Process pro;
+	bool	NoEmpty = false;
 	do
 	{
 		//_tprintf(TEXT("\n\n====================================================="));
@@ -119,6 +151,7 @@ BOOL GetProcessList(vector<Process>& plst)
 		{
 			if (!_strnicmp(pe32.szExeFile, monProcessList[i], MAX_PATH))
 			{
+				NoEmpty = true;
 				//_tprintf(TEXT("NAME:  %-20s PID: %-5d\n"), pe32.szExeFile, pe32.th32ProcessID);
 				pro.seq = plst.size();
 				plst.push_back(pro);
@@ -153,7 +186,7 @@ BOOL GetProcessList(vector<Process>& plst)
 	} while (Process32Next(hProcessSnap, &pe32));
 
 	CloseHandle(hProcessSnap);
-	return(TRUE);
+	return NoEmpty;
 }
 
 
