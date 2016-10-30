@@ -99,6 +99,7 @@ bool LoadKeywords(string  &filePath, vector<Keyword> &kw)
 	FILE *fp = NULL;
 	char *FileBuf = NULL;
 	int   TotalLine = 0;
+	char  buf[MAX_KEYWORD];
 	const char *FileName = filePath.c_str();
 
 	//GetFileSize(FileName, &FileSize);
@@ -108,16 +109,23 @@ bool LoadKeywords(string  &filePath, vector<Keyword> &kw)
 		return false;
 	}
 	
-	fscanf(fp, "%d\n", &TotalLine);
-	printf("Get TotalLine: %d\n", TotalLine);
+	//fscanf(fp, "%d\n", &TotalLine);
+	//printf("Get TotalLine: %d\n", TotalLine);
 
 	int   line = 0;
 	Keyword tp;
 	char	word[MAX_KEYWORD];
 
-	while (line < TotalLine)
+	//while (line < TotalLine)
+	while (!feof(fp))
 	{
-		fscanf(fp, "%d %s\n", &tp.rank, word);
+		memset(buf, 0, MAX_KEYWORD);
+		fgets(buf, MAX_KEYWORD, fp);
+		if (strlen(buf) < 2)
+		{
+			break;
+		}
+		sscanf(buf, "%d-%s\n", &tp.rank, word);
 		tp.word = word;
 		printf("rank: %d len: [%d] word: %s\n", tp.rank, tp.word.size(), word);
 		kw.push_back(tp);
@@ -290,6 +298,8 @@ bool initSFile(SFile &sf)
 	// 从全路径中获取文件名
 	// eg: D:\work\test.docx --> test.docx
 	sf.fileName = sf.localPath.substr(sf.localPath.rfind('\\') + 1);
+
+
 	// 转换文件名编码,  gbk -> utf8 
 	sf.fileName = GBKToUTF8(sf.fileName.c_str());
 	char buf[HASH_SIZE+1];
@@ -314,8 +324,16 @@ bool initSFile(SFile &sf)
 		return false;
 	}
 
-	// 生成临时文件名 eg: test.docx.txt
-	sf.txtName = sf.fileName + TXT_SUFFIX;
+	if (sf.fileName.substr(sf.fileName.rfind('.')) == ".txt")
+	{
+		sf.txtName = sf.fileName;
+	}
+	else
+	{
+		// 生成临时文件名 eg: test.docx.txt
+		sf.txtName = sf.fileName + TXT_SUFFIX;
+	}
+
 
 	// 生成临时文件的路径 eg: D:\TMP\test.docx.txt
 	//sf.txtPath = TMP_DIR + sf.txtName;
@@ -339,6 +357,8 @@ inline void _showSFile(SFile &sf)
 	cout << "localPath: " << sf.localPath << endl;
 	cout << "fileName: " << sf.fileName << endl;
 
+	cout << "hash: " << sf.fileHash << endl;
+
 	cout << "txtName: " << sf.txtName << endl;
 	cout << "txtPath: " << sf.txtPath << endl;
 
@@ -351,17 +371,19 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 {	
 	if (-1 ==_access(sf.localPath.c_str(), 0))
 	{
-		cout << sf.localPath << "not exists!!!" << endl;
+		cout << sf.localPath << " not exists!!!" << endl;
 		return false;
 	}
 	if (kw.size() <= 0)
 	{
+		cout << "Empty KeywordList..." << endl;
 		// 字典为空
 		return false;
 	}
 
 	if (!initSFile(sf))
 	{
+		cout << "initSfile Failed!" << endl;
 		return false;
 	}
 	_showSFile(sf);

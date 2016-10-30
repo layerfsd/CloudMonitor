@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <cstring>
+#include <Windows.h>
 #include <vector>
 #include <iostream>
 #include <io.h>
@@ -105,11 +106,17 @@ int ParseFile2Text(char *FileName, char *TextName)
 	{
 	case NONE_TYPE:
 		ret = -1;
-		printf("[none] parsing %s to %s...\n", FileName, TextName);
+		printf("[none] parsing %s to %s ...\n", FileName, TextName);
 		break;
 
 	case TEXT_TYPE:
-		printf("[text] parsing %s to %s...\n", FileName, TextName);
+		if (!CopyFile(FileName, TextName, FALSE))
+		{
+			ret = -1;
+			printf("CopyFile Error: %x\n", GetLastError());
+			break;
+		}
+		printf("[text] parsing %s to %s ...\n", FileName, TextName);
 		break;
 
 	case DOCX_TYPE:
@@ -119,11 +126,11 @@ int ParseFile2Text(char *FileName, char *TextName)
 
 	case DOC_TYPE:
 		ret = ParseDoc(FileName, TextName);
-		printf("[doc] parsing %s to %s...\n", FileName, TextName);
+		printf("[doc] parsing %s to %s ...\n", FileName, TextName);
 		break;
 	
 	case PDF_TYPE:
-		printf("[pdf] parsing %s to %s...\n", FileName, TextName);
+		printf("[pdf] parsing %s to %s ...\n", FileName, TextName);
 		break;
 
 	default:

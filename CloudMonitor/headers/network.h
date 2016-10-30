@@ -146,7 +146,9 @@ private:
 // 放弃使用 UDP 通信方式,改为以下 "有名管道"通信.
 //int InitUdp(SOCKET& sockSrv);
 //void FreeUdp(SOCKET& sockSrv);
-
+int InitTcp();
+void FreeTcp();
+bool GetInformMessage(char *buf, size_t bufSize);
 
 int InitSSL(char *ip, int port);
 int EndSSL();
