@@ -4,17 +4,26 @@
 
 using namespace std;
 
-static char *monProcessList[] = {
-	"QQ.exe",
-	"wps.exe",
-	"iexplore.exe",
-	"opera.exe",
-	"360se.exe",
-	"Maxthon.exe",
-	"Netscape.exe",
-	"firefox.exe",
-	"chrome.exe"
+struct monProcessFmt
+{
+	int		code;
+	char*	name;
 };
+
+
+static monProcessFmt monProcessList[] = {
+	{ 101, "QQ.exe" },
+	{ 103, "iexplore.exe" },
+	{ 104, "QQBrowser.exe" },
+	{ 105, "360se.exe" },
+	{ 107, "firefox.exe" },
+	{ 108, "chrome.exe" },
+	{ 109, "sogouexplorer.exe" },
+	{ 110, "opera.exe" },
+	{ 111, "Maxthon.exe" },
+	{ 112, "Õ®”√‰Ø¿¿∆˜" },
+	{ 201, "wps.exe" }
+};	  
 
 static int monProcessNum = sizeof(monProcessList) / sizeof(monProcessList[0]);
 
@@ -34,9 +43,10 @@ bool ShowProcessList(vector<Process>& plst)
 	if (plst.size() <= 0)
 		return FALSE;
 
+	printf("\nseq %-20s %-5s status isShutdown\n", "ProcessName", "pid");
 	for (DWORD i = 0; i < plst.size(); i++)
 	{
-		printf("%-3d %-20s %-5d %d %d\n", plst[i].seq, plst[i].name, plst[i].pid, plst[i].status, plst[i].shutdown);
+		printf("%-3d %-20s %-5d   %d	%d\n", plst[i].seq, plst[i].name, plst[i].pid, plst[i].status, plst[i].shutdown);
 	}
 	return true;
 }
@@ -104,6 +114,35 @@ bool GenKillResult(vector<Process>& plst, string& message)
 }
 
 
+bool RemoteGetProcessList(string & message)
+{
+	vector<Process> plst;
+	char tBuf[256];;
+
+	if (!GetProcessList(plst))
+	{
+		return false;
+	}
+
+	memset(tBuf, 0, sizeof(tBuf));
+	sprintf(tBuf, "%d\n", plst.size());
+	message = tBuf;
+
+	for (size_t i = 0; i < plst.size(); i++)
+	{
+		memset(tBuf, 0, sizeof(tBuf));
+		sprintf(tBuf, "%d %d\n", plst[i].seq, plst[i].code);
+		message += tBuf;
+	}
+	return true;
+}
+
+bool RemoteKillProcess(string & message)
+{
+
+	return false;
+}
+
 BOOL GetProcessList(vector<Process>& plst)
 {
 	HANDLE hProcessSnap;
@@ -149,11 +188,12 @@ BOOL GetProcessList(vector<Process>& plst)
 
 		for (int i = 0; i < monProcessNum; i++)
 		{
-			if (!_strnicmp(pe32.szExeFile, monProcessList[i], MAX_PATH))
+			if (!_strnicmp(pe32.szExeFile, monProcessList[i].name, MAX_PATH))
 			{
 				NoEmpty = true;
 				//_tprintf(TEXT("NAME:  %-20s PID: %-5d\n"), pe32.szExeFile, pe32.th32ProcessID);
 				pro.seq = plst.size();
+				pro.code = monProcessList[i].code;
 				plst.push_back(pro);
 				break;
 			}

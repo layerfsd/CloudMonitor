@@ -34,6 +34,9 @@
 #define IP_SIZE				16
 #define MAX_RETRY_TINE		5
 
+#define	LOOP_SLEEP_TIME		500 // 休眠 500 毫秒
+#define HEART_BEAT_TIME		30  //定义心跳时间为 30秒
+
 #define CMD_SIZE			3
 #define	HEAD_SIZE			7
 
@@ -58,7 +61,7 @@ struct SSL_Handler
 	char     buf[MAXBUF];
 };
 
-
+// 程序输入参数处理
 struct Args
 {
 	char servIP[32];
@@ -66,12 +69,33 @@ struct Args
 	int  servPort;
 };
 
-
+// 通信结构体
 struct HeadPacket
 {
 	char	cmd[CMD_SIZE+1];
 	char	text[MAXBUF];
 };
+
+#define CTL_CONTROL_PLEN  3		// 规定远控命令为三个字节的字符
+
+typedef bool(*ProcessFunc)(string&);
+
+
+enum ProcessResult
+{
+	FINISHED = 1,
+	FAILED
+};
+// 远程控制结构体
+struct RemoteControl
+{
+	bool		notExecuted;					// 指令是否执行过了
+	size_t		time;							// 等待多少秒之后执行,默认立即执行
+	char		ctlTxt[CTL_CONTROL_PLEN+1];		// 指令简写
+	ProcessFunc func;							// 指令处理函数
+};
+
+
 
 /*
 实现与服务端交互的 -- 开始
@@ -87,7 +111,22 @@ struct HeadPacket
 class User
 {
 public:
+
 	User(const char *userName);
+
+	~User()
+	{
+		this->EndSession();
+	}
+
+	bool isEndSession();
+
+
+	// 接收服务端远程控制指令
+	bool GetFromServer();
+
+	// 执行远程控制指令
+	bool ProcessControl();
 
 	// 输出命令类型及数据内容
 	void	ShowCmdDetail()
@@ -126,8 +165,10 @@ public:
 	// 获取注册信息
 	bool	GetRegistInf();
 
+	// 终止会话
 	bool	EndSession();
 
+	// 为保证连接稳定,客户端定时向服务端发送一个`心跳包`
 	bool	HeartBeat();
 	
 private:
@@ -139,6 +180,9 @@ private:
 	string		workDir;
 	char		tmpBuf[MAXBUF];
 	int			statu;
+
+	// 远程控制任务列表
+	vector<RemoteControl> taskList;
 };
 
 

@@ -16,10 +16,10 @@ using namespace std;
 #pragma comment(lib, "iphlpapi.lib")	// 获取网络连接状况
 
 
-#define CONTROL				1
+#define CONTROL				0
 #define FULL_DEBUG			0
 #define DEBUG_PARSE_FILE	0
-#define SESSION				0
+#define SESSION				1
 
 
 inline void InitDir()
@@ -49,17 +49,28 @@ int main(int argc, char *argv[])
 	vector<Process> plst;
 
 	SFile file;
+	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 
 	InitDir();
+	if (!LoadKeywords(keywordPath, kw))
+	{
+		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
+		return -1;
+	}
+
+
+	// 先留下接口,后期优化时加上此功能---"记录本地敏感文件的哈希缓存" 以提高文件检索速度
+	//LoadHashList(hashPath, hashList);
+
 
 #if CONTROL
 	string	message;
 	if (!GetProcessList(plst))
 	{
-		return 1;
+		cout << "GetProcessList: empty!" << endl;
+		return -1;
 	}
-	plst[0].shutdown = true;
-
+	//plst[0].shutdown = true;
 	if (KillProcess(plst))
 	{
 		GenKillResult(plst, message);
@@ -112,48 +123,25 @@ int main(int argc, char *argv[])
 #if SESSION
 
 
-//	char*  user_num = "3130931002";
 	char*  user_num = "1234567";
-
-	if (0 != InitSSL(SERV_ADDR, SERV_PORT))
-	{
-		return -1;
-	}
 	
 	User app(user_num);
-	// 验证账号	
-	if (!app.Authentication())
+	
+	if (!app.Authentication())  // 验证账号	
 	{
 		cout << "Auth Failed!" << endl;
 		return -1;
 	}
 
+	CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
 
-	if (!LoadKeywords(keywordPath, kw))
-	{
-		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
-		return -1;
-	}
-	// 先留下接口,后期优化时加上此功能---本地敏感文件的哈希缓存以提高文件检索速度
-	//LoadHashList(hashPath, hashList);
-
-
-	//cout << "CreateNamedPipeInServer..." << endl;
-	CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);
-	//cout << "CreateNamedPipeInServer Success" << endl;
-
-
-#if 1
-	char lpath[MAX_PATH];
-	int cnt = 0;
 	while (true)
 	{
 		//cout << "while looping ..." << endl;
-		//if (!GetNamedPipeMessage(lpath))
-		if (GetInformMessage(lpath, MAX_PATH))
+		if (GetInformMessage(localPath, MAX_PATH))
 		{
 			memset(&file, 0, sizeof(file));
-			file.localPath = lpath;
+			file.localPath = localPath;
 			if (fsFilter(file, kw, hashList, logMessage))
 			{
 				cout << "logMessag: " << logMessage << endl;
@@ -161,26 +149,17 @@ int main(int argc, char *argv[])
 				app.SendLog(file.fileName.c_str(), FILE_NETEDIT, logMessage.c_str());
 			}
 		}
-		else
+
+		//cout << "No message from >>>Local ..." << endl;
+		app.GetFromServer();   // 接收服务端发送的 远程控制指令
+		app.ProcessControl();  // 处理远程控制任务
+		app.HeartBeat();	   // 休眠 CLIENT_SLEEP_TIME 毫秒定时向服务端发送一个心跳包
+
+		if (app.isEndSession())  //检测服务端是否发出 "终止会话"命令
 		{
-			//cout << "No message from NamePipe..." << endl;
+			break;
 		}
-
-
-
-		cnt += 1;
-		if (cnt >= 1000)
-		{
-			cnt = 0;
-			app.HeartBeat();
-		}
-		Sleep(50);
 	}
-#endif
-	//app.GetFile(string("keywords.txt"));
-	app.EndSession();
-
-	EndSSL();
 
 #endif // Session
 

@@ -21,6 +21,7 @@ enum PStatus
 struct Process
 {
 	char		name[MAX_PATH];
+	int			code;
 	char		title[MAX_PATH]; //为升级考虑，可以给远程控制中加上＂进程标题＂
 	DWORD		pid;
 
@@ -30,6 +31,10 @@ struct Process
 };
 
 
+
+// 远程控制接口
+bool RemoteGetProcessList(string& message);
+bool RemoteKillProcess(string& message);
 
 
 //  Forward declarations:
