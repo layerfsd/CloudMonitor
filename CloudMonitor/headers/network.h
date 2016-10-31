@@ -126,7 +126,7 @@ public:
 	bool GetFromServer();
 
 	// 执行远程控制指令
-	bool ProcessControl();
+	bool ExecControl();
 
 	// 输出命令类型及数据内容
 	void	ShowCmdDetail()

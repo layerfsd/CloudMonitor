@@ -332,7 +332,7 @@ bool User::GetFromServer()
 	return false;
 }
 
-bool User::ProcessControl()
+bool User::ExecControl()
 {
 	bool isOk = false;
 	
@@ -438,7 +438,7 @@ bool User::GetReplyInfo()
 	SSL_read(hdl.ssl, pkt.text, restPktSize);
 
 
-	// 判断指令是否问远程控制字段
+	// 判断指令类型: 是否为"远程控制"
 	if (!strncmp(pkt.cmd, CMD_CONTROL, CMD_CONTROL_LEN)) // 如果收到了一条远程控制指令
 	{
 		// 指令找到对应的处理函数
