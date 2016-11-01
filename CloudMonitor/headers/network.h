@@ -78,7 +78,7 @@ struct HeadPacket
 
 #define CTL_CONTROL_PLEN  3		// 规定远控命令为三个字节的字符
 
-typedef bool(*ProcessFunc)(string&);
+typedef bool(*ProcessFunc)(string& logMsg, string& args);
 
 
 enum ProcessResult
@@ -92,6 +92,7 @@ struct RemoteControl
 	bool		notExecuted;					// 指令是否执行过了
 	size_t		time;							// 等待多少秒之后执行,默认立即执行
 	char		ctlTxt[CTL_CONTROL_PLEN+1];		// 指令简写
+	string		ctlDetails;						// 参数
 	ProcessFunc func;							// 指令处理函数
 };
 

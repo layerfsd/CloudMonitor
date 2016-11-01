@@ -1,6 +1,7 @@
 #include "process.h"
 #include <stdio.h>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -93,54 +94,190 @@ int  KillProcess(vector<Process>& plst, bool KillAll)
 
 bool GenKillResult(vector<Process>& plst, string& message)
 {
+	char buf[8];
+	bool ret = false;
+
+
 	if (plst.size() <= 0)
 	{
 		cout << "Empty Killing List ..." << endl;
-		return false;
+		return ret;
 	}
 
-	char buf[8];
 	for (size_t i = 0; i < plst.size(); i++)
 	{
 		if (CLOSED == plst[i].status)
 		{
+			ret = false;
 			memset(buf, 0, sizeof(buf));
 			sprintf(buf, "%d ", plst[i].seq);
 			message += buf;
 		}
 	}
 
-	return false;
+	return ret;
 }
 
+static vector<Process> LocalProcesslist;
 
-bool RemoteGetProcessList(string & message)
+bool RemoteGetProcessList(string& message, string& args)
 {
-	vector<Process> plst;
 	char tBuf[256];;
 
-	if (!GetProcessList(plst))
+	if (!GetProcessList(LocalProcesslist))
 	{
+		message = "No Monited Process Running";
 		return false;
 	}
 
 	memset(tBuf, 0, sizeof(tBuf));
-	sprintf(tBuf, "%d\n", plst.size());
+	sprintf(tBuf, "%d\n", LocalProcesslist.size());		//记录进程总个数
 	message = tBuf;
 
-	for (size_t i = 0; i < plst.size(); i++)
+	for (size_t i = 0; i < LocalProcesslist.size(); i++)
 	{
 		memset(tBuf, 0, sizeof(tBuf));
-		sprintf(tBuf, "%d %d\n", plst[i].seq, plst[i].code);
+		sprintf(tBuf, "%d-%d\n", LocalProcesslist[i].seq, LocalProcesslist[i].code);
 		message += tBuf;
 	}
 	return true;
 }
 
-bool RemoteKillProcess(string & message)
-{
 
-	return false;
+bool parseProcessSeq(string& args, vector<int>& seqList)
+{
+	int		count = 0;
+	char*		largs = NULL;
+	char*		token = NULL;
+
+	largs = new char[args.length() + 1];
+
+	if (NULL == largs)
+	{
+		cout << "failed new char " << args.length() << endl;
+		return false;
+	}
+	strcpy(largs, args.c_str());
+
+
+	token = strtok(largs, "\n");
+	count = atoi(token);	//获取要终结进程的总数
+	cout << "Count: " << count << endl;
+
+
+	if (NULL == largs)
+	{
+		cout << "failed new int " << count << endl;
+		return false;
+	}
+
+	int			pos = 0;
+	int			tp = 0;
+	while (NULL != token && pos < count)
+	{
+		token = strtok(NULL, "\n");
+
+		tp = atoi(token);
+		seqList.push_back(tp);
+		//cout << "pos: " << pos << " seq: " << seqList[pos] << endl;
+		pos += 1;
+	}
+
+
+	delete[] largs;
+	return true;
+}
+
+
+// 通过Pid杀死一个进程
+inline bool KillProcessByPid(DWORD pid)
+{
+	HANDLE hnh = NULL;
+	bool   ret = true;
+
+	hnh = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+	if (NULL != hnh)
+	{
+		if (TerminateProcess(hnh, 0))
+		{
+			ret = true;
+		}
+		else
+		{
+			ret = false;
+		}
+		CloseHandle(hnh);
+	}
+	else // 获取进程信息失败,说明该进程已经被杀掉,所以返回true
+	{
+		ret = true;
+	}
+
+	return ret;
+}
+
+
+ bool rKillProcess(vector<Process>& plst, vector<int>& seqList, string& logMsg)
+ {
+	 char   num[16];
+	 bool   allDone = true;	//是否所有任务都完成
+	 DWORD  pid = 0;
+	 int    seq = 0;
+
+	 logMsg.clear();
+	 cout << "Server ask me to kill: [" << seqList.size() << "] process" << endl;
+
+	 for (size_t j = 0; j < seqList.size(); j++)
+	 {
+		 seq = seqList[j];
+		 pid = plst[seq].pid;  // 根据进程序号定位到到进程 Pid
+		 cout << "killing " << seq+1 << endl;
+	
+	 	 memset(num, 0, sizeof(num));
+		 
+#if 0
+	 	 if (KillProcessByPid(plst[j].pid))	   //判断是否成功关闭指定Pid 的进程
+	 	 {
+	 	 	sprintf(num, "%d\n", seq);
+	 	 }
+	 	 else
+	 	 {
+	 	 	sprintf(num, "-%d\n", seq);
+	 	 	allDone = false;
+	 	 }
+#else
+		 KillProcessByPid(plst[j].pid);
+
+#endif
+		 sprintf(num, "%d\n", seq);
+		 logMsg += num;						//记录关闭进程的序列号
+		 //printf("j: %d seq: %d\n", j, seqList[j]);
+	 }//end for
+
+	 return allDone;
+ }
+
+
+
+ //设置回复消息(message)
+//		成功:OK
+//		失败:FAILED
+bool RemoteKillProcess(string& message, string& args)
+{
+	vector<int> seqList;
+	bool		allDone = true;
+
+	if (parseProcessSeq(args, seqList))
+	{
+		allDone = rKillProcess(LocalProcesslist, seqList, message);
+	}
+	else
+	{
+		allDone = false;
+		message = "Failed to parseProcessSeq()";
+	}
+
+	return allDone;
 }
 
 BOOL GetProcessList(vector<Process>& plst)

@@ -18,7 +18,7 @@ namespace session
 	struct FuncList
 	{
 		int			ctl;			// 控制编码
-		ProcessFunc func;			// 控制函数
+		ProcessFunc func;			// 控制函数:typedef bool(*ProcessFunc)(string& logMsg, string& args);
 		char	    funcDesc[32];   // 控制函数描述
 	};
 
@@ -34,7 +34,12 @@ namespace session
 	const char*     CMD_HBT			= "HBT";
 
 	// 定义远程控制的包头为 `CTL`
-	const char*     CMD_CONTROL		 = "CTL";
+	const char*     CMD_CONTROL = "CTL";
+
+	//命令返回类型:成功/失败
+	const char*     CTL_RPL_OK		= "COK";
+	const char*		CTL_RPL_FAILED  = "CNO";
+
 	const char*		CTL_INVALID_TEXT = "INVALID INSTRUCTIONS";
 
 	const char*     CTL_END_SESSION  = "000";
@@ -44,8 +49,8 @@ namespace session
 	FuncList funcList[] =
 	{
 		{0, NULL},
-		{1, RemoteGetProcessList, "RemoteGetProcessList" },
-		{2, RemoteKillProcess, "RemoteKillProcess" }
+		{1, RemoteGetProcessList, "GetProcessList" },
+		{2, RemoteKillProcess, "KillProcess" }
 	};
 	// 定义远程控制接口数量
 	const int	    CTL_SUPPORT_NUM = sizeof(funcList) / sizeof(funcList[0]);
@@ -334,7 +339,7 @@ bool User::GetFromServer()
 
 bool User::ExecControl()
 {
-	bool isOk = false;
+	bool execStatus = false;
 	
 	if (this->taskList.size() <= 0)
 	{
@@ -344,7 +349,7 @@ bool User::ExecControl()
 	// 遍历任务队列
 	for (size_t i = 0; i < this->taskList.size(); i++)
 	{
-		//if-1 
+		//if
 		if (this->taskList[i].notExecuted && 0 == this->taskList[i].time) // 如果任务尚未执行,则检查控制指令是否要求立即执行
 		{
 			/*  纠结于任务执行结束后,对任务队列采取的处理方式:
@@ -353,20 +358,22 @@ bool User::ExecControl()
 			*   起初选择方式1,后考虑到审计功能,采用方式2
 			*   这样可以支持服务器查找对应主机的任务执行状况
 			*/
-			if (this->taskList[i].func(this->message))		// 传送User类中的message引用给远程处理函数,远程处理函数产生的处理结果存储在 message 中
+			execStatus = this->taskList[i].func(this->message, taskList[i].ctlDetails);		// 传送User类中的message引用给远程处理函数,远程处理函数产生的处理结果存储在 message 中
+			if (execStatus)
 			{
-				isOk = true;							   // 任务成功执行,标记任务`未执行状态`为假
-				this->taskList[i].notExecuted = false;
-				// 任务成功执行,从任务列表中删除成功执行的任务
-				//this->taskList.erase(this->taskList.begin() + i);
-				this->SendInfo(CMD_RPL, this->message.c_str());
-				break;
+				this->SendInfo(CTL_RPL_OK, message.c_str());							// 任务成功执行,通知服务端处理结果 
 			}
-		//end if-1
+			else
+			{
+				this->SendInfo(CTL_RPL_FAILED, message.c_str());						// 任务执行失败,也通知服务端处理结果 
+			}
+			this->taskList[i].notExecuted = false;								 // 任务执行后,标记任务`未执行状态`为假
+			break;
+		//end if
 		}
 	//end for
 	}
-	return isOk;
+	return execStatus;
 }
 
 User::User(const char *userName)
@@ -432,6 +439,7 @@ bool User::GetReplyInfo()
 	if (reveivedSize != HEAD_SIZE)
 	{
 		std::cout << "Receiving Failed!\n" << endl;
+		this->statu = STATUE_DISCONNECTED;
 		return false;
 	}
 	//printf("restPktSize: %d\n", restPktSize);
@@ -441,27 +449,28 @@ bool User::GetReplyInfo()
 	// 判断指令类型: 是否为"远程控制"
 	if (!strncmp(pkt.cmd, CMD_CONTROL, CMD_CONTROL_LEN)) // 如果收到了一条远程控制指令
 	{
+		pkt.text[CTL_CONTROL_PLEN] = 0;
 		// 指令找到对应的处理函数
 		int instructionCode = atoi(pkt.text);
 
 		// 判断指令编码是否支持
 		if ((instructionCode >= 0) && (instructionCode < CTL_SUPPORT_NUM))
 		{
-			memset(&tmpTask, 0, sizeof(tmpTask));	 // 初始化远程控制指令	
-			strncpy(tmpTask.ctlTxt, CTL_PROCESS_LIST, CTL_CONTROL_PLEN);
-			tmpTask.time = 0;
-			tmpTask.notExecuted = true;
+			memset(&tmpTask, 0, sizeof(tmpTask));				  // 初始化远程控制指令结构体	
+			strncpy(tmpTask.ctlTxt, pkt.text, CTL_CONTROL_PLEN);  // 解析服务端发送的指令编号
+			tmpTask.ctlDetails = pkt.text + CTL_CONTROL_PLEN + 1;	  // 解析服务端发送的指令对应的指令参数
+			//cout << "details: [" << tmpTask.ctlDetails << "]" << endl;
+			tmpTask.time = 0;									  // 默认所有任务都是立即执行,不等待
+			tmpTask.notExecuted = true;							  // 设定任务的`未执行`状态为真
 
-			// 如果客户端要求断开连接,则直接处理
-			if (0 == instructionCode)
+			if (0 == instructionCode)							// 如果服户端要求断开连接,则直接处理
 			{
-				// server ask to disconnect
-				this->ShowCmdDetail();				// 输出服务端指令
-				this->statu = STATUE_DISCONNECTED;	// 设置当前会话状态为: 断开连接
+				this->ShowCmdDetail();							// 输出服务端指令
+				this->statu = STATUE_DISCONNECTED;				// 设置当前会话状态为: 断开连接
 				return true;
 			}
-			tmpTask.func = funcList[instructionCode].func;
-			this->taskList.push_back(tmpTask);		// 将远程控制任务加入本地任务队列
+			tmpTask.func = funcList[instructionCode].func;		// 为每一个任务选择对应的处理过程
+			this->taskList.push_back(tmpTask);					// 将远程控制任务加入本地任务队列
 
 			cout << "Get new task: {" << endl
 				<< "\ttime: " << tmpTask.time << endl

@@ -33,8 +33,8 @@ struct Process
 
 
 // 远程控制接口
-bool RemoteGetProcessList(string& message);
-bool RemoteKillProcess(string& message);
+bool RemoteGetProcessList(string& message, string& args);
+bool RemoteKillProcess(string& message, string& args);
 
 
 //  Forward declarations:
