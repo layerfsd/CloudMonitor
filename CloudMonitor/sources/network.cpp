@@ -991,15 +991,15 @@ RESTART_LISTEN:
 
 			memset(tPath, 0, sizeof(tPath));
 			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);
-			int sent = send(GLOBALclntSock, tPath, ret, 0);
 
 
 			if (ret > 0)		//仅当成功接收,才把信息加入缓冲队列
 			{
+				int sent = send(GLOBALclntSock, tPath, ret, 0);
+				cout << "sent: " << sent << "bytes" << endl;
 				string tmp = tPath;
 				LocalPathList.push(tPath);
 				cout << "Get: " << tPath << endl;
-				cout << "sent: " << sent << "bytes" << endl;
 			}
 			else
 			{
