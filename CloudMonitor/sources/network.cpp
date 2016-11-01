@@ -2,11 +2,17 @@
 #include "FileMon.h"
 #include "process.h"  // 远程控制接口函数声明
 
+#include <queue>
+
+
 static SSL_Handler hdl = { 0 };
 static SOCKET GLOBALclntSock;
 
 static HANDLE  hNamedPipe;
 static bool    Accept = false;
+
+//  创建一个队列,用来缓存 路径列表
+static queue<string> LocalPathList;
 
 // 根据心跳间隔时间和每次休眠时间
 // 计算出客户端发送一次`心跳` 的循环次数
@@ -343,7 +349,8 @@ bool User::ExecControl()
 	
 	if (this->taskList.size() <= 0)
 	{
-		std::cout << "Empty taskList ..." << endl;
+		//std::cout << "Empty taskList ..." << endl;
+		return false;
 	}
 
 	// 遍历任务队列
@@ -964,22 +971,43 @@ int InitTcp()
 	}
 
 	len = sizeof(SOCKADDR_IN);
+	char tPath[MAX_PATH];
 
-	SOCKET clnt;
+RESTART_LISTEN:
 	while (1)
 	{
 		//waiting for connecting
-		if ((clnt = accept(serversoc, (SOCKADDR *)&clientaddr, &len)) <= 0)
+		if ((GLOBALclntSock = accept(serversoc, (SOCKADDR *)&clientaddr, &len)) <= 0)
 		{
 			printf("Accept fail!\n");
+			goto RESTART_LISTEN;
 		}
-		else
+
+		printf("Connected\n");
+		Accept = true;
+		while (Accept)
 		{
-			Accept = true;
-			GLOBALclntSock = clnt;
-			printf("Connected\n");
-		}
-	}
+			int ret = 0;
+
+			memset(tPath, 0, sizeof(tPath));
+			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);
+			int sent = send(GLOBALclntSock, tPath, ret, 0);
+
+
+			if (ret > 0)		//仅当成功接收,才把信息加入缓冲队列
+			{
+				string tmp = tPath;
+				LocalPathList.push(tPath);
+				cout << "Get: " << tPath << endl;
+				cout << "sent: " << sent << "bytes" << endl;
+			}
+			else
+			{
+				Accept = false;
+			}
+
+		}// inner while(Accept)
+	}// outter while(1)
 	return 0;
 
 }
@@ -992,35 +1020,16 @@ void FreeTcp()
 
 bool GetInformMessage(char *buf, size_t bufSize)
 {
-	int ret = 0;
-
-	//printf("GLOBALclntSock: %d\n", GLOBALclntSock);
-	if (Accept)
+	if (LocalPathList.size() > 0)
 	{
-		printf("Accept is true!\n");
-		printf("GLOBALclntSock: %d\n", GLOBALclntSock);
-
-		ret = recv(GLOBALclntSock, buf, MAXBUF, 0);
-		send(GLOBALclntSock, buf, MAXBUF, 0);
-
-		//printf("ret = %d buf: %s\n", ret, buf);
-
-		if (ret <= 0)
-		{
-			// closesocket(GLOBALclntSock);
-			memset(buf, 0, bufSize);
-			Accept = false;
-		}
-		else
-		{
-			buf[ret] = 0;
-			printf("get %s\n", buf);
-			return true;
-		}
+		strncpy(buf, LocalPathList.front().c_str(), bufSize);
+		LocalPathList.pop();
+		return true;
 	}
 
 	return false;
 }
+
 
 
 
@@ -1029,6 +1038,5 @@ DWORD WINAPI ThreadProc(LPVOID lpParam)
 	//cout << "sub thread started\n" << endl;
 	//CreateNamedPipeInServer();
 	InitTcp();
-	Accept = true;
 	return 0;
 }
