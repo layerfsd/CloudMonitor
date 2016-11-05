@@ -775,9 +775,9 @@ bool User::UploadFile(SFile &file)
 		// 如果服务端已经存在当前文件了
 		return true;
 	}
-	
-	char fsize[16];
-	sprintf(fsize, "%d", file.encSize);
+	// 增加密码发送
+	char fsize[256];
+	sprintf(fsize, "%d %s", file.encSize, file.encPasswd.c_str());
 	this->SendInfo(CMD_RPL, fsize);
 
 	FILE *fp = NULL;

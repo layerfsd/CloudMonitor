@@ -110,12 +110,6 @@ int ParseFile2Text(char *FileName, char *TextName)
 		break;
 
 	case TEXT_TYPE:
-		if (!CopyFile(FileName, TextName, FALSE))
-		{
-			ret = -1;
-			printf("CopyFile Error: %x\n", GetLastError());
-			break;
-		}
 		printf("[text] parsing %s to %s ...\n", FileName, TextName);
 		break;
 

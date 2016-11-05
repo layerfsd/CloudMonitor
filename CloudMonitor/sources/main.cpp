@@ -12,14 +12,14 @@ using namespace std;
 
 #pragma comment(lib,"ws2_32.lib")		// 建立socket()套接字
 #pragma comment(lib,"libcrypto.lib")	// ssl 加密函数
-#pragma comment(lib,"libssl.lib")		// ssl 安全信道
+#pragma comment(lib,"libssl.lib")		// ssl 安全信道 
 #pragma comment(lib, "iphlpapi.lib")	// 获取网络连接状况
 
 
 #define CONTROL				0
 #define FULL_DEBUG			0
-#define DEBUG_PARSE_FILE	0
-#define SESSION				1
+#define DEBUG_PARSE_FILE	1
+#define SESSION				0
 
 
 inline void InitDir()
@@ -49,7 +49,6 @@ int main(int argc, char *argv[])
 	vector<Process> plst;
 
 	SFile file;
-	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 
 	InitDir();
 	if (!LoadKeywords(keywordPath, kw))
@@ -85,11 +84,6 @@ int main(int argc, char *argv[])
 
 #if DEBUG_PARSE_FILE
 	file.localPath = "F:\\NutStore\\SSL传输\\ClientPython2CPP.txt";
-	if (!LoadKeywords(keywordPath, kw))
-	{
-		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
-		return -1;
-	}
 	int ret = fsFilter(file, kw, hashList, logMessage);
 #endif
 
@@ -134,6 +128,7 @@ int main(int argc, char *argv[])
 	}
 
 	CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
+	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 
 	while (true)
 	{

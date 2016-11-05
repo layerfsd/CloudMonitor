@@ -35,7 +35,7 @@
 #define MAX_RETRY_TINE		5
 
 #define	LOOP_SLEEP_TIME		500 // 休眠 500 毫秒
-#define HEART_BEAT_TIME		30  //定义心跳时间为 30秒
+#define HEART_BEAT_TIME		30  //定义心跳时间(秒)
 
 #define CMD_SIZE			3
 #define	HEAD_SIZE			7
