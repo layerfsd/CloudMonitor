@@ -167,6 +167,7 @@
     <None Include="res\test.docx" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\tmpFunc\removeDir.cpp" />
     <ClCompile Include="sources\doc2txt.cpp" />
     <ClCompile Include="sources\encrypt.cpp" />
     <ClCompile Include="sources\filemon.cpp" />

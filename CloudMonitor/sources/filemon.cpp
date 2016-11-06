@@ -234,7 +234,7 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 	for (ite = MatchRecord.begin(); ite != MatchRecord.end(); ite++)
 	{
 		memset(tmp, 0, MAX_LOG_SIZE);
-		sprintf(tmp, " %d-%s-%d", (int)(ite->first.rank), ite->first.word.c_str(), ite->second);
+		sprintf(tmp, "%d-%s-%d ", (int)(ite->first.rank), ite->first.word.c_str(), ite->second);
 		message += tmp;
 	}
 	//cout << message << endl;

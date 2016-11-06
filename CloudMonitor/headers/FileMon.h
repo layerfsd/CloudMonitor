@@ -39,8 +39,8 @@ using namespace std;
 
 enum LogType
 {
-	FILE_COPY2USB = 1,
-	FILE_NETEDIT,
+	FILE_NETEDIT = 1,
+	FILE_COPY2USB,
 };
 
 struct HashItem

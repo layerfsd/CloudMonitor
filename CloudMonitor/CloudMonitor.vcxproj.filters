@@ -49,6 +49,9 @@
     <ClCompile Include="sources\process.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\tmpFunc\removeDir.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\doc2txt.h">

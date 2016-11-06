@@ -18,9 +18,10 @@ using namespace std;
 
 #define CONTROL				0
 #define FULL_DEBUG			0
-#define DEBUG_PARSE_FILE	1
-#define SESSION				0
+#define DEBUG_PARSE_FILE	0
+#define SESSION				1
 
+BOOL DeleteDirectory(const char * DirName);
 
 inline void InitDir()
 {
@@ -32,6 +33,7 @@ inline void InitDir()
 	GetCurrentDirectory(sizeof(strModule), strModule);
 
 	cout << "Working Dir: " << strModule << endl;
+	DeleteDirectory(TMP_DIR);
 	return;
 }
 
@@ -83,8 +85,18 @@ int main(int argc, char *argv[])
 #endif
 
 #if DEBUG_PARSE_FILE
-	file.localPath = "F:\\NutStore\\SSL传输\\ClientPython2CPP.txt";
-	int ret = fsFilter(file, kw, hashList, logMessage);
+	char *fList[] = {
+		"F:\\NutStore\\SSL传输\\ClientPython2CPP.txt",
+		"F:\\NutStore\\SSL传输\\安全办公信息监控平台项目研发方案20160922.docx",
+		"F:\\NutStore\\SSL传输\\软件.doc"
+	};
+	int len = sizeof(fList) / sizeof(fList[0]);
+	for (int i = 0; i < len; i++)
+	{
+		memset(&file, 0, sizeof(file));
+		file.localPath = fList[i];
+		int ret = fsFilter(file, kw, hashList, logMessage);
+	}
 #endif
 
 #if FULL_DEBUG
@@ -141,7 +153,7 @@ int main(int argc, char *argv[])
 			{
 				cout << "logMessag: " << logMessage << endl;
 				app.UploadFile(file);
-				app.SendLog(file.fileName.c_str(), FILE_NETEDIT, logMessage.c_str());
+				app.SendLog(file.fileHash.c_str(), FILE_NETEDIT, logMessage.c_str());
 			}
 		}
 

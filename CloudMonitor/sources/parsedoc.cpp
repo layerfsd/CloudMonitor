@@ -45,7 +45,7 @@ int ExtractDocxFile(char *FileName, char *TextName)
 	//{
 	//	remove(TextName);
 	//}
-	rename(DOCX_FILE_NAME, TextName);
+	MoveFile(DOCX_FILE_NAME, TextName);
 	return 0;
 }
 

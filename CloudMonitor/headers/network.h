@@ -161,7 +161,7 @@ public:
 
 
 	// 向服务端发送一条日志消息
-	bool	SendLog(const char *pureName, LogType lt, const char *text);
+	bool	SendLog(const char *fHash, LogType lt, const char *text);
 
 	// 获取注册信息
 	bool	GetRegistInf();
