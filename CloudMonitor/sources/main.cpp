@@ -21,6 +21,7 @@ using namespace std;
 #define DEBUG_PARSE_FILE	0
 #define SESSION				1
 
+BOOL g_RUNNING = TRUE;
 BOOL DeleteDirectory(const char * DirName);
 
 inline void InitDir()
@@ -37,6 +38,30 @@ inline void InitDir()
 	return;
 }
 
+
+
+// Use signal to attach a signal handler to the abort routine
+#include <signal.h>
+#include <tchar.h>
+
+void SignalHandler(int signal)
+{
+	printf("\nExciting...\n");
+	g_RUNNING = FALSE;
+	return;
+}
+
+void regSINGINT()
+{
+	typedef void(*SignalHandlerPointer)(int);
+
+	SignalHandlerPointer previousHandler;
+	previousHandler = signal(SIGINT, SignalHandler);
+
+	return ;
+}
+
+
 int main(int argc, char *argv[])
 {
 	string keywordPath = KEYWORD_PATH;
@@ -52,6 +77,7 @@ int main(int argc, char *argv[])
 
 	SFile file;
 
+	regSINGINT(); //注册 CTRL+C 信号处理函,正常终止会话.
 	InitDir();
 	if (!LoadKeywords(keywordPath, kw))
 	{
@@ -142,7 +168,7 @@ int main(int argc, char *argv[])
 	CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
 	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 
-	while (true)
+	while (g_RUNNING)
 	{
 		//cout << "while looping ..." << endl;
 		if (GetInformMessage(localPath, MAX_PATH))
@@ -162,6 +188,11 @@ int main(int argc, char *argv[])
 		app.ExecControl();    // 处理远程控制任务
 		app.HeartBeat();	  // 休眠 CLIENT_SLEEP_TIME 毫秒定时向服务端发送一个心跳包
 
+		if (!g_RUNNING)
+		{
+			app.EndSession();
+			break;
+		}
 		if (app.isEndSession())  //检测服务端是否发出 "终止会话"命令
 		{
 			break;
