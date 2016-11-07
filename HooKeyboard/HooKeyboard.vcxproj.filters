@@ -21,6 +21,9 @@
     <ClInclude Include="ILHook.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="NamePipe.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="myHook.cpp">
@@ -30,6 +33,9 @@
       <Filter>头文件\源文件</Filter>
     </ClCompile>
     <ClCompile Include="ILHook.cpp">
+      <Filter>头文件\源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NamePipe.cpp">
       <Filter>头文件\源文件</Filter>
     </ClCompile>
   </ItemGroup>

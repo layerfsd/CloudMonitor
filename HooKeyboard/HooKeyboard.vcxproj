@@ -143,11 +143,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ILHook.h" />
+    <ClInclude Include="NamePipe.h" />
     <ClInclude Include="tools.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ILHook.cpp" />
     <ClCompile Include="myHook.cpp" />
+    <ClCompile Include="NamePipe.cpp" />
     <ClCompile Include="tools.cpp" />
   </ItemGroup>
   <ItemGroup>

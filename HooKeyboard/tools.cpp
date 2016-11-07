@@ -1,5 +1,6 @@
 #include "tools.h"
 #include <stdio.h>
+#include "NamePipe.h"
 
 #define SERV_ADDR  "127.0.0.1"
 #define SERV_PORT	50006
@@ -13,11 +14,11 @@ BOOL	  isConnectionOK = FALSE;
 #pragma comment(lib,"ws2_32.lib")		// 建立socket()套接字
 
 
-BOOL SetCache(LPCSTR lpFilePath);
-BOOL GetCache(char* lpBuf, size_t bufSize);
+//BOOL SetCache(LPCSTR lpFilePath);
+//BOOL GetCache(char* lpBuf, size_t bufSize);
 
 
-
+// 通过此 TCP 接口通报消息
 // 初始化 TCP 连接,后期需要加上双向身份认证功能
 BOOL InitTcpConnection()
 {
@@ -59,6 +60,11 @@ BOOL InitTcpConnection()
 }
 
 
+// CreateFile过滤模块采用 TCP 本地通信模式
+// 当通信另外一端未启动或者网络错误时,宿主程序会卡在 CreateFile() 系统调用中
+// 因此在本地服务中创建一个·命名管道·以缓存需要通知的事件
+// 其工作原理是: 接收到 Hook 通知后,将·路径·记录到队列中立刻返回
+// 由一个专有线程负责从队列中读取数据通知另外一个程序
 VOID TellBackend(const char* lPath, int length)
 {
 	static CHAR  lastPath[MAX_PATH] = { 0 };
