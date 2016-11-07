@@ -49,6 +49,7 @@ int GetFileSize(const char *FileName, size_t *FileSize)
 
 	if ((fp = fopen(FileName, "rb")) == NULL)
 	{
+		//perror(FileName);  //调试,显示具体出错信息
 		return -1;
 	}
 	fseek(fp, 0, SEEK_END);
@@ -293,18 +294,11 @@ bool HashFile(const char *fileName, char *buf)
 //加密一个文件
 bool wrapEncreytFile(SFile& sf)
 {
-	// 生成加密文件的路径 eg: TMP\test.docx.aes
-	sf.encName = sf.fileName + ".aes";
-	sf.encPath = TMP_DIR + sf.encName;
-
-	// 设置加密文件的密码为明文文件的哈希前八位
-	sf.encPasswd = sf.fileHash.substr(0, 8);
-
 	if (!EncreptFile(sf.savedPath.c_str(), sf.encPath.c_str(), sf.encPasswd.c_str()))
 	{
 		return false;
 	}
-
+	// 获取加密后的文件大小
 	if (0 != GetFileSize(sf.encPath.c_str(), &(sf.encSize)))
 	{
 		cout << "GetFileSize() error!" << endl;
@@ -336,8 +330,6 @@ bool initSFile(SFile &sf)
 	}
 
 
-	// 转换文件名编码,  gbk -> utf8 
-	sf.fileName = GBKToUTF8(sf.fileName.c_str());
 	char buf[HASH_SIZE+1];
 
 	if (0 != GetFileSize(sf.savedPath.c_str(), &sf.fileSize))
@@ -378,6 +370,19 @@ bool initSFile(SFile &sf)
 	// 生成临时文件的路径 eg: D:\TMP\test.docx.txt
 	//sf.txtPath = TMP_DIR + sf.txtName;
 	sf.txtPath = TMP_DIR + sf.txtName;
+
+
+	// 生成加密文件的路径 eg: TMP\test.docx.aes
+	sf.encName = sf.fileName + ".aes";
+	sf.encPath = TMP_DIR + sf.encName;
+
+	// 设置加密文件的密码为明文文件的哈希区间(哈希长度为32Bytes)
+	sf.encPasswd = sf.fileHash.substr(6, 14);
+
+
+	// 由于服务端采用 utf-8 编码，因此转换文件名编码,  gbk -> utf8 
+	//　防止服务端显示上传的文件名为乱码
+	sf.fileName = GBKToUTF8(sf.fileName.c_str());
 
 	return true;
 }
@@ -435,5 +440,15 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 	_showSFile(sf);
 
 	cout << "matched: " << message << endl;
+	return true;
+}
+
+
+
+
+
+
+bool isContinue(const char* lPath, int length)
+{
 	return true;
 }

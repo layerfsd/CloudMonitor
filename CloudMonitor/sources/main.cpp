@@ -21,46 +21,10 @@ using namespace std;
 #define DEBUG_PARSE_FILE	0
 #define SESSION				1
 
+
+void InitDir(); //patches.cpp
+
 BOOL g_RUNNING = TRUE;
-BOOL DeleteDirectory(const char * DirName);
-
-inline void InitDir()
-{
-
-	char strModule[MAX_PATH];
-	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
-	strcat(strModule, "//..//");     //设置为当前工作路径为当时的上一级
-	SetCurrentDirectory(strModule);
-	GetCurrentDirectory(sizeof(strModule), strModule);
-
-	cout << "Working Dir: " << strModule << endl;
-	DeleteDirectory(TMP_DIR);
-	return;
-}
-
-
-
-// Use signal to attach a signal handler to the abort routine
-#include <signal.h>
-#include <tchar.h>
-
-void SignalHandler(int signal)
-{
-	printf("\nExciting...\n");
-	g_RUNNING = FALSE;
-	return;
-}
-
-void regSINGINT()
-{
-	typedef void(*SignalHandlerPointer)(int);
-
-	SignalHandlerPointer previousHandler;
-	previousHandler = signal(SIGINT, SignalHandler);
-
-	return ;
-}
-
 
 int main(int argc, char *argv[])
 {
@@ -77,7 +41,6 @@ int main(int argc, char *argv[])
 
 	SFile file;
 
-	regSINGINT(); //注册 CTRL+C 信号处理函,正常终止会话.
 	InitDir();
 	if (!LoadKeywords(keywordPath, kw))
 	{

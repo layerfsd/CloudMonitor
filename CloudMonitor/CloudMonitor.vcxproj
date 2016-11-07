@@ -168,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\tmpFunc\removeDir.cpp" />
+    <ClCompile Include="patches.cpp" />
     <ClCompile Include="sources\doc2txt.cpp" />
     <ClCompile Include="sources\encrypt.cpp" />
     <ClCompile Include="sources\filemon.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="headers\NetMon.h" />
     <ClInclude Include="headers\network.h" />
     <ClInclude Include="headers\parsedoc.h" />
+    <ClInclude Include="patches.h" />
     <ClInclude Include="sources\process.h" />
   </ItemGroup>
   <ItemGroup>

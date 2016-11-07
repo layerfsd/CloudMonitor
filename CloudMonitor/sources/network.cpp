@@ -410,7 +410,7 @@ User::User(const char *userName)
 		}
 	}
 	strncpy(this->userName, userName, MAX_USERNAME);
-	cout << "workdir: " << workDir << endl;
+	//cout << "workdir: " << workDir << endl;
 
 	if (0 != InitSSL(SERV_ADDR, SERV_PORT))
 	{

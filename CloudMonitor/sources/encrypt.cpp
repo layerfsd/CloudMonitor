@@ -1,4 +1,5 @@
 #include "../headers/Encrypt.h"
+#include <Windows.h>
 
 void testFile()
 {
@@ -27,6 +28,5 @@ bool EncreptFile(const char* oriFileName, const char* encFileName, const char* p
 		return false;
 	}
 
-	_pclose(execfd);
-	return true;
+	return (0 == _pclose(execfd));
 }

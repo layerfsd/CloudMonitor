@@ -19,7 +19,9 @@
 #define READ_BNR_SIZE		1024*1024
 #define MAXBUF				1280
 #define SERV_PORT			50005
-#define SERV_ADDR			"192.168.43.132"
+
+#define SERV_ADDR			"10.102.1.116"
+//#define SERV_ADDR			"192.168.43.132"
 #define CONNECT_TIMEOUT		1000
 
 #define SSL_CHANNEL_ON		0

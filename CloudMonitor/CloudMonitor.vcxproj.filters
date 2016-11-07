@@ -52,6 +52,9 @@
     <ClCompile Include="..\tmpFunc\removeDir.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="patches.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\doc2txt.h">
@@ -73,6 +76,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="sources\process.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="patches.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
