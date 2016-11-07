@@ -97,6 +97,7 @@ struct SFile
 	size_t txtSize;
 
 	// 传送文件至服务器时,先将原始文件压缩再上传
+	string encSrc;			// 测试发现,openssl 不支持gbk格式的文件路径
 	string encName;			// 原始文件加密后的名称				eg: 财务报表.doc.aes
 	string encPath;			// 原始文件加密后存放的本地路径		eg: C:\Users\王老五\TMP\财务报表.doc.aes
 	string encPasswd;		// 针对原始文件加密后所用的随机密码 (密码长度: 8-32 bytes)

@@ -13,7 +13,7 @@ void testFile()
 
 bool EncreptFile(const char* oriFileName, const char* encFileName, const char* passwd)
 {
-	char* CMD_FMT = "ssl\\openssl aes-256-cbc -in %s -out %s -pass pass:%s";
+	char* CMD_FMT = "ssl\\openssl aes-256-cbc -in \"%s\" -out \"%s\" -pass pass:%s";	//防止文件路径中包含空格
 	char  cmd[_MAX_PATH];
 	FILE* execfd = NULL;
 

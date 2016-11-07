@@ -294,6 +294,7 @@ bool HashFile(const char *fileName, char *buf)
 //加密一个文件
 bool wrapEncreytFile(SFile& sf)
 {
+	
 	if (!EncreptFile(sf.savedPath.c_str(), sf.encPath.c_str(), sf.encPasswd.c_str()))
 	{
 		return false;
@@ -371,8 +372,8 @@ bool initSFile(SFile &sf)
 	//sf.txtPath = TMP_DIR + sf.txtName;
 	sf.txtPath = TMP_DIR + sf.txtName;
 
-
 	// 生成加密文件的路径 eg: TMP\test.docx.aes
+	sf.encSrc = GBKToUTF8(sf.savedPath.c_str());
 	sf.encName = sf.fileName + ".aes";
 	sf.encPath = TMP_DIR + sf.encName;
 
@@ -381,7 +382,7 @@ bool initSFile(SFile &sf)
 
 
 	// 由于服务端采用 utf-8 编码，因此转换文件名编码,  gbk -> utf8 
-	//　防止服务端显示上传的文件名为乱码
+	// 防止服务端显示上传的文件名为乱码
 	sf.fileName = GBKToUTF8(sf.fileName.c_str());
 
 	return true;
@@ -442,8 +443,6 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 	cout << "matched: " << message << endl;
 	return true;
 }
-
-
 
 
 

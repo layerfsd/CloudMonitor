@@ -15,7 +15,7 @@ extern BOOL g_RUNNING;
 
 void SignalHandler(int signal)
 {
-	system("cls");
+	//system("cls");
 	printf("\nExciting...\n");
 	g_RUNNING = FALSE;
 	return;
