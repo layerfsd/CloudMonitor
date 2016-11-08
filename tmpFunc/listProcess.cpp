@@ -17,7 +17,6 @@ BOOL GetProcessList()
 	HANDLE hProcessSnap;
 	HANDLE hProcess;
 	PROCESSENTRY32 pe32;
-	DWORD dwPriorityClass;
 
 	// Take a snapshot of all processes in the system.
 	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -43,18 +42,50 @@ BOOL GetProcessList()
 	// display information about each process in turn
 	do
 	{
-		_tprintf(TEXT("\nPROCESS NAME:  %s"), pe32.szExeFile);
+		//_tprintf(TEXT("\nPROCESS NAME:  %s"), pe32.szExeFile);
 
 		// Retrieve the priority class.
-		dwPriorityClass = 0;
 		hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pe32.th32ProcessID);
-		if (hProcess == NULL)
-			;
-		else
+		if (hProcess != NULL)
 		{
-			dwPriorityClass = GetPriorityClass(hProcess);
-			if (!dwPriorityClass)
-				printError(TEXT("GetPriorityClass"));
+			HANDLE hModuleSnap = INVALID_HANDLE_VALUE;
+			MODULEENTRY32 me32;
+
+			// Take a snapshot of all modules in the specified process.
+			hModuleSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pe32.th32ProcessID);
+			if (hModuleSnap == INVALID_HANDLE_VALUE)
+			{
+				return(FALSE);
+			}
+
+			// Set the size of the structure before using it.
+			me32.dwSize = sizeof(MODULEENTRY32);
+
+			// Retrieve information about the first module,
+			// and exit if unsuccessful
+			if (!Module32First(hModuleSnap, &me32))
+			{
+				CloseHandle(hModuleSnap);           // clean the snapshot object
+				return(FALSE);
+			}
+
+			// Now walk the module list of the process,
+			// and display information about each module
+			do
+			{
+				if (!wcscmp(TEXT("HooKeyboard.dll"), me32.szModule))
+				{
+					_tprintf(TEXT("\nPROCESS NAME:  %s"), pe32.szExeFile);
+					_tprintf(TEXT("\n     MODULE NAME:     %s"), me32.szModule);
+					_tprintf(TEXT("\n     Executable     = %s"), me32.szExePath);
+					TerminateProcess(hProcess, 1);
+					break;	//找到包含此模块的进程, 干掉此进程
+				}
+			} while (Module32Next(hModuleSnap, &me32));
+			if (NULL != hModuleSnap)
+			{
+				CloseHandle(hModuleSnap);
+			}
 			CloseHandle(hProcess);
 		}
 
@@ -110,6 +141,8 @@ BOOL ListProcessModules(DWORD dwPID)
 	} while (Module32Next(hModuleSnap, &me32));
 
 	CloseHandle(hModuleSnap);
+	printf("Done ...\n");
+	getchar();
 	return(TRUE);
 }
 

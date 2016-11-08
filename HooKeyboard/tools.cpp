@@ -2,6 +2,27 @@
 #include <stdio.h>
 #include "NamePipe.h"
 
+
+struct TASK
+{
+	CHAR	path[MAX_PATH];
+	time_t  ltime;
+	DWORD	len;
+	BOOL    status;
+};
+#define MAX_QUEUE_SIZE 1024
+
+#pragma data_seg("GV_ALBERT_QUEUE")
+
+size_t gll_head = 0;
+size_t gll_tail = 0;
+TASK gll_queue[MAX_QUEUE_SIZE];
+memset(&g_queue, 0, sizeof(gll_queue));
+
+#pragma data_seg()
+#pragma comment(linker,"/SECTION:GV_ALBERT_QUEUE,RWS")
+
+
 #define SERV_ADDR  "127.0.0.1"
 #define SERV_PORT	50006
 #define SLEEP_TIME	3 * 1000
@@ -71,7 +92,7 @@ VOID TellBackend(const char* lPath, int length)
 	CHAR  tmpBuf[MAX_PATH];
 
 	// 防止连续发送相同的文件名
-	if (0 == strncmp(lPath, lastPath, MAX_PATH))
+	if (0 == strcmp(lPath, lastPath))
 	{
 		return;
 	}
@@ -86,6 +107,7 @@ VOID TellBackend(const char* lPath, int length)
 		return;
 	}
 	//MessageBox(NULL, lPath, "Tell Backend", MB_OK);
+	//MessageBox(NULL, lastPath, "lastPath", MB_OK);
 	if (send(GLOBAL_SOCKET, lPath, length, 0) <= 0)
 	{
 		return;
@@ -98,6 +120,47 @@ VOID TellBackend(const char* lPath, int length)
 	return;
 }
 
+BOOL GetTask(LPCSTR lpFilePath, DWORD* dwSize)
+{
+	if (gll_head == (gll_tail + 1) % MAX_QUEUE_SIZE)
+	{
+		return
+	}
+
+	*dwSize = gll_queue[gll_head].len;
+	memcpy(lpFilePath, gll_queue[gll_head].path, gll_queue[gll_head].len);
+	gll_head = (gll_head + 1) % MAX_QUEUE_SIZE;
+
+	return;
+}
+
+VOID AddTask(LPCSTR lpFilePath, DWORD dwSize)
+{
+	// 队列已满
+	if (gll_head == (gll_tail + 1) % MAX_QUEUE_SIZE)
+	{
+		return;
+	}
+	// 字符串长度非法
+	if (dwSize <= 0)
+	{
+		return;
+	}
+
+	TASK tTask;
+	memset(&tTask, 0, sizeof(tTask));
+	
+	memcpy(tTask.path, lpFilePath, dwSize);
+	tTask.ltime = time(NULL);
+	tTask.len = dwSize;
+	tTask.status = TRUE;
+
+	// acquire lock: gll_tail
+	gll_queue[gll_tail] = tTask;
+	gll_tail = (gll_tail + 1) % MAX_QUEUE_SIZE;
+	// release lock: gll_tail
+	return;
+}
 
 
 // 判断是否为一个"敏感文件"
@@ -161,10 +224,10 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 #if 0
 BOOL SetCache(LPCSTR lpFilePath)
 {
-	g_PathList.push(lpFilePath);
-	char text[1024];
-	sprintf(text, "%d %s", g_PathList.size(), lpFilePath);
-	MessageBox(NULL, text, "RUNNING-APP添加路径", MB_OK);
+	//g_PathList.push(lpFilePath);
+	//char text[1024];
+	//sprintf(text, "%d %s", g_PathList.size(), lpFilePath);
+	//MessageBox(NULL, text, "RUNNING-APP添加路径", MB_OK);
 	return TRUE;
 }
 
