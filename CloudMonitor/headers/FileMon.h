@@ -36,13 +36,6 @@
 
 using namespace std;
 
-
-enum LogType
-{
-	FILE_NETEDIT = 1,
-	FILE_COPY2USB,
-};
-
 struct HashItem
 {
 	char  path[_MAX_PATH];		//Â·¾¶

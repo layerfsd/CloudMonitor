@@ -12,6 +12,10 @@
 
 using namespace std;
 
+#define FILE_NETEDIT    '1'
+#define FILE_COPY2USB	'2'
+
+
 
 enum PStatus
 {
@@ -30,7 +34,9 @@ struct Process
 	bool 		shutdown;
 };
 
-
+// 检查是否有常用网络进程在运行,包括 (QQ, 浏览器)
+// 如果存在,则记录到 logMsg 中
+bool CheckNetworkApps(vector<Process>& plst, string& logMsg);
 
 // 远程控制接口
 bool RemoteGetProcessList(string& message, string& args);

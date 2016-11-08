@@ -23,7 +23,7 @@ static monProcessFmt monProcessList[] = {
 	{ 110, "opera.exe" },
 	{ 111, "Maxthon.exe" },
 	{ 112, "通用浏览器" },
-	{ 201, "wps.exe" }
+	//{ 201, "wps.exe" }
 };	  
 
 static int monProcessNum = sizeof(monProcessList) / sizeof(monProcessList[0]);
@@ -119,6 +119,33 @@ bool GenKillResult(vector<Process>& plst, string& message)
 }
 
 static vector<Process> LocalProcesslist;
+
+bool CheckNetworkApps(vector<Process>& plst, string& logMsg)
+{
+	// 没有获取到常用进程,返回
+	if (!GetProcessList(plst))
+	{
+		return false;
+	}
+
+	//char *LogPrefix = "用户在运行网络程序: ";
+	char tmpBuf[MAX_PATH];
+
+	logMsg.clear();
+	logMsg = FILE_NETEDIT;		// 设置警报类型
+	logMsg += ' ';
+	for (DWORD i = 0; i < plst.size()-1; i++)
+	{
+		memset(tmpBuf, 0, sizeof(tmpBuf));
+		sprintf(tmpBuf, "%d,", plst[i].code);
+		logMsg += tmpBuf;
+	}
+
+	sprintf(tmpBuf, "%d", plst[plst.size()-1].code);
+	logMsg += tmpBuf;
+
+	return true;
+}
 
 bool RemoteGetProcessList(string& message, string& args)
 {

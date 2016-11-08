@@ -623,27 +623,26 @@ bool User::Authentication()
 }
 
 
-bool User::SendLog(const char* fHash, LogType lt, const char* text)
+bool User::SendLog(const char* fHash, const char* text)
 {
 	time_t t = time(0);   // get time now
 	struct tm* now = localtime(&t);
 	char   tmp[MAX_LOG_SIZE];
 
-	// 一次性获取时间
-	// 并且将日志类型及敏感文件的文件名拼入同一块缓存
-	sprintf(tmp, "%d-%02d-%02d %02d:%02d\n%s %d ",
+	// 获取时间
+	// 将时间和文件哈希拼入同一块缓存
+	sprintf(tmp, "%d-%02d-%02d %02d:%02d\n%s\n",
 		now->tm_year + 1900,
 		now->tm_mon + 1,
 		now->tm_mday,
 		now->tm_hour,
 		now->tm_min,
-		fHash,
-		lt);
+		fHash);
 
 
 	// 构造日志
-	this->message = tmp;
-	this->message += text;
+	this->message = tmp;	
+	this->message += text;	// 追加 (关键字信息+日志详情)
 
 	return this->SendInfo(CMD_LOG, this->message.c_str());
 }

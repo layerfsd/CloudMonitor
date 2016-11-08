@@ -15,11 +15,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\test.docx" />
     <None Include="res\README.md">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="res\safe.doc" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\main.cpp">
@@ -83,13 +81,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="res\document.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="res\keywords.txt" />
     <Text Include="res\tcpList.txt" />
-    <Text Include="res\safe.txt" />
-    <Text Include="res\test.txt" />
     <Text Include="res\关键字文件格式说明.txt" />
   </ItemGroup>
 </Project>

@@ -54,23 +54,28 @@ int main(int argc, char *argv[])
 
 
 #if CONTROL
-	string	message;
-	if (!GetProcessList(plst))
+	string	netApps;
+	if (CheckNetworkApps(plst, netApps))
 	{
-		cout << "GetProcessList: empty!" << endl;
-		return -1;
+		cout << netApps << endl;
 	}
+
+	//if (!GetProcessList(plst))
+	//{
+	//	cout << "GetProcessList: empty!" << endl;
+	//	return -1;
+	//}
 	//plst[0].shutdown = true;
-	if (KillProcess(plst))
-	{
-		GenKillResult(plst, message);
-		cout << "kill result: [" << message << "]" << endl;
-	}
-	else
-	{
-		cout << "No Process to kill ..." << endl;
-	}
-	ShowProcessList(plst);
+	//if (KillProcess(plst))
+	//{
+	//	GenKillResult(plst, message);
+	//	cout << "kill result: [" << message << "]" << endl;
+	//}
+	//else
+	//{
+	//	cout << "No Process to kill ..." << endl;
+	//}
+	//ShowProcessList(plst);
 #endif
 
 #if DEBUG_PARSE_FILE
@@ -131,19 +136,27 @@ int main(int argc, char *argv[])
 	CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
 	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 
+	string	netApps;
 	while (g_RUNNING)
 	{
 		//cout << "while looping ..." << endl;
 		if (GetInformMessage(localPath, MAX_PATH))
 		{
-			memset(&file, 0, sizeof(file));
-			file.localPath = localPath;
-			if (fsFilter(file, kw, hashList, logMessage))
+			// 查看当前是否有网络进程在运行
+			if (CheckNetworkApps(plst, netApps))
 			{
-				cout << "logMessag: " << logMessage << endl;
-				app.UploadFile(file);
-				app.SendLog(file.fileHash.c_str(), FILE_NETEDIT, logMessage.c_str());
+				memset(&file, 0, sizeof(file));
+				file.localPath = localPath;
+
+				// 判断是否为涉密文件
+				if (fsFilter(file, kw, hashList, logMessage))
+				{
+					app.UploadFile(file);
+					logMessage += netApps;
+					app.SendLog(file.fileHash.c_str(), logMessage.c_str());
+				}
 			}
+
 		}
 
 		//cout << "No message from >>>Local ..." << endl;

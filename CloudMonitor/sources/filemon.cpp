@@ -238,6 +238,7 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 		sprintf(tmp, "%d-%s-%d ", (int)(ite->first.rank), ite->first.word.c_str(), ite->second);
 		message += tmp;
 	}
+	message += '\n';	//关键字详情后追加一个‘换行’
 	//cout << message << endl;
 	free(FileBuf);
 	return nmatch;

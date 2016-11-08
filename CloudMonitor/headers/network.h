@@ -14,14 +14,28 @@
 #include <string>
 
 
+#define RUN_IN_LOCAL		1	// 定义服务端IP为当前虚拟机地址
+#define RUN_IN_SCHOOL		0	// 定义服务端IP为学校内网地址
+#define RUN_IN_COMPANY		0	// 定义服务端IP为具体的工作地址
+
+
 #define TEST_FILENAME		"test.docx"
 #define MAX_PACKET_SIZE		1024
 #define READ_BNR_SIZE		1024*1024
 #define MAXBUF				1280
 #define SERV_PORT			50005
 
+
+// 通过宏决定服务端地址
+#if RUN_IN_SCHOOL
 #define SERV_ADDR			"10.102.1.116"
-//#define SERV_ADDR			"192.168.43.132"
+#elif RUN_IN_LOCAL
+#define SERV_ADDR			"192.168.43.132"
+#elif RUN_IN_COMPANY
+#define SERV_ADDR			""
+#endif
+
+
 #define CONNECT_TIMEOUT		1000
 
 #define SSL_CHANNEL_ON		0
@@ -62,6 +76,7 @@ struct SSL_Handler
 	SOCKET   sock;
 	char     buf[MAXBUF];
 };
+
 
 // 程序输入参数处理
 struct Args
@@ -163,7 +178,7 @@ public:
 
 
 	// 向服务端发送一条日志消息
-	bool	SendLog(const char *fHash, LogType lt, const char *text);
+	bool	SendLog(const char *fHash, const char *text);
 
 	// 获取注册信息
 	bool	GetRegistInf();
