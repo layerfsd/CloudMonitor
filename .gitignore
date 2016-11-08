@@ -16,6 +16,14 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+test functions:
+CaptureMouse/
+Hook/
+MFCApplicat?/
+Unittest/
+WpfApplication*
+test*/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
