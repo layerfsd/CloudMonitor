@@ -487,13 +487,22 @@ BOOL GetProcessList();
 // ³ÌÐòÈë¿Ú
 int call();
 
+
+void testMemcmp()
+{
+	char str1[] = "hello";
+	char str2[] = "hello Albert";
+	cout << memcmp(str1, str2, strlen(str1)) << endl;
+	cout << strncmp(str1, str2, strlen(str2)) << endl;
+}
+
 int main()
 {
 	//testParseProcessSeq();
 	//testDoubleIfinFor();
 
 	InitTcp();  //tcp server listen on localhost:50006
-
+	//testMemcmp();
 
 	//GetProcessList();
 

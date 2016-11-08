@@ -11,20 +11,15 @@ void SignalHandler(int signal)
 {
 	printf("\nExciting...\n");
 	SetHookOff();
-	exit(signal);
+	//exit(signal);
 }
 
 int main()
 {
 	SignalHandlerPointer previousHandler;
 	previousHandler = signal(SIGINT, SignalHandler);
-
-	SetHookOn();
-	printf("HELO\n");
-	while (1)
-	{
-		Sleep(50);
-	}
-    return 0;
+	SetHookOn();	
+	printf("end\n");
+	return 0;
 }
 

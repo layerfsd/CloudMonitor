@@ -1,7 +1,7 @@
 #include "tools.h"
 #include <stdio.h>
-#include "NamePipe.h"
-
+#include <time.h>
+#include <windows.h>
 
 struct TASK
 {
@@ -16,24 +16,25 @@ struct TASK
 
 size_t gll_head = 0;
 size_t gll_tail = 0;
-TASK gll_queue[MAX_QUEUE_SIZE];
-memset(&g_queue, 0, sizeof(gll_queue));
+TASK gll_queue[MAX_QUEUE_SIZE] = {0};
+
+
+
+BOOL		KEEP_RUNNING = TRUE;
+BOOL		isConnectionOK = FALSE;
+SOCKET      GLOBAL_SOCKET = { 0 };
 
 #pragma data_seg()
 #pragma comment(linker,"/SECTION:GV_ALBERT_QUEUE,RWS")
 
 
+#define SEM_NAME	"ALBERT_SYNC"
 #define SERV_ADDR  "127.0.0.1"
 #define SERV_PORT	50006
 #define SLEEP_TIME	3 * 1000
 
-SOCKET    GLOBAL_SOCKET;
-BOOL	  isConnectionOK = FALSE;
-
-
 
 #pragma comment(lib,"ws2_32.lib")		// 建立socket()套接字
-
 
 //BOOL SetCache(LPCSTR lpFilePath);
 //BOOL GetCache(char* lpBuf, size_t bufSize);
@@ -120,27 +121,90 @@ VOID TellBackend(const char* lPath, int length)
 	return;
 }
 
-BOOL GetTask(LPCSTR lpFilePath, DWORD* dwSize)
+BOOL GetTask(CHAR* lpFilePath, DWORD* dwSize)
 {
-	if (gll_head == (gll_tail + 1) % MAX_QUEUE_SIZE)
+	static HANDLE semhd = OpenSemaphore(SEMAPHORE_MODIFY_STATE, FALSE, SEM_NAME);
+
+	if (NULL == semhd)
 	{
-		return
+		printf("OpenSemaphore Error.");
+		return FALSE;
 	}
 
-	*dwSize = gll_queue[gll_head].len;
-	memcpy(lpFilePath, gll_queue[gll_head].path, gll_queue[gll_head].len);
-	gll_head = (gll_head + 1) % MAX_QUEUE_SIZE;
+	BOOL bRet = FALSE;
+	// acquire lock: gll_tail
 
-	return;
+	//printf("------------->>>WaitForSingleObject\n");
+	WaitForSingleObject(semhd, INFINITE);
+	if (gll_head == gll_tail)
+	{
+		// printf("<<<-------------ReleaseSemaphore\n");
+		ReleaseSemaphore(semhd, 1, NULL);
+		// release lock: gll_tail
+		return bRet;
+	}
+	ReleaseSemaphore(semhd, 1, NULL);
+	//printf("<<<-------------ReleaseSemaphore\n");
+
+	TASK cur, nxt;
+	DWORD nxtPos = 0;
+
+	//printf("IN FOR\n");
+	for ( ; gll_head != gll_tail; )
+	{
+		memset(&cur, 0, sizeof(TASK));
+		memset(&nxt, 0, sizeof(TASK));
+
+		nxtPos = (gll_head + 1) % MAX_QUEUE_SIZE;
+
+		cur = gll_queue[gll_head];
+		nxt = gll_queue[nxtPos];
+		gll_head = nxtPos;
+
+		//printf("head: %d next: %d tail: %d len:%d\n", gll_head, nxtPos, gll_tail, cur.len);
+		// this == last
+		if ( (cur.len == nxt.len) && !memcmp(cur.path, nxt.path, cur.len) )
+		{
+			continue;
+		}
+		else
+		{
+			bRet = TRUE;
+			break;
+		}
+	}
+	// printf("OUT FOR\n");
+	if (bRet)
+	{
+		*dwSize = cur.len;
+		strncpy(lpFilePath, cur.path, cur.len);
+		gll_head = nxtPos;
+		//MessageBox(NULL, lpFilePath, "Release SEM", MB_OK);
+	}
+
+
+	return bRet;
 }
 
-VOID AddTask(LPCSTR lpFilePath, DWORD dwSize)
+VOID AddTask(CONST CHAR* lpFilePath, DWORD dwSize)
 {
-	// 队列已满
-	if (gll_head == (gll_tail + 1) % MAX_QUEUE_SIZE)
+	static HANDLE semhd = OpenSemaphore(SEMAPHORE_MODIFY_STATE, FALSE, SEM_NAME);
+
+	if (NULL == semhd)
 	{
+		printf("OpenSemaphore Error.");
 		return;
 	}
+
+	// 队列已满
+	WaitForSingleObject(semhd, INFINITE);
+	if (gll_head == (gll_tail + 1) % MAX_QUEUE_SIZE)
+	{
+		ReleaseSemaphore(semhd, 1, NULL);
+		return;
+	}
+	ReleaseSemaphore(semhd, 1, NULL);
+
 	// 字符串长度非法
 	if (dwSize <= 0)
 	{
@@ -156,8 +220,14 @@ VOID AddTask(LPCSTR lpFilePath, DWORD dwSize)
 	tTask.status = TRUE;
 
 	// acquire lock: gll_tail
+	WaitForSingleObject(semhd, INFINITE);
+
 	gll_queue[gll_tail] = tTask;
 	gll_tail = (gll_tail + 1) % MAX_QUEUE_SIZE;
+	
+	ReleaseSemaphore(semhd, 1, NULL);
+	//MessageBox(NULL, lpFilePath, "Tell Backend", MB_OK);
+
 	// release lock: gll_tail
 	return;
 }
@@ -211,7 +281,8 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 			//SetCache(lpFilePath);
 			int length = strnlen(lpFilePath, MAX_PATH);
 			//MessageBox(NULL, lpFilePath, "Tell Backend", MB_OK);
-			TellBackend(lpFilePath, length);
+			//TellBackend(lpFilePath, length);
+			AddTask(lpFilePath, length);
 			break;
 		}
 	}
@@ -243,40 +314,66 @@ BOOL GetCache(char* lpBuf, size_t bufSize)
 	return FALSE;
 }
 
+#endif
+
+
 // 向后台程序发送一条信息
 VOID SendMsg2Backend()
 {
-	char tPath[MAX_PATH] = "HELLO";
-	CHAR  tmpBuf[MAX_PATH];
-	int length;
+	char	tPath[MAX_PATH];
+	CHAR	tmpBuf[MAX_PATH];
+	DWORD  length;
 
+	HANDLE hd = CreateSemaphore(NULL, 1, 1, SEM_NAME);
 
-	while (1)
+	if (NULL == hd)
 	{
-	_RESTART:
-		Sleep(SLEEP_TIME);
+		printf("Create [%s] failed.\n", SEM_NAME);
+		return;
+	}
 
+	while (KEEP_RUNNING)
+	{
+		Sleep(SLEEP_TIME);
+		//printf("isConnectionOK: %d\n", isConnectionOK);
 		if (!InitTcpConnection())
 		{
 			printf("[ERROR] Not Connected to %s:%d\n", SERV_ADDR, SERV_PORT);
 			isConnectionOK = FALSE;
-			goto _RESTART;
+			continue;
 		}
 
-		if (GetCache(tPath, MAX_PATH))
+		//if (GetCache(tPath, MAX_PATH))
+
+		length = 0;
+		memset(tPath, 0, sizeof(tPath));
+		
+		if (GetTask(tPath, &length))
 		{
-			length = strnlen(tPath, MAX_PATH);
-			MessageBox(NULL, tPath, "Tell Backend", MB_OK);
-			if (send(GLOBAL_SOCKET, tPath, length, 0) <= 0)
+			//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
+			printf("[%d] %s\n", length, tPath);
+			int sent = send(GLOBAL_SOCKET, tPath, length, 0);
+			if (sent <= 0)		
 			{
-				isConnectionOK = FALSE;
-				goto _RESTART;
+				// 如果发送失败,跳过下面代码
+				if (sent < 0)  // TCP连接失效
+				{
+					isConnectionOK = FALSE;
+				}
+				continue;
 			}
 			else
 			{
 				recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
 			}
 		}
+	}// end while
+
+	if (NULL != hd)
+	{
+		printf("Closing Semaphore ...\n");
+		printf("bye-bye\n");
+		CloseHandle(hd);
 	}
 	return;
 }
@@ -289,6 +386,3 @@ DWORD WINAPI ThreadProc(LPVOID lpParam)
 	SendMsg2Backend();
 	return 0;
 }
-
-
-#endif

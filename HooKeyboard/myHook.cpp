@@ -39,15 +39,20 @@ LRESULT CALLBACK GetMsgProc(int code, WPARAM wParam, LPARAM lParam)
 VOID SetHookOn()
 {
 	//g_hHook = SetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, g_hInst, 0);
+	HANDLE hThrd = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,发送敏感事件
 	g_hHook = SetWindowsHookEx(WH_CBT, GetMsgProc, g_hInst, 0);
-	//CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,发送敏感事件
+	WaitForSingleObject(hThrd, INFINITE);
 }
 
+extern BOOL KEEP_RUNNING;
 VOID SetHookOff()
 {
 	// 卸载钩子
 	UnhookWindowsHookEx(g_hHook);
 	g_hHook = NULL;
+	printf("KEEP_RUNNING %d:\n", KEEP_RUNNING);
+	KEEP_RUNNING = FALSE;
+	printf("KEEP_RUNNING %d:\n", KEEP_RUNNING);
 }
 
 
