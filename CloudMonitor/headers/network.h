@@ -14,12 +14,28 @@
 #include <string>
 
 
+#define RUN_IN_LOCAL		1	// 定义服务端IP为当前虚拟机地址
+#define RUN_IN_SCHOOL		0	// 定义服务端IP为学校内网地址
+#define RUN_IN_COMPANY		0	// 定义服务端IP为具体的工作地址
+
+
 #define TEST_FILENAME		"test.docx"
 #define MAX_PACKET_SIZE		1024
 #define READ_BNR_SIZE		1024*1024
 #define MAXBUF				1280
 #define SERV_PORT			50005
+
+
+// 通过宏决定服务端地址
+#if RUN_IN_SCHOOL
+#define SERV_ADDR			"10.102.1.116"
+#elif RUN_IN_LOCAL
 #define SERV_ADDR			"192.168.43.132"
+#elif RUN_IN_COMPANY
+#define SERV_ADDR			""
+#endif
+
+
 #define CONNECT_TIMEOUT		1000
 
 #define SSL_CHANNEL_ON		0
@@ -33,6 +49,9 @@
 #define MAC_SIZE			20
 #define IP_SIZE				16
 #define MAX_RETRY_TINE		5
+
+#define	LOOP_SLEEP_TIME		500 // 休眠 500 毫秒
+#define HEART_BEAT_TIME		30  //定义心跳时间(秒)
 
 #define CMD_SIZE			3
 #define	HEAD_SIZE			7
@@ -59,6 +78,7 @@ struct SSL_Handler
 };
 
 
+// 程序输入参数处理
 struct Args
 {
 	char servIP[32];
@@ -66,12 +86,34 @@ struct Args
 	int  servPort;
 };
 
-
+// 通信结构体
 struct HeadPacket
 {
 	char	cmd[CMD_SIZE+1];
 	char	text[MAXBUF];
 };
+
+#define CTL_CONTROL_PLEN  3		// 规定远控命令为三个字节的字符
+
+typedef bool(*ProcessFunc)(string& logMsg, string& args);
+
+
+enum ProcessResult
+{
+	FINISHED = 1,
+	FAILED
+};
+// 远程控制结构体
+struct RemoteControl
+{
+	bool		notExecuted;					// 指令是否执行过了
+	size_t		time;							// 等待多少秒之后执行,默认立即执行
+	char		ctlTxt[CTL_CONTROL_PLEN+1];		// 指令简写
+	string		ctlDetails;						// 参数
+	ProcessFunc func;							// 指令处理函数
+};
+
+
 
 /*
 实现与服务端交互的 -- 开始
@@ -87,7 +129,22 @@ struct HeadPacket
 class User
 {
 public:
+
 	User(const char *userName);
+
+	~User()
+	{
+		this->EndSession();
+	}
+
+	bool isEndSession();
+
+
+	// 接收服务端远程控制指令
+	bool GetFromServer();
+
+	// 执行远程控制指令
+	bool ExecControl();
 
 	// 输出命令类型及数据内容
 	void	ShowCmdDetail()
@@ -121,13 +178,15 @@ public:
 
 
 	// 向服务端发送一条日志消息
-	bool	SendLog(const char *pureName, LogType lt, const char *text);
+	bool	SendLog(const char *fHash, const char *text);
 
 	// 获取注册信息
 	bool	GetRegistInf();
 
+	// 终止会话
 	bool	EndSession();
 
+	// 为保证连接稳定,客户端定时向服务端发送一个`心跳包`
 	bool	HeartBeat();
 	
 private:
@@ -139,6 +198,9 @@ private:
 	string		workDir;
 	char		tmpBuf[MAXBUF];
 	int			statu;
+
+	// 远程控制任务列表
+	vector<RemoteControl> taskList;
 };
 
 

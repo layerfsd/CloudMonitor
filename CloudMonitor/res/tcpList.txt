@@ -1,0 +1,242 @@
+ftp-data                        20 
+ftp                             21 
+ssh                             22 # SSH Remote Login Protocol
+telnet                          23 
+smtp                            25 
+whois                           43 
+tacacs                          49 # Login Host Protocol (TACACS)
+re-mail-ck                      50 # Remote Mail Checking Protocol
+domain                          53 # Domain Name Server
+mtp                             57 # deprecated
+tacacs-ds                       65 # TACACS-Database Service
+bootps                          67 # BOOTP server
+bootpc                          68 # BOOTP client
+gopher                          70 # Internet Gopher
+rje                             77 
+finger                          79 
+http                            80 # WorldWideWeb HTTP
+link                            87 
+kerberos                        88 # Kerberos v5
+supdup                          95 
+hostnames                       101 # usually from sri-nic
+iso-tsap                        102 # part of ISODE
+acr-nema                        104 # Digital Imag. & Comm. 300
+csnet-ns                        105 # also used by CSO name server
+rtelnet                         107 # Remote Telnet
+pop2                            109 # POP version 2
+pop3                            110 # POP version 3
+sunrpc                          111 # RPC 4.0 portmapper
+auth                            113 
+sftp                            115 
+netbios-ns                      137 # NETBIOS Name Service
+netbios-dgm                     138 # NETBIOS Datagram Service
+netbios-ssn                     139 # NETBIOS session service
+imap2                           143 # Interim Mail Access P 2 and 4
+snmp                            161 # Simple Net Mgmt Protocol
+snmp-trap                       162 # Traps for SNMP
+cmip-man                        163 # ISO mgmt over IP (CMOT)
+cmip-agent                      164 
+mailq                           174 # Mailer transport queue for Zmailer
+xdmcp                           177 # X Display Mgr. Control Proto
+nextstep                        178 # NeXTStep window
+bgp                             179 # Border Gateway Protocol
+prospero                        191 # Cliff Neuman's Prospero
+irc                             194 # Internet Relay Chat
+smux                            199 # SNMP Unix Multiplexer
+at-rtmp                         201 # AppleTalk routing
+at-nbp                          202 # AppleTalk name binding
+at-echo                         204 # AppleTalk echo
+at-zis                          206 # AppleTalk zone information
+qmtp                            209 # Quick Mail Transfer Protocol
+z3950                           210 # NISO Z39.50 database
+ipx                             213 # IPX
+imap3                           220 # Interactive Mail Access
+pawserv                         345 # Perf Analysis Workbench
+zserv                           346 # Zebra server
+fatserv                         347 # Fatmen Server
+rpc2portmap                     369 
+codaauth2                       370 
+clearcase                       371 
+ulistserv                       372 # UNIX Listserv
+ldap                            389 # Lightweight Directory Access Protocol
+imsp                            406 # Interactive Mail Support Protocol
+svrloc                          427 # Server Location
+https                           443 # http protocol over TLSSSL
+snpp                            444 # Simple Network Paging Protocol
+microsoft-ds                    445 # Microsoft Naked CIFS
+kpasswd                         464 
+urd                             465 # URL Rendesvous Directory for SSM
+saft                            487 # Simple Asynchronous File Transfer
+isakmp                          500 # IPsec - Internet Security Association
+rtsp                            554 # Real Time Stream Control Protocol
+nqs                             607 # Network Queuing system
+npmp-local                      610 # npmp-local  DQS
+npmp-gui                        611 # npmp-gui  DQS
+hmmp-ind                        612 # HMMP Indication  DQS
+qmqp                            628 
+ipp                             631 # Internet Printing Protocol
+webster                         765 # Network dictionary
+rsync                           873 
+ftps-data                       989 # FTP over SSL (data)
+ftps                            990 
+telnets                         992 # Telnet over SSL
+imaps                           993 # IMAP over SSL
+ircs                            994 # IRC over SSL
+pop3s                           995 # POP-3 over SSL
+socks                           1080 # socks proxy server
+openvpn                         1194 
+rmiregistry                     1099 # Java RMI Registry
+nessus                          1241 # Nessus vulnerability
+ms-sql-s                        1433 # Microsoft SQL Server
+ms-sql-m                        1434 # Microsoft SQL Monitor
+prospero-np                     1525 # Prospero non-privileged
+radius-acct                     1813 # Radius Accounting
+msnp                            1863 # MSN Messenger
+unix-status                     1957 # remstats unix-status server
+log-server                      1958 # remstats log server
+remoteping                      1959 # remstats remoteping server
+nfs                             2049 # Network File System
+rtcm-sc104                      2101 # RTCM SC-104 IANA 12999
+cvspserver                      2401 # CVS clientserver operations
+venus                           2430 # codacon port
+gds-db                          3050 # InterBase server
+icpv2                           3130 # Internet Cache Protocol
+mysql                           3306 
+nut                             3493 # Network UPS Tools
+distcc                          3632 # distributed compiler
+daap                            3689 # Digital Audio Access Protocol
+svn                             3690 # Subversion protocol
+suucp                           4031 # UUCP over SSL
+sysrqd                          4094 # sysrq daemon
+sieve                           4190 # ManageSieve Protocol
+epmd                            4369 # Erlang Port Mapper Daemon
+remctl                          4373 # Remote Authenticated Command Service
+f5-iquery                       4353 # F5 iQuery
+iax                             4569 # Inter-Asterisk eXchange
+mtn                             4691 # monotone Netsync Protocol
+radmin-port                     4899 # RAdmin Port
+sip                             5060 # Session Initiation Protocol
+aol                             5190 # AIM
+xmpp-client                     5222 # Jabber Client Connection
+xmpp-server                     5269 # Jabber Server Connection
+cfengine                        5308 
+mdns                            5353 # Multicast DNS
+postgresql                      5432 # PostgreSQL Database
+freeciv                         5556 # Freeciv gameplay
+amqps                           5671 # AMQP protocol over TLSSSL
+amqp                            5672 
+ggz                             5688 # GGZ Gaming Zone
+x11                             6000 # X Window System
+x11-1                           6001 
+x11-2                           6002 
+x11-3                           6003 
+x11-4                           6004 
+x11-5                           6005 
+x11-6                           6006 
+x11-7                           6007 
+gnutella-svc                    6346 # gnutella
+gnutella-rtr                    6347 # gnutella
+sge-qmaster                     6444 # Grid Engine Qmaster Service
+sge-execd                       6445 # Grid Engine Execution Service
+mysql-proxy                     6446 # MySQL Proxy
+afs3-fileserver                 7000 # file server itself
+afs3-callback                   7001 # callbacks to cache managers
+afs3-prserver                   7002 # users & groups database
+afs3-vlserver                   7003 # volume location database
+afs3-kaserver                   7004 # AFSKerberos authentication
+afs3-volser                     7005 # volume managment server
+afs3-errors                     7006 # error interpretation service
+afs3-bos                        7007 # basic overseer process
+afs3-update                     7008 # server-to-server updater
+afs3-rmtsys                     7009 # remote cache manager service
+font-service                    7100 # X Font Service
+http-alt                        8080 # WWW caching service
+bacula-dir                      9101 # Bacula Director
+bacula-fd                       9102 # Bacula File Daemon
+bacula-sd                       9103 # Bacula Storage Daemon
+xmms2                           9667 # Cross-platform Music Multiplexing System
+nbd                             10809 # Linux Network Block Device
+zabbix-agent                    10050 # Zabbix Agent
+zabbix-trapper                  10051 # Zabbix Trapper
+amanda                          10080 # amanda backup servicesdicom 
+hkp                             11371 # OpenPGP HTTP Keyserver
+bprd                            13720 # VERITAS NetBackup
+bpdbm                           13721 # VERITAS NetBackup
+bpjava-msvc                     13722 # BP Java MSVC Protocol
+vnetd                           13724 # Veritas Network Utility
+bpcd                            13782 # VERITAS NetBackup
+vopied                          13783 # VERITAS NetBackup
+db-lsp                          17500 # Dropbox LanSync Protocol
+dcap                            22125 # dCache Access Protocol
+gsidcap                         22128 # GSI dCache Access Protocol
+wnn6                            22273 # wnn6
+krb-prop                        754 # Kerberos slave propagation
+krbupdate                       760 # Kerberos registration
+swat                            901 # swat
+kpop                            1109 # Pop with Kerberos
+knetd                           2053 # Kerberos de-multiplexor
+eklogin                         2105 # Kerberos encrypted rlogin
+supfilesrv                      871 # SUP server
+moira-db                        775 # Moira database
+moira-update                    777 # Moira update protocol
+spamd                           783 # spamassassin daemon
+omirr                           808 # online mirror
+customs                         1001 # pmake customs server
+skkserv                         1178 # skk jisho server port
+rmtcfg                          1236 # Gracilis Packeten remote config server
+wipld                           1300 # Wipl network monitor
+xtel                            1313 # french minitel
+xtelw                           1314 # french minitel
+support                         1529 # GNATS
+cfinger                         2003 # GNU Finger
+frox                            2121 # frox: caching ftp proxy
+ninstall                        2150 # ninstall service
+zebrasrv                        2600 # zebra service
+zebra                           2601 # zebra vty
+ripd                            2602 # ripd vty (zebra)
+ripngd                          2603 # ripngd vty (zebra)
+ospfd                           2604 # ospfd vty (zebra)
+bgpd                            2605 # bgpd vty (zebra)
+ospf6d                          2606 # ospf6d vty (zebra)
+ospfapi                         2607 # OSPF-API
+isisd                           2608 # ISISd vty (zebra)
+afbackup                        2988 # Afbackup system
+afmbackup                       2989 # Afmbackup system
+xtell                           4224 # xtell server
+fax                             4557 # FAX transmission service (old)
+hylafax                         4559 # HylaFAX client-server protocol (new)
+distmp3                         4600 # distmp3host daemon
+munin                           4949 # Munin
+enbd-cstatd                     5051 # ENBD client statd
+enbd-sstatd                     5052 # ENBD server statd
+pcrd                            5151 # PCR-1000 Daemon
+noclog                          5354 # noclogd with TCP (nocol)
+hostmon                         5355 # hostmon uses TCP (nocol)
+nrpe                            5666 # Nagios Remote Plugin Executor
+nsca                            5667 # Nagios Agent - NSCA
+mrtd                            5674 # MRT Routing Daemon
+bgpsim                          5675 # MRT Routing Simulator
+canna                           5680 # cannaserver
+syslog-tls                      6514 # Syslog over TLS [RFC5425]
+sane-port                       6566 # SANE network scanner daemon
+ircd                            6667 # Internet Relay Chat
+zope-ftp                        8021 # zope management by ftp
+tproxy                          8081 # Transparent Proxy
+omniorb                         8088 # OmniORB
+clc-build-daemon                8990 # Common lisp build daemon
+git                             9418 # Git Version Control System
+zope                            9673 # zope server
+kamanda                         10081 # amanda backup services (Kerberos)
+amandaidx                       10082 # amanda backup services
+amidxtape                       10083 # amanda backup services
+smsqp                           11201 # Alamin SMS gateway
+xpilot                          15345 # XPilot Contact Port
+sgi-cad                         17004 # Cluster Admin daemon
+isdnlog                         20011 # isdn logging system
+vboxd                           20012 # voice box system
+binkp                           24554 # binkp fidonet protocol
+asp                             27374 # Address Search Protocol
+csync2                          30865 # cluster synchronization tool
+dircproxy                       57000 # Detachable IRC Proxy
+tfido                           60177 # fidonet EMSI over telnet
+fido                            60179 # fidonet EMSI over TCP

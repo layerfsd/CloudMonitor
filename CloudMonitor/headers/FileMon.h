@@ -36,13 +36,6 @@
 
 using namespace std;
 
-
-enum LogType
-{
-	FILE_COPY2USB = 1,
-	FILE_NETEDIT,
-};
-
 struct HashItem
 {
 	char  path[_MAX_PATH];		//路径
@@ -86,6 +79,7 @@ struct SFile
 	// 后期还将支持 .rtf .cls .pdf ...
 	string fileName;		// 原始文件名称	 eg: 财务报表.doc
 	string localPath;		// 文件本地路径  eg: C:\Users\王老五\Desktop\账务信息\财务报表.doc
+	string savedPath;		//原始文件临时保存路径  TMP\\财务报表.doc
 	string fileHash;		// 原始文件哈希 (固定长度,32 bytes)
 	size_t fileSize;		// 原始文件的大小 
 
@@ -96,6 +90,7 @@ struct SFile
 	size_t txtSize;
 
 	// 传送文件至服务器时,先将原始文件压缩再上传
+	string encSrc;			// 测试发现,openssl 不支持gbk格式的文件路径
 	string encName;			// 原始文件加密后的名称				eg: 财务报表.doc.aes
 	string encPath;			// 原始文件加密后存放的本地路径		eg: C:\Users\王老五\TMP\财务报表.doc.aes
 	string encPasswd;		// 针对原始文件加密后所用的随机密码 (密码长度: 8-32 bytes)
@@ -144,5 +139,10 @@ void DumpByte(const char *str);
 // http://blog.csdn.net/chenjiayi_yun/article/details/45603773
 // c++字符串编码GBK到UTF8的转换
 string GBKToUTF8(const char* strGBK);
+
+
+
+// 判断文件类型，决定是否要扫描该文件
+bool isContinue(const char* lPath, int length);
 
 #endif // _FILEMON_H__

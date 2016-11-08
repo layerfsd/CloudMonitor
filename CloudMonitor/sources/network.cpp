@@ -1,5 +1,9 @@
 #include "network.h"
 #include "FileMon.h"
+#include "process.h"  // 远程控制接口函数声明
+
+#include <queue>
+
 
 static SSL_Handler hdl = { 0 };
 static SOCKET GLOBALclntSock;
@@ -7,9 +11,24 @@ static SOCKET GLOBALclntSock;
 static HANDLE  hNamedPipe;
 static bool    Accept = false;
 
+//  创建一个队列,用来缓存 路径列表
+static queue<string> LocalPathList;
+
+// 根据心跳间隔时间和每次休眠时间
+// 计算出客户端发送一次`心跳` 的循环次数
+static int	   SLEEP_TIMES_PER_HBT = (1000 / LOOP_SLEEP_TIME) * HEART_BEAT_TIME;
 
 namespace session
 {
+	// 定义控制编码对应的处理函数
+	struct FuncList
+	{
+		int			ctl;			// 控制编码
+		ProcessFunc func;			// 控制函数:typedef bool(*ProcessFunc)(string& logMsg, string& args);
+		char	    funcDesc[32];   // 控制函数描述
+	};
+
+
 	const char*		AuthString		= "WHO ARE YOU";
 	const char*		CMD_LOG			= "LOG";
 	const char*		CMD_ATH			= "ATH";
@@ -19,6 +38,36 @@ namespace session
 	const char*		CMD_UPD			= "UPD";
 	const char*		CMD_BGN			= "BEGIN";
 	const char*     CMD_HBT			= "HBT";
+
+	// 定义远程控制的包头为 `CTL`
+	const char*     CMD_CONTROL = "CTL";
+
+	//命令返回类型:成功/失败
+	const char*     CTL_RPL_OK		= "COK";
+	const char*		CTL_RPL_FAILED  = "CNO";
+
+	const char*		CTL_INVALID_TEXT = "INVALID INSTRUCTIONS";
+
+	const char*     CTL_END_SESSION  = "000";
+	const char*     CTL_PROCESS_LIST = "001";
+	const char*     CTL_KILL_PROCESS = "002";
+
+	FuncList funcList[] =
+	{
+		{0, NULL},
+		{1, RemoteGetProcessList, "GetProcessList" },
+		{2, RemoteKillProcess, "KillProcess" }
+	};
+	// 定义远程控制接口数量
+	const int	    CTL_SUPPORT_NUM = sizeof(funcList) / sizeof(funcList[0]);
+
+	//static RemoteControl ctlPac[] =
+	//{
+	//	{0, CTL_PROCESS_LIST, NULL}, // get process list
+	//	{0, CTL_END_SESSION, NULL}  // end session
+	//};
+
+
 
 	const char*		FILE_KEEP_DIR	= "DATA\\";
 	const char*		INVALID_ACCOUNT = "INVALID";
@@ -38,6 +87,7 @@ namespace session
 
 	const int		authStrLen		    = strlen(AuthString);
 	const int		CMD_BGN_LEN		    = strlen(CMD_BGN);
+	const int		CMD_CONTROL_LEN		= strlen(CMD_CONTROL);
 
 };
 
@@ -249,6 +299,90 @@ inline int n2hi(int num)
 }
 
 
+bool User::isEndSession()
+{
+	return STATUE_DISCONNECTED == statu;
+}
+
+
+bool User::GetFromServer()
+{
+
+	static	FD_SET fdRead;
+	int		nRet = 0;//记录发送或者接受的字节数
+	static TIMEVAL	tv = { 0, 500 };//设置超时等待时间
+
+
+	if (STATUE_DISCONNECTED == this->statu)
+	{
+		//cout << "[Error] Disconnected to Server!\n" << endl;
+		return false;
+	}
+
+
+	FD_ZERO(&fdRead);
+	FD_SET(hdl.sock, &fdRead);
+
+
+
+	//只处理read事件，不过后面还是会有读写消息发送的
+	nRet = select(0, &fdRead, NULL, NULL, &tv);
+
+	if (nRet == 0)
+	{//没有连接或者没有读事件
+		return false;
+	}
+
+	//nRet = send(sockfd, buf, nRet, 0);
+
+	if (nRet > 0)
+	{
+		return this->GetReplyInfo();
+	}
+
+	return false;
+}
+
+bool User::ExecControl()
+{
+	bool execStatus = false;
+	
+	if (this->taskList.size() <= 0)
+	{
+		//std::cout << "Empty taskList ..." << endl;
+		return false;
+	}
+
+	// 遍历任务队列
+	for (size_t i = 0; i < this->taskList.size(); i++)
+	{
+		//if
+		if (this->taskList[i].notExecuted && 0 == this->taskList[i].time) // 如果任务尚未执行,则检查控制指令是否要求立即执行
+		{
+			/*  纠结于任务执行结束后,对任务队列采取的处理方式:
+			*		1. 从任务队列中删除该任务
+			*		2. 不删除该任务,仅标记该任务已成功执行
+			*   起初选择方式1,后考虑到审计功能,采用方式2
+			*   这样可以支持服务器查找对应主机的任务执行状况
+			*/
+			execStatus = this->taskList[i].func(this->message, taskList[i].ctlDetails);		// 传送User类中的message引用给远程处理函数,远程处理函数产生的处理结果存储在 message 中
+			if (execStatus)
+			{
+				this->SendInfo(CTL_RPL_OK, message.c_str());							// 任务成功执行,通知服务端处理结果 
+			}
+			else
+			{
+				this->SendInfo(CTL_RPL_FAILED, message.c_str());						// 任务执行失败,也通知服务端处理结果 
+			}
+			this->taskList[i].notExecuted = false;								 // 任务执行后,标记任务`未执行状态`为假
+			break;
+		//end if
+		}
+	//end for
+	}
+	return execStatus;
+}
+
 User::User(const char *userName)
 {
 	this->statu = STATUE_DISCONNECTED;
@@ -276,19 +410,26 @@ User::User(const char *userName)
 		}
 	}
 	strncpy(this->userName, userName, MAX_USERNAME);
-	cout << "workdir: " << workDir << endl;
+	//cout << "workdir: " << workDir << endl;
+
+	if (0 != InitSSL(SERV_ADDR, SERV_PORT))
+	{
+		exit(3);
+	}
+
 }
 
 
 bool User::GetReplyInfo()
 {
+	RemoteControl tmpTask;
 	char buf[HEAD_SIZE] = { 0 };
 	int	 reveivedSize = 0;
 	int  restPktSize = 0;
 
 	if (STATUE_DISCONNECTED == this->statu)
 	{
-		cout << "[Error] Disconnected to Server!\n" << endl;
+		//cout << "[Error] Disconnected to Server!\n" << endl;
 		return false;
 	}
 
@@ -304,14 +445,58 @@ bool User::GetReplyInfo()
 
 	if (reveivedSize != HEAD_SIZE)
 	{
-		cout << "Receiving Failed!\n" << endl;
+		std::cout << "Receiving Failed!\n" << endl;
+		this->statu = STATUE_DISCONNECTED;
 		return false;
 	}
 	//printf("restPktSize: %d\n", restPktSize);
 	SSL_read(hdl.ssl, pkt.text, restPktSize);
 
 
-	ShowCmdDetail();
+	// 判断指令类型: 是否为"远程控制"
+	if (!strncmp(pkt.cmd, CMD_CONTROL, CMD_CONTROL_LEN)) // 如果收到了一条远程控制指令
+	{
+		pkt.text[CTL_CONTROL_PLEN] = 0;
+		// 指令找到对应的处理函数
+		int instructionCode = atoi(pkt.text);
+
+		// 判断指令编码是否支持
+		if ((instructionCode >= 0) && (instructionCode < CTL_SUPPORT_NUM))
+		{
+			memset(&tmpTask, 0, sizeof(tmpTask));				  // 初始化远程控制指令结构体	
+			strncpy(tmpTask.ctlTxt, pkt.text, CTL_CONTROL_PLEN);  // 解析服务端发送的指令编号
+			tmpTask.ctlDetails = pkt.text + CTL_CONTROL_PLEN + 1;	  // 解析服务端发送的指令对应的指令参数
+			//cout << "details: [" << tmpTask.ctlDetails << "]" << endl;
+			tmpTask.time = 0;									  // 默认所有任务都是立即执行,不等待
+			tmpTask.notExecuted = true;							  // 设定任务的`未执行`状态为真
+
+			if (0 == instructionCode)							// 如果服户端要求断开连接,则直接处理
+			{
+				this->ShowCmdDetail();							// 输出服务端指令
+				this->statu = STATUE_DISCONNECTED;				// 设置当前会话状态为: 断开连接
+				return true;
+			}
+			tmpTask.func = funcList[instructionCode].func;		// 为每一个任务选择对应的处理过程
+			this->taskList.push_back(tmpTask);					// 将远程控制任务加入本地任务队列
+
+			cout << "Get new task: {" << endl
+				<< "\ttime: " << tmpTask.time << endl
+				<< "\tnotExecuted: " << tmpTask.notExecuted << endl
+				<< "\tinstructionCode: " << instructionCode << endl
+				<< "\tfunc at: " << tmpTask.func << endl
+				<< "\tfuncDesc: " << funcList[instructionCode].funcDesc << endl;
+			cout << "}" << endl;
+			
+		}
+		else // 如果远程控制编码不支持,则通知服务端此条控制信息为非法指令
+		{
+			std::cout << "!!! " << CTL_INVALID_TEXT << endl;
+			this->SendInfo(CMD_RPL, CTL_INVALID_TEXT);
+		}
+
+	}
+
+	this->ShowCmdDetail();
 
 	return true;
 }
@@ -438,38 +623,49 @@ bool User::Authentication()
 }
 
 
-bool User::SendLog(const char* pureName, LogType lt, const char* text)
+bool User::SendLog(const char* fHash, const char* text)
 {
 	time_t t = time(0);   // get time now
 	struct tm* now = localtime(&t);
 	char   tmp[MAX_LOG_SIZE];
 
-	// 一次性获取时间
-	// 并且将日志类型及敏感文件的文件名拼入同一块缓存
-	sprintf(tmp, "%d-%02d-%02d %02d:%02d\n%d %s",
+	// 获取时间
+	// 将时间和文件哈希拼入同一块缓存
+	sprintf(tmp, "%d-%02d-%02d %02d:%02d\n%s\n",
 		now->tm_year + 1900,
 		now->tm_mon + 1,
 		now->tm_mday,
 		now->tm_hour,
 		now->tm_min,
-		lt,
-		pureName);
+		fHash);
 
 
 	// 构造日志
-	this->message = tmp;
-	this->message += text;
+	this->message = tmp;	
+	this->message += text;	// 追加 (关键字信息+日志详情)
 
 	return this->SendInfo(CMD_LOG, this->message.c_str());
 }
 
 
+bool User::GetRegistInf()
+{
+	return false;
+}
+
 bool User::EndSession()
 {
 	cout << "Disconnecting from Server...\n" << endl;
-	
+	if (this->isEndSession())
+	{
+		cout << "Before I say Good-Bye to Server" << endl;
+		cout << "Server Already Disconnected from me ...\n" << endl;
+		EndSSL();
+		return true;
+	}
 	this->SendInfo(CMD_END, "Bye-bye.");
 	this->statu = STATUE_DISCONNECTED;
+	EndSSL();
 
 	return true;
 }
@@ -578,9 +774,9 @@ bool User::UploadFile(SFile &file)
 		// 如果服务端已经存在当前文件了
 		return true;
 	}
-	
-	char fsize[16];
-	sprintf(fsize, "%d", file.encSize);
+	// 增加密码发送
+	char fsize[256];
+	sprintf(fsize, "%d %s", file.encSize, file.encPasswd.c_str());
 	this->SendInfo(CMD_RPL, fsize);
 
 	FILE *fp = NULL;
@@ -619,7 +815,20 @@ bool User::UploadFile(SFile &file)
 
 bool User::HeartBeat()
 {
-	return this->SendInfo(CMD_HBT, CMD_HBT);
+	static int count = 0;   // 设计一个静态计数器来控制心跳发送
+
+	if (count >= SLEEP_TIMES_PER_HBT)
+	{
+		count = 0;
+		return this->SendInfo(CMD_HBT, CMD_HBT);
+	}
+
+	//cout << "LOOP_SLEEP_TIME: " << count << endl;
+
+	count += 1;
+	Sleep(LOOP_SLEEP_TIME);
+
+	return true;
 }
 
 
@@ -761,22 +970,43 @@ int InitTcp()
 	}
 
 	len = sizeof(SOCKADDR_IN);
+	char tPath[MAX_PATH];
 
-	SOCKET clnt;
+RESTART_LISTEN:
 	while (1)
 	{
 		//waiting for connecting
-		if ((clnt = accept(serversoc, (SOCKADDR *)&clientaddr, &len)) <= 0)
+		if ((GLOBALclntSock = accept(serversoc, (SOCKADDR *)&clientaddr, &len)) <= 0)
 		{
 			printf("Accept fail!\n");
+			goto RESTART_LISTEN;
 		}
-		else
+
+		printf("Connected\n");
+		Accept = true;
+		while (Accept)
 		{
-			Accept = true;
-			GLOBALclntSock = clnt;
-			printf("Connected\n");
-		}
-	}
+			int ret = 0;
+
+			memset(tPath, 0, sizeof(tPath));
+			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);
+
+
+			if (ret > 0)		//仅当成功接收,才把信息加入缓冲队列
+			{
+				int sent = send(GLOBALclntSock, tPath, ret, 0);
+				cout << "sent: " << sent << "bytes" << endl;
+				string tmp = tPath;
+				LocalPathList.push(tPath);
+				cout << "Get: " << tPath << endl;
+			}
+			else
+			{
+				Accept = false;
+			}
+
+		}// inner while(Accept)
+	}// outter while(1)
 	return 0;
 
 }
@@ -789,31 +1019,11 @@ void FreeTcp()
 
 bool GetInformMessage(char *buf, size_t bufSize)
 {
-	int ret = 0;
-
-	//printf("GLOBALclntSock: %d\n", GLOBALclntSock);
-	if (Accept)
+	if (LocalPathList.size() > 0)
 	{
-		printf("Accept is true!\n");
-		printf("GLOBALclntSock: %d\n", GLOBALclntSock);
-
-		ret = recv(GLOBALclntSock, buf, MAXBUF, 0);
-		send(GLOBALclntSock, buf, MAXBUF, 0);
-
-		//printf("ret = %d buf: %s\n", ret, buf);
-
-		if (ret <= 0)
-		{
-			// closesocket(GLOBALclntSock);
-			memset(buf, 0, bufSize);
-			Accept = false;
-		}
-		else
-		{
-			buf[ret] = 0;
-			printf("get %s\n", buf);
-			return true;
-		}
+		strncpy(buf, LocalPathList.front().c_str(), bufSize);
+		LocalPathList.pop();
+		return true;
 	}
 
 	return false;
@@ -821,11 +1031,11 @@ bool GetInformMessage(char *buf, size_t bufSize)
 
 
 
+
 DWORD WINAPI ThreadProc(LPVOID lpParam)
 {
-	cout << "sub thread started\n" << endl;
+	//cout << "sub thread started\n" << endl;
 	//CreateNamedPipeInServer();
 	InitTcp();
-	Accept = true;
 	return 0;
 }
