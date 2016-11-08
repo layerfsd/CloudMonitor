@@ -1,16 +1,18 @@
 #pragma once
-#include <stdio.h>
-#include <memory.h>
-#include <time.h>
+
+#ifndef _ENCREPT_ALBERT__
+#define _ENCREPT_ALBERT__
+
+#define MAX_PASSWD_LEN 32
+#define AES_256_SIZE  256
+
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
-#define PLAIN_FILE_OPEN_ERROR -1
-#define KEY_FILE_OPEN_ERROR -2
-#define CIPHER_FILE_OPEN_ERROR -3
-#define OK 1
-
-typedef char ElemType;
+bool EncreptFile(const char* oriFileName, const char* encFileName, const char* passwd);
 
 
-int ISD_DES_Encrypt(char *plainFile, char *keyStr, char *cipherFile);
-int ISD_DES_Decrypt(char *cipherFile, char *keyStr, char *plainFile);
+
+#endif // !_ENCREPT_ALBERT__
+
