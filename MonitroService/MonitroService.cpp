@@ -19,7 +19,7 @@ int main()
 	SignalHandlerPointer previousHandler;
 	previousHandler = signal(SIGINT, SignalHandler);
 	SetHookOn();	
-	printf("end\n");
+	printf("main-end\n");
 	return 0;
 }
 

@@ -372,7 +372,7 @@ VOID SendMsg2Backend()
 	if (NULL != hd)
 	{
 		printf("Closing Semaphore ...\n");
-		printf("bye-bye\n");
+		printf("Thread-[bye-bye]\n");
 		CloseHandle(hd);
 	}
 	return;
