@@ -165,7 +165,6 @@
     <None Include="res\README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\tmpFunc\removeDir.cpp" />
     <ClCompile Include="patches.cpp" />
     <ClCompile Include="sources\doc2txt.cpp" />
     <ClCompile Include="sources\encrypt.cpp" />

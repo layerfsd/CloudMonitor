@@ -47,9 +47,6 @@
     <ClCompile Include="sources\process.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\tmpFunc\removeDir.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="patches.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
