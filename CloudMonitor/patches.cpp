@@ -21,10 +21,60 @@ extern BOOL g_RUNNING;
 
 
 
-
-bool CheckRunningProcess(const char* ProcessName)
+bool GetMyName(char* szBuf, size_t bufSize)
 {
 
+	CHAR    szPath[MAX_PATH] = { 0 };
+
+	if (!GetModuleFileNameA(NULL, szPath, MAX_PATH))
+	{
+		printf("GetModuleFileName failed (%d)\n", GetLastError());
+		return false;
+	}
+
+	char* pos = NULL;
+
+	pos = strrchr(szPath, '\\');
+
+	if (NULL == pos)
+	{
+		return false;
+	}
+
+	strncpy(szBuf, pos + 1, bufSize);
+	return true;
+}
+
+
+
+bool TryStartUp()
+{
+	char	sem_name[MAX_PATH];
+
+	memset(sem_name, 0, MAX_PATH);
+	if (!GetMyName(sem_name, MAX_PATH))
+	{
+		return false;
+	}
+	printf("sem_name: %s\n", sem_name);
+
+	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, sem_name);
+
+	// 打开成功，说明已经有实例在运行
+	if (NULL != semhd)
+	{
+		printf("%s is already running.\n", sem_name);
+		return false;
+	}
+	// 打开失败，则说明本程序初次启动
+	// 创建信号量
+	if (NULL == CreateSemaphoreA(NULL, 1, 1, sem_name))
+	{
+		printf("Create [%s] failed.\n", sem_name);
+		return false;
+	}
+
+	return true;
 }
 
 
@@ -99,6 +149,11 @@ BOOL DeleteDirectory(const char * DirName)
 
 void InitDir()
 {
+
+	if (!TryStartUp())
+	{
+		exit(3);
+	}
 	regSINGINT(); //注册 CTRL+C 信号处理函,正常终止会话.
 
 
