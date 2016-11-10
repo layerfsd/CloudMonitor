@@ -23,6 +23,8 @@ MFCApplicat?/
 Unittest/
 WpfApplication*
 test*/
+scratch/
+resources/
 
 # Build results
 [Dd]ebug/

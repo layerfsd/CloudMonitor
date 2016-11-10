@@ -18,6 +18,7 @@ void SignalHandler(int signal)
 	//system("cls");
 	printf("\nExciting...\n");
 	g_RUNNING = FALSE;
+	exit(signal);
 	return;
 }
 

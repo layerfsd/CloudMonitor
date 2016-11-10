@@ -31,7 +31,7 @@ SOCKET      GLOBAL_SOCKET = { 0 };
 #define SEM_NAME	"ALBERT_SYNC"
 #define SERV_ADDR  "127.0.0.1"
 #define SERV_PORT	50006
-#define SLEEP_TIME	3 * 1000
+#define SLEEP_TIME	500
 
 
 #pragma comment(lib,"ws2_32.lib")		// ½¨Á¢socket()Ì×½Ó×Ö
