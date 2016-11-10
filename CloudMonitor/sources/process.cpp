@@ -322,6 +322,7 @@ BOOL GetProcessList(vector<Process>& plst)
 		return(FALSE);
 	}
 
+	plst.clear();
 	// Set the size of the structure before using it.
 	pe32.dwSize = sizeof(PROCESSENTRY32);
 

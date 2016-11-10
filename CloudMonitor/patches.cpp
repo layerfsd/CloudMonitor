@@ -8,17 +8,32 @@
 #include <string>
 #include <iostream>
 #include <io.h>
+#include <tlhelp32.h>
+
+
+#define THIS_APP_NAME		"CloudMonitor.exe"
+#define DEPEND_APP_NAME		"MonitroService.exe"
+
 
 using namespace std;
 
 extern BOOL g_RUNNING;
+
+
+
+
+bool CheckRunningProcess(const char* ProcessName)
+{
+
+}
+
 
 void SignalHandler(int signal)
 {
 	//system("cls");
 	printf("\nExciting...\n");
 	g_RUNNING = FALSE;
-	exit(signal);
+	//exit(signal);
 	return;
 }
 

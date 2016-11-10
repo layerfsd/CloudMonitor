@@ -231,7 +231,7 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 	char tmp[MAX_LOG_SIZE];
 
 	map<Keyword, int>::const_iterator ite;
-
+	message.clear();
 	for (ite = MatchRecord.begin(); ite != MatchRecord.end(); ite++)
 	{
 		memset(tmp, 0, MAX_LOG_SIZE);
