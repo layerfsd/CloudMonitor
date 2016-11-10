@@ -176,7 +176,7 @@ void CMonitorDlg::OnBnClickedOk()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CString			s_name, s_pass;
-	ALB_SOCK_RET	ret;
+	//ALB_SOCK_RET	ret;
 	CString			inform;
 	//char			Buf[1024];
 
@@ -192,29 +192,40 @@ void CMonitorDlg::OnBnClickedOk()
 	//
 	
 
-	LPTSTR cWinDir = new TCHAR[MAX_PATH];
-	GetCurrentDirectory(MAX_PATH, cWinDir);
+	char cWinDir[MAX_PATH];
+	char cmd[MAX_PATH];
+	const char *cname;
+	const char *cpass;
+
+	_bstr_t fuckName(s_name.GetBuffer());
+	cname = fuckName;
+
+	_bstr_t fuckPass(s_pass);
+	cpass = fuckPass;
+
+	memset(cmd, 0, MAX_PATH);
+	GetCurrentDirectoryA(MAX_PATH, cWinDir);
+
+	char* sAppPath = strcat(cWinDir, "\\CloudMonitor.exe");
+	sprintf(cmd, "%s %s %s", sAppPath, cname, cpass);
 
 
-	LPTSTR sConLin = wcscat(cWinDir, L"\\CloudMonitor.exe");
-	STARTUPINFO   StartupInfo;//创建进程所需的信息结构变量    
+	STARTUPINFOA   StartupInfo;//创建进程所需的信息结构变量    
 	PROCESS_INFORMATION pi;
 
 	ZeroMemory(&pi, sizeof(pi));
-
 	ZeroMemory(&StartupInfo, sizeof(StartupInfo));
 
 	StartupInfo.cb = sizeof(StartupInfo);
 
 	// Start the child process
 
-	if (CreateProcess(NULL, 
-		sConLin,
+	if (CreateProcessA(NULL,
+		cmd,
 		NULL, 
 		NULL, 
 		FALSE, 
-		//CREATE_NO_WINDOW,
-		0,
+		0, //CREATE_NO_WINDOW,
 		NULL,
 		NULL, 
 		&StartupInfo,
@@ -226,52 +237,44 @@ void CMonitorDlg::OnBnClickedOk()
 	}
 	else
 	{
-		inform = sConLin;
+		inform = sAppPath;
 		inform += " Failed";
-
 		AfxMessageBox(inform);
 	}
-	inform = "正在连接服务器 ...";
+	inform = cmd;
 	SetDlgItemText(IDC_STATUS, inform);
 
+	////ret = CONNECT_SUCCESS;
 	//ret = CONNECT_SUCCESS;
-	ret = CONNECT_SUCCESS;
 
-	if (CONNECT_FAILED == ret)
-	{
-		inform = "连接服务器失败 ...";
-		SetDlgItemText(IDC_STATUS, inform);
-		goto _ERREND;
-	}
+	//if (CONNECT_FAILED == ret)
+	//{
+	//	inform = "连接服务器失败 ...";
+	//	SetDlgItemText(IDC_STATUS, inform);
+	//}
 
-	if (CONNECT_SUCCESS == ret)
-	{
-		inform = "正在验证用户名和密码 ...";
-		SetDlgItemText(IDC_STATUS, inform);
-	}
+	//if (CONNECT_SUCCESS == ret)
+	//{
+	//	inform = "正在验证用户名和密码 ...";
+	//	SetDlgItemText(IDC_STATUS, inform);
+	//}
 
 
-	if (USERNAME_NOT_EXIST == ret)
-	{
-		inform = "用户名不存在 ...";
-		SetDlgItemText(IDC_STATUS, inform);
-	}
+	//if (USERNAME_NOT_EXIST == ret)
+	//{
+	//	inform = "用户名不存在 ...";
+	//	SetDlgItemText(IDC_STATUS, inform);
+	//}
 
-	if (INVALID_PASSWD == ret)
-	{
-		inform = "密码错误 ...";
-		SetDlgItemText(IDC_STATUS, inform);
-	}
+	//if (INVALID_PASSWD == ret)
+	//{
+	//	inform = "密码错误 ...";
+	//	SetDlgItemText(IDC_STATUS, inform);
+	//}
 
-	goto _OKEND;
-_ERREND:
+	//inform = "登录失败";
+	//SetDlgItemText(IDC_STATUS, inform);
 
-	inform = "登录失败";
-	SetDlgItemText(IDC_STATUS, inform);
-
-_OKEND:
-	ClsePipe();
-	//CDialogEx::OnOK();
 }
 
 
