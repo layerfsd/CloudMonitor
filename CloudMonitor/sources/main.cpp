@@ -40,6 +40,14 @@ int main(int argc, char *argv[])
 	vector<Process> plst;
 
 	SFile file;
+	const char* user_name = NULL;
+	const char* user_pass = NULL;
+
+	if (argc == 3)
+	{
+		user_name = argv[1];
+		user_pass = argv[2];
+	}
 
 	InitDir();
 	if (!LoadKeywords(keywordPath, kw))
@@ -122,9 +130,13 @@ int main(int argc, char *argv[])
 
 #if SESSION
 
+	//const char*  user_num = "1234567";
+	const char*  user_num = "1237";
+	if (NULL != user_name)
+	{
+		user_num = user_name;
+	}
 
-	char*  user_num = "1234567";
-	
 	User app(user_num);
 	
 	if (!app.Authentication())  // —È÷§’À∫≈	
