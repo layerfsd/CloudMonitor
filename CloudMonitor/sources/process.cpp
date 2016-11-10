@@ -136,9 +136,12 @@ bool CheckNetworkApps(vector<Process>& plst, string& logMsg)
 	logMsg += ' ';
 	for (DWORD i = 0; i < plst.size()-1; i++)
 	{
-		memset(tmpBuf, 0, sizeof(tmpBuf));
-		sprintf(tmpBuf, "%d,", plst[i].code);
-		logMsg += tmpBuf;
+		if (plst[i].code != plst[i+1].code)
+		{
+			memset(tmpBuf, 0, sizeof(tmpBuf));
+			sprintf(tmpBuf, "%d,", plst[i].code);
+			logMsg += tmpBuf;
+		}
 	}
 
 	sprintf(tmpBuf, "%d", plst[plst.size()-1].code);
