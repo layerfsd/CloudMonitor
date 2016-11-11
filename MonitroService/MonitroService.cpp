@@ -9,7 +9,7 @@ typedef void(*SignalHandlerPointer)(int);
 
 void SignalHandler(int signal)
 {
-	printf("\nExciting...\n");
+	printf("\MonitorService Exciting...\n");
 	SetHookOff();
 	//exit(signal);
 }
@@ -70,12 +70,24 @@ bool TryStartUp()
 	return true;
 }
 
+void SetWorkPath()
+{
+	char strModule[MAX_PATH];
+	GetModuleFileNameA(NULL, strModule, MAX_PATH); //得到当前模块路径
+	strcat(strModule, "\\..\\");     //设置为当前工作路径为当时的上一级
+	SetCurrentDirectoryA(strModule);
+	GetCurrentDirectoryA(sizeof(strModule), strModule);
+}
+
 int main()
 {
 	if (!TryStartUp())
 	{
 		exit(3);
 	}
+
+	SetWorkPath();
+
 	SignalHandlerPointer previousHandler;
 	previousHandler = signal(SIGINT, SignalHandler);
 	SetHookOn();	

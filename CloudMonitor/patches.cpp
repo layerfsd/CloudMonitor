@@ -81,7 +81,7 @@ bool TryStartUp()
 void SignalHandler(int signal)
 {
 	//system("cls");
-	printf("\nExciting...\n");
+	printf("\nCloudMonitor Exciting...\n");
 	g_RUNNING = FALSE;
 	//exit(signal);
 	return;
@@ -147,6 +147,57 @@ BOOL DeleteDirectory(const char * DirName)
 }
 
 
+bool StartHookService()
+{
+	STARTUPINFOA   StartupInfo;//创建进程所需的信息结构变量    
+	PROCESS_INFORMATION pi;
+
+	ZeroMemory(&pi, sizeof(pi));
+	ZeroMemory(&StartupInfo, sizeof(StartupInfo));
+
+	StartupInfo.cb = sizeof(StartupInfo);
+
+	// Start the child process
+
+
+	char cmd[MAX_PATH];
+	memset(cmd, 0, MAX_PATH);
+	GetCurrentDirectoryA(MAX_PATH, cmd);
+
+	strcat(cmd, "\\MonitroService.exe");
+
+	if (CreateProcessA(NULL,
+		cmd,
+		NULL,
+		NULL,
+		FALSE,
+		0, //CREATE_NO_WINDOW,
+		NULL,
+		NULL,
+		&StartupInfo,
+		&pi))
+	{
+
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+	else
+	{
+		printf("[ERROR] CreateProcess: %s\n", cmd);
+		return false;
+	}
+	return true;
+}
+
+void SetWorkPath()
+{
+	char strModule[MAX_PATH];
+	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
+	strcat(strModule, "\\..\\");     //设置为当前工作路径为当时的上一级
+	SetCurrentDirectory(strModule);
+	GetCurrentDirectory(sizeof(strModule), strModule);
+}
+
 void InitDir()
 {
 
@@ -157,13 +208,8 @@ void InitDir()
 	regSINGINT(); //注册 CTRL+C 信号处理函,正常终止会话.
 
 
-	char strModule[MAX_PATH];
-	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
-	strcat(strModule, "\\..\\");     //设置为当前工作路径为当时的上一级
-	SetCurrentDirectory(strModule);
-	GetCurrentDirectory(sizeof(strModule), strModule);
-
-
+	SetWorkPath();
+	StartHookService();
 
 	// 创建临时目录
 	if (-1 == _access(TMP_DIR, 0))
@@ -174,7 +220,6 @@ void InitDir()
 	}
 	else
 	{
-		cout << "Working Dir: " << strModule << endl;
 		DeleteDirectory(TMP_DIR);	// 程序每次启动时,清空所有临时文件
 	}
 	return;

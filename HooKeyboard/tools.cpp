@@ -19,11 +19,6 @@ size_t gll_tail = 0;
 TASK gll_queue[MAX_QUEUE_SIZE] = {0};
 
 
-
-BOOL		KEEP_RUNNING = TRUE;
-BOOL		isConnectionOK = FALSE;
-SOCKET      GLOBAL_SOCKET = { 0 };
-
 #pragma data_seg()
 #pragma comment(linker,"/SECTION:GV_ALBERT_QUEUE,RWS")
 
@@ -32,6 +27,11 @@ SOCKET      GLOBAL_SOCKET = { 0 };
 #define SERV_ADDR  "127.0.0.1"
 #define SERV_PORT	50006
 #define SLEEP_TIME	500
+#define MIN_SENT_INTERVAL 10  // 最短发送间隔时间:10秒
+
+BOOL		KEEP_RUNNING = TRUE;
+BOOL		isConnectionOK = FALSE;
+SOCKET      GLOBAL_SOCKET = { 0 };
 
 
 #pragma comment(lib,"ws2_32.lib")		// 建立socket()套接字
@@ -66,10 +66,10 @@ BOOL InitTcpConnection()
 	serveraddr.sin_addr.S_un.S_addr = inet_addr(SERV_ADDR);
 
 	//connect to server
-	printf("Try Connect to %s:%d ...\n", SERV_ADDR, SERV_PORT);
+	//printf("Try Connect to %s:%d ...\n", SERV_ADDR, SERV_PORT);
 	if (connect(GLOBAL_SOCKET, (SOCKADDR *)&serveraddr, sizeof(serveraddr)) != 0)
 	{
-		printf("Connect fail!\n");
+		//printf("Connect fail!\n");
 		return FALSE;
 	}
 	else
@@ -124,6 +124,7 @@ VOID TellBackend(const char* lPath, int length)
 BOOL GetTask(CHAR* lpFilePath, DWORD* dwSize)
 {
 	static HANDLE semhd = OpenSemaphore(SEMAPHORE_MODIFY_STATE, FALSE, SEM_NAME);
+	static TASK LastTask[MAX_PATH] = { 0 };	// 保存上一个任务
 
 	if (NULL == semhd)
 	{
@@ -174,8 +175,16 @@ BOOL GetTask(CHAR* lpFilePath, DWORD* dwSize)
 		}
 	}
 	// printf("OUT FOR\n");
-	if (bRet)
+	
+	if (bRet)	// 成功领取到任务
 	{
+		// 10 秒钟以内,不允许重复发送.
+		// 检测是否与上一个任务一致
+
+		if (!memcmp(cur.path, LastTask, cur.len) && cur.time - LastTask < M
+		{
+
+		}
 		*dwSize = cur.len;
 		strncpy(lpFilePath, cur.path, cur.len);
 		gll_head = nxtPos;
@@ -338,7 +347,7 @@ VOID SendMsg2Backend()
 		//printf("isConnectionOK: %d\n", isConnectionOK);
 		if (!InitTcpConnection())
 		{
-			printf("[ERROR] Not Connected to %s:%d\n", SERV_ADDR, SERV_PORT);
+			//printf("[ERROR] Not Connected to %s:%d\n", SERV_ADDR, SERV_PORT);
 			isConnectionOK = FALSE;
 			continue;
 		}
@@ -351,7 +360,7 @@ VOID SendMsg2Backend()
 		if (GetTask(tPath, &length))
 		{
 			//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
-			printf("[%d] %s\n", length, tPath);
+			printf("[HOOK-SEND:%d] %s\n", length, tPath);
 			int sent = send(GLOBAL_SOCKET, tPath, length, 0);
 			if (sent <= 0)		
 			{
@@ -368,6 +377,11 @@ VOID SendMsg2Backend()
 			}
 		}
 	}// end while
+	
+	if (!KEEP_RUNNING)
+	{
+		send(GLOBAL_SOCKET, "BYE", 3, 0);
+	}
 
 	if (NULL != hd)
 	{

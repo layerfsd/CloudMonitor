@@ -19,7 +19,7 @@ using namespace std;
 #define CONTROL				0
 #define FULL_DEBUG			0
 #define DEBUG_PARSE_FILE	0
-#define SESSION				1
+#define SESSION				0
 
 
 void InitDir(); //patches.cpp
@@ -128,6 +128,8 @@ int main(int argc, char *argv[])
 #endif
 
 
+	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
+
 #if SESSION
 
 	//const char*  user_num = "1234567";
@@ -145,7 +147,6 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
 	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 
 	string	netApps;
@@ -188,6 +189,11 @@ int main(int argc, char *argv[])
 	}
 
 #endif // Session
+
+	if (NULL != hThread)
+	{
+		WaitForSingleObject(hThread, INFINITE);  // wait
+	}
 
 	return 0;
 }

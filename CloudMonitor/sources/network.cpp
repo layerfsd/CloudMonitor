@@ -982,7 +982,7 @@ RESTART_LISTEN:
 			goto RESTART_LISTEN;
 		}
 
-		printf("Connected\n");
+		printf("Get Hook Connected\n");
 		Accept = true;
 		while (Accept)
 		{
@@ -990,12 +990,18 @@ RESTART_LISTEN:
 
 			memset(tPath, 0, sizeof(tPath));
 			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);
-			cout << "Get: " << tPath << endl;
+			printf("[RECV:%d] %s\n", ret, tPath);
+
+			if (3 == ret && !memcmp("BYE", tPath, 3))
+			{
+				printf("Hook Service Quit.\n");
+				goto _END_RECV;
+			}
 
 			if (ret > 0)		//仅当成功接收,才把信息加入缓冲队列
 			{
 				int sent = send(GLOBALclntSock, tPath, ret, 0);
-				cout << "sent: " << sent << "bytes" << endl;
+				//cout << "sent: " << sent << "bytes" << endl;
 				string tmp = tPath;
 				LocalPathList.push(tPath);
 			}
@@ -1006,11 +1012,13 @@ RESTART_LISTEN:
 			else
 			{
 				Accept = false;
+				closesocket(GLOBALclntSock);
 				goto RESTART_LISTEN;
 			}
 
 		}// inner while(Accept)
 	}// outter while(1)
+_END_RECV:
 	return 0;
 
 }

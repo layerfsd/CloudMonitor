@@ -197,6 +197,11 @@
     <Text Include="res\tcpList.txt" />
     <Text Include="res\关键字文件格式说明.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MonitroService\MonitroService.vcxproj">
+      <Project>{590ff3ac-508c-4506-be1c-2888feb464c6}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
