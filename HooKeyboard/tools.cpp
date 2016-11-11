@@ -6,7 +6,7 @@
 struct TASK
 {
 	CHAR	path[MAX_PATH];
-	time_t  ltime;
+	size_t  ltime;
 	DWORD	len;
 	BOOL    status;
 };
@@ -124,7 +124,8 @@ VOID TellBackend(const char* lPath, int length)
 BOOL GetTask(CHAR* lpFilePath, DWORD* dwSize)
 {
 	static HANDLE semhd = OpenSemaphore(SEMAPHORE_MODIFY_STATE, FALSE, SEM_NAME);
-	static TASK LastTask[MAX_PATH] = { 0 };	// 保存上一个任务
+	static TASK LastTask = { 0 };	// 保存上一个任务
+	TASK cur, nxt;
 
 	if (NULL == semhd)
 	{
@@ -147,7 +148,6 @@ BOOL GetTask(CHAR* lpFilePath, DWORD* dwSize)
 	ReleaseSemaphore(semhd, 1, NULL);
 	//printf("<<<-------------ReleaseSemaphore\n");
 
-	TASK cur, nxt;
 	DWORD nxtPos = 0;
 
 	//printf("IN FOR\n");
@@ -181,13 +181,17 @@ BOOL GetTask(CHAR* lpFilePath, DWORD* dwSize)
 		// 10 秒钟以内,不允许重复发送.
 		// 检测是否与上一个任务一致
 
-		if (!memcmp(cur.path, LastTask, cur.len) && cur.time - LastTask < M
+		if (!memcmp(cur.path, LastTask.path, cur.len) && \
+			(cur.ltime - LastTask.ltime < MIN_SENT_INTERVAL) )
 		{
-
+			bRet = FALSE;
 		}
-		*dwSize = cur.len;
-		strncpy(lpFilePath, cur.path, cur.len);
-		gll_head = nxtPos;
+		else
+		{
+			*dwSize = cur.len;
+			strncpy(lpFilePath, cur.path, cur.len);
+			gll_head = nxtPos;
+		}
 		//MessageBox(NULL, lpFilePath, "Release SEM", MB_OK);
 	}
 
@@ -224,7 +228,7 @@ VOID AddTask(CONST CHAR* lpFilePath, DWORD dwSize)
 	memset(&tTask, 0, sizeof(tTask));
 	
 	memcpy(tTask.path, lpFilePath, dwSize);
-	tTask.ltime = time(NULL);
+	tTask.ltime = (size_t)time(NULL);
 	tTask.len = dwSize;
 	tTask.status = TRUE;
 
@@ -373,7 +377,8 @@ VOID SendMsg2Backend()
 			}
 			else
 			{
-				recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
+				length = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
+				//printf("[HOOK-RECV:%d] %s", ret, tmpBuf);
 			}
 		}
 	}// end while

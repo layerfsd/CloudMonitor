@@ -47,15 +47,8 @@ bool GetMyName(char* szBuf, size_t bufSize)
 
 
 
-bool TryStartUp()
+bool TryStartUp(const char* sem_name)
 {
-	char	sem_name[MAX_PATH];
-
-	memset(sem_name, 0, MAX_PATH);
-	if (!GetMyName(sem_name, MAX_PATH))
-	{
-		return false;
-	}
 	printf("sem_name: %s\n", sem_name);
 
 	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, sem_name);
@@ -149,7 +142,18 @@ BOOL DeleteDirectory(const char * DirName)
 
 bool StartHookService()
 {
-	STARTUPINFOA   StartupInfo;//创建进程所需的信息结构变量    
+
+	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, DEPEND_APP_NAME);
+
+	// 打开成功，说明已经有实例在运行
+	if (NULL != semhd)
+	{
+		printf("%s is already running.\n", DEPEND_APP_NAME);
+		return true;
+	}
+
+
+	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
 	PROCESS_INFORMATION pi;
 
 	ZeroMemory(&pi, sizeof(pi));
@@ -200,8 +204,12 @@ void SetWorkPath()
 
 void InitDir()
 {
+	char	sem_name[MAX_PATH];
 
-	if (!TryStartUp())
+	memset(sem_name, 0, MAX_PATH);
+	GetMyName(sem_name, MAX_PATH);
+	
+	if (!TryStartUp(sem_name))
 	{
 		exit(3);
 	}

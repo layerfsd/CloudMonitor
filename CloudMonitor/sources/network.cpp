@@ -990,7 +990,7 @@ RESTART_LISTEN:
 
 			memset(tPath, 0, sizeof(tPath));
 			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);
-			printf("[RECV:%d] %s\n", ret, tPath);
+			printf("[CLNT-RECV:%d] %s\n", ret, tPath);
 
 			if (3 == ret && !memcmp("BYE", tPath, 3))
 			{
