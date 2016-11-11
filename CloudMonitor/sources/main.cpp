@@ -19,7 +19,7 @@ using namespace std;
 #define CONTROL				0
 #define FULL_DEBUG			0
 #define DEBUG_PARSE_FILE	0
-#define SESSION				0
+#define SESSION				1
 
 
 void InitDir(); //patches.cpp
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
 #if SESSION
 
 	//const char*  user_num = "1234567";
-	const char*  user_num = "1237";
+	const char*  user_num = "1234567";
 	if (NULL != user_name)
 	{
 		user_num = user_name;
@@ -188,12 +188,12 @@ int main(int argc, char *argv[])
 		}
 	}
 
-#endif // Session
-
+#else
 	if (NULL != hThread)
 	{
 		WaitForSingleObject(hThread, INFINITE);  // wait
 	}
+#endif // Session
 
 	return 0;
 }
