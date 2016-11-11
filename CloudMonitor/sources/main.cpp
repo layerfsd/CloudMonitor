@@ -22,7 +22,7 @@ using namespace std;
 #define SESSION				1
 
 
-void InitDir(); //patches.cpp
+void InitDir();					//patches.cpp
 
 BOOL g_RUNNING = TRUE;
 

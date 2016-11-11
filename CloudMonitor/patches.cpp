@@ -81,7 +81,7 @@ void SignalHandler(int signal)
 }
 
 
-void regSINGINT()
+void RegSigint()
 {
 	typedef void(*SignalHandlerPointer)(int);
 
@@ -214,7 +214,7 @@ void InitDir()
 	{
 		exit(3);
 	}
-	regSINGINT(); //注册 CTRL+C 信号处理函,正常终止会话.
+	RegSigint(); //注册 CTRL+C 信号处理函,正常终止会话.
 
 
 	SetWorkPath();
@@ -232,4 +232,39 @@ void InitDir()
 		DeleteDirectory(TMP_DIR);	// 程序每次启动时,清空所有临时文件
 	}
 	return;
+}
+
+
+
+
+
+bool InformUser(int info)
+{
+	HANDLE            hNamedPipe;
+	const char * pPipeName = "\\\\.\\pipe\\ZacharyPipe";
+
+	//等待连接命名管道
+	if (!WaitNamedPipeA(pPipeName, NMPWAIT_WAIT_FOREVER))
+	{
+		cout << "命名管道实例不存在 ..." << endl << endl;
+		return false;
+	}
+
+	//打开命名管道
+	hNamedPipe = CreateFileA(pPipeName, GENERIC_READ | GENERIC_WRITE,
+		0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (INVALID_HANDLE_VALUE == hNamedPipe)
+	{
+		cout << "打开命名管道失败 ..." << endl << endl;
+		return false;
+	}
+
+	//向命名管道中写入数据
+	if (!WriteFile(hNamedPipe, &info, sizeof(int), NULL, NULL))
+	{
+		cout << "写入数据失败 ..." << endl << endl;
+		return false;
+	}
+	cout << "写入数据成功：    " << info << endl << endl;
+	return true;
 }

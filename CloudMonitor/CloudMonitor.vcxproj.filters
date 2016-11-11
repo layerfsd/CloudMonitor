@@ -38,9 +38,6 @@
     <ClCompile Include="sources\netstat.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="sources\network.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="sources\parsedoc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -48,6 +45,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="patches.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\network.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

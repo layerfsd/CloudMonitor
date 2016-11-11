@@ -18,6 +18,9 @@ static queue<string> LocalPathList;
 // 计算出客户端发送一次`心跳` 的循环次数
 static int	   SLEEP_TIMES_PER_HBT = (1000 / LOOP_SLEEP_TIME) * HEART_BEAT_TIME;
 
+
+bool InformUser(int info);		//patches.cpp
+
 namespace session
 {
 	// 定义控制编码对应的处理函数
@@ -26,6 +29,16 @@ namespace session
 		int			ctl;			// 控制编码
 		ProcessFunc func;			// 控制函数:typedef bool(*ProcessFunc)(string& logMsg, string& args);
 		char	    funcDesc[32];   // 控制函数描述
+	};
+
+	// 通过命名管道,通知用户界面登录结果
+	enum ALB_SOCK_RET
+	{
+
+		CONNECT_FAILED = 10,
+		CONNECT_SUCCESS,
+		USERNAME_NOT_EXIST,
+		INVALID_PASSWD,
 	};
 
 
@@ -143,7 +156,7 @@ int InitSSL(char *ip, int port)
 			printf("Connect Failed\n");
 			ret = CONNECT_TIMEOUT * cnt;
 			printf("sleeping %d seconds\n", ret / 1000);
-			Sleep(ret);
+			//Sleep(ret);
 			printf("reconnect to %s:%d %d/%d times...\n", SERV_ADDR, SERV_PORT, cnt, MAX_RETRY_TINE);
 		}
 		else {
@@ -152,6 +165,7 @@ int InitSSL(char *ip, int port)
 	}
 	if (cnt >= MAX_RETRY_TINE) {
 		printf("remote server is not listening on %s:%d\n", SERV_ADDR, SERV_PORT);
+		InformUser(CONNECT_FAILED);
 		return SSL_CHANNEL_OFF;
 	}
 	else {
@@ -611,15 +625,17 @@ bool User::Authentication()
 	if (IsInvalidUser(pkt.text))
 	{
 		cout << "Invalid user: " << this->userName;
+		InformUser(USERNAME_NOT_EXIST);
 		return false;
 	}
 
 	if (IsLoginOK(pkt.text) || RegisterClient())
 	{
 		cout << "Client Login success." << endl;
+		InformUser(CONNECT_SUCCESS);
 		return true;
 	}
-
+	InformUser(INVALID_PASSWD);
 	cout << "Register client failed!" << endl;
 	return false;
 }
