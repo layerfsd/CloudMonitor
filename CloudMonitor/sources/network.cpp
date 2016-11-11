@@ -412,7 +412,9 @@ User::User(const char *userName)
 	strncpy(this->userName, userName, MAX_USERNAME);
 	//cout << "workdir: " << workDir << endl;
 
-	if (0 != InitSSL(SERV_ADDR, SERV_PORT))
+	char *_servip = SERV_ADDR;
+	int	  _servpt = SERV_PORT;
+	if (0 != InitSSL(_servip, _servpt))
 	{
 		exit(3);
 	}
@@ -971,6 +973,7 @@ int InitTcp()
 
 	len = sizeof(SOCKADDR_IN);
 	char tPath[MAX_PATH];
+	int ret = 0;
 
 RESTART_LISTEN:
 	while (1)
@@ -986,10 +989,14 @@ RESTART_LISTEN:
 		Accept = true;
 		while (Accept)
 		{
-			int ret = 0;
-
+			ret = 0;
 			memset(tPath, 0, sizeof(tPath));
 			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);
+			if (-1 == ret)
+			{
+				continue;
+			}
+
 			printf("[CLNT-RECV:%d] %s\n", ret, tPath);
 
 			if (3 == ret && !memcmp("BYE", tPath, 3))
@@ -1004,10 +1011,6 @@ RESTART_LISTEN:
 				//cout << "sent: " << sent << "bytes" << endl;
 				string tmp = tPath;
 				LocalPathList.push(tPath);
-			}
-			else if (0 == ret)
-			{
-				continue;
 			}
 			else
 			{
