@@ -32,7 +32,7 @@
 #elif RUN_IN_LOCAL
 #define SERV_ADDR			"192.168.43.132"
 #elif RUN_IN_COMPANY
-#define SERV_ADDR			""
+#define SERV_ADDR			"121.42.146.43"
 #endif
 
 
