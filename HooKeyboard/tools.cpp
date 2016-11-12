@@ -121,7 +121,8 @@ VOID TellBackend(const char* lPath, int length)
 	return;
 }
 
-BOOL GetTask(CHAR* lpFilePath, DWORD* dwSize)
+//BOOL GetTask(TASK* tsk, DWORD* dwSize)
+BOOL GetTask(TASK* tsk)
 {
 	static HANDLE semhd = OpenSemaphore(SEMAPHORE_MODIFY_STATE, FALSE, SEM_NAME);
 	static TASK LastTask = { 0 };	// 保存上一个任务
@@ -188,8 +189,10 @@ BOOL GetTask(CHAR* lpFilePath, DWORD* dwSize)
 		}
 		else
 		{
-			*dwSize = cur.len;
-			strncpy(lpFilePath, cur.path, cur.len);
+			memset(tsk, 0, sizeof(TASK));
+			*tsk = cur;
+			//*dwSize = cur.len;
+			//strncpy(lpFilePath, cur.path, cur.len);
 			gll_head = nxtPos;
 		}
 		//MessageBox(NULL, lpFilePath, "Release SEM", MB_OK);
@@ -333,7 +336,7 @@ BOOL GetCache(char* lpBuf, size_t bufSize)
 // 向后台程序发送一条信息
 VOID SendMsg2Backend()
 {
-	char	tPath[MAX_PATH];
+	static  TASK tsk = { 0 };
 	CHAR	tmpBuf[MAX_PATH];
 	DWORD  length;
 
@@ -345,6 +348,7 @@ VOID SendMsg2Backend()
 		return;
 	}
 
+	int sent = 0;
 	while (KEEP_RUNNING)
 	{
 		Sleep(SLEEP_TIME);
@@ -359,13 +363,21 @@ VOID SendMsg2Backend()
 		//if (GetCache(tPath, MAX_PATH))
 
 		length = 0;
-		memset(tPath, 0, sizeof(tPath));
-		
-		if (GetTask(tPath, &length))
+		//memset(tPath, 0, sizeof(tPath));
+
+		// test channel
+		//int sent = send(GLOBAL_SOCKET, "T", 1, 0);
+		//if (sent <= 0)
+		//{
+		//	isConnectionOK = FALSE;
+		//	continue;
+		//}
+
+		if (tsk.status || GetTask(&tsk))
 		{
 			//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
-			printf("[HOOK-SEND:%d] %s\n", length, tPath);
-			int sent = send(GLOBAL_SOCKET, tPath, length, 0);
+			printf("[HOOK-SEND:%d] %s\n", tsk.len, tsk.path);
+			sent = send(GLOBAL_SOCKET, tsk.path, tsk.len, 0);
 			if (sent <= 0)		
 			{
 				// 如果发送失败,跳过下面代码
@@ -375,9 +387,10 @@ VOID SendMsg2Backend()
 				}
 				continue;
 			}
-			else
+			else  // 发送成功
 			{
 				length = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
+				tsk.status = false;
 				//printf("[HOOK-RECV:%d] %s", ret, tmpBuf);
 			}
 		}
