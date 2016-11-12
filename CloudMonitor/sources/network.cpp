@@ -576,8 +576,12 @@ inline bool IsRegistOK(const char* buf)
 
 
 
+string FormatMAC();
+string FormatHDS();
+
 string _get_mac()
 {
+
 	return string("MAC:2 11:22:33:44:55:66-wireless aa:bb:cc:dd:ee:ff-wired\n");
 }
 
@@ -589,8 +593,8 @@ string _get_hds()
 
 bool User::RegisterClient()
 {
-	this->macList = _get_mac();
-	this->hdsList = _get_hds();
+	this->macList = FormatMAC();
+	this->hdsList = FormatHDS();
 
 	this->message = macList + hdsList;
 	cout << "Computer Information: " << endl;

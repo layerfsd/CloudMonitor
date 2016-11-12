@@ -50,6 +50,9 @@
     <ClCompile Include="sources\network.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="hardinfo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\doc2txt.h">

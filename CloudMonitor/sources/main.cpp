@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
 #if SESSION
 
 	//const char*  user_num = "1234567";
-	const char*  user_num = "1234567";
+	const char*  user_num = "1234568";
 	if (NULL != user_name)
 	{
 		user_num = user_name;
