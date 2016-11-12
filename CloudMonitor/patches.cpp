@@ -149,6 +149,7 @@ bool StartHookService()
 	// 打开成功，说明已经有实例在运行
 	if (NULL != semhd)
 	{
+		CloseHandle(semhd);
 		printf("%s is already running.\n", DEPEND_APP_NAME);
 		return true;
 	}
