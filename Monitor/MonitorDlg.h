@@ -40,4 +40,5 @@ public:
 	afx_msg void OnStnClickedStatus();
 	afx_msg void OnBnClickedCancel();
 	CStatic inform;
+	afx_msg void OnEnChangePasswd();
 };

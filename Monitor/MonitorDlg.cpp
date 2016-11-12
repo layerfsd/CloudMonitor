@@ -38,11 +38,11 @@ void CMonitorDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CMonitorDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_PROGRESS1, &CMonitorDlg::OnNMCustomdrawProgress1)
 	ON_BN_CLICKED(IDOK, &CMonitorDlg::OnBnClickedOk)
 	ON_EN_CHANGE(IDC_USERNAME, &CMonitorDlg::OnEnChangeUsername)
 	ON_STN_CLICKED(IDC_STATUS, &CMonitorDlg::OnStnClickedStatus)
 	ON_BN_CLICKED(IDCANCEL, &CMonitorDlg::OnBnClickedCancel)
+	ON_EN_CHANGE(IDC_PASSWD, &CMonitorDlg::OnEnChangePasswd)
 END_MESSAGE_MAP()
 
 
@@ -114,10 +114,11 @@ void CMonitorDlg::OnNMCustomdrawProgress1(NMHDR *pNMHDR, LRESULT *pResult)
 enum ALB_SOCK_RET
 {
 
-	CONNECT_FAILED = 1,
+	CONNECT_FAILED = 10,
 	CONNECT_SUCCESS,
 	USERNAME_NOT_EXIST,
 	INVALID_PASSWD,
+	ALREADY_LOGIN,
 };
 
 
@@ -143,33 +144,84 @@ static BOOL InitNamePipe()
 	return TRUE;
 }
 
-static BOOL ClsePipe()
+HANDLE            hNamedPipe;
+
+const char *    pStr = "Zachary";
+const char *    pPipeName = "\\\\.\\pipe\\ZacharyPipe";
+HANDLE                    hEvent;
+OVERLAPPED                ovlpd;
+
+
+//创建命名管道
+bool CreateNamedPipeInServer();
+
+//从命名管道中读取数据
+int NamedPipeReadInServer();
+
+
+
+bool CreateNamedPipeInServer()
 {
-	if (!isNamePipeStarted)
-	{
-		return TRUE;
-	}
 
-	if (NULL != m_hPipe)
-	{
-		DisconnectNamedPipe(m_hPipe);
-	}
+	//首先需要创建命名管道
+	//这里创建的是双向模式且使用重叠模式的命名管道
+	hNamedPipe = CreateNamedPipeA(pPipeName,
+		PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
+		0, 1, 1024, 1024, 0, NULL);
 
-	return TRUE;
+	if (INVALID_HANDLE_VALUE == hNamedPipe)
+	{
+		hNamedPipe = NULL;
+		return false;
+	}
+	return true;
 }
 
-static BOOL TellCLient(LPCSTR Buffer, DWORD BufSize)
+int NamedPipeReadInServer()
 {
-	if (ConnectNamedPipe(m_hPipe, NULL) == FALSE) {
-		CloseHandle(m_hPipe);
+	//添加事件以等待客户端连接命名管道
+	//该事件为手动重置事件，且初始化状态为无信号状态
+	hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	if (!hEvent)
+	{
+		return 1;
 	}
 
-	return WriteFile(m_hPipe, Buffer, BufSize, NULL, NULL);
-}
+	memset(&ovlpd, 0, sizeof(OVERLAPPED));
 
-static BOOL RecvClient(PNZCH Buffer, DWORD* ReadSize)
-{
-	return ReadFile(m_hPipe, Buffer, 1024, ReadSize, NULL);
+	//将手动重置事件传递给 ovlap 参数
+	ovlpd.hEvent = hEvent;
+
+	//等待客户端连接
+	if (!ConnectNamedPipe(hNamedPipe, &ovlpd))
+	{
+		if (ERROR_IO_PENDING != GetLastError())
+		{
+			CloseHandle(hNamedPipe);
+			CloseHandle(hEvent);
+			return 2;
+		}
+	}
+
+	//等待事件 hEvent 失败
+	if (WAIT_FAILED == WaitForSingleObject(hEvent, INFINITE))
+	{
+		CloseHandle(hNamedPipe);
+		CloseHandle(hEvent);
+		return 3;
+	}
+ 
+	int				 RetValue = 0;
+
+	//从命名管道中读取数据
+	if (!ReadFile(hNamedPipe, &RetValue, sizeof(int), NULL, NULL))
+	{
+		return 4;
+	}
+	CloseHandle(hNamedPipe);
+	CloseHandle(hEvent);
+
+	return RetValue;
 }
 
 void CMonitorDlg::OnBnClickedOk()
@@ -185,11 +237,22 @@ void CMonitorDlg::OnBnClickedOk()
 	username.GetWindowText(s_name);
 	passwd.GetWindowText(s_pass);
 
-	//if (!isNamePipeStarted && !InitNamePipe())
-	//{
-	//	goto _ERREND;
-	//}
-	//
+	if (s_name.GetLength() <= 0)
+	{
+		inform = "用户名不允许为空";
+		SetDlgItemText(IDC_STATUS, inform);
+		return;
+	}
+
+	if (s_pass.GetLength() <= 0)
+	{
+		inform = "密码不能为空";
+		SetDlgItemText(IDC_STATUS, inform);
+		return;
+	}
+
+
+
 	
 
 	char cWinDir[MAX_PATH];
@@ -202,6 +265,15 @@ void CMonitorDlg::OnBnClickedOk()
 
 	_bstr_t fuckPass(s_pass);
 	cpass = fuckPass;
+
+
+	if (strchr(cpass, ' '))
+	{
+
+		inform = "密码中不允许存在空格 ...";
+		SetDlgItemText(IDC_STATUS, inform);
+		return;
+	}
 
 	memset(cmd, 0, MAX_PATH);
 	GetCurrentDirectoryA(MAX_PATH, cWinDir);
@@ -225,7 +297,7 @@ void CMonitorDlg::OnBnClickedOk()
 		NULL, 
 		NULL, 
 		FALSE, 
-		0, //CREATE_NO_WINDOW,
+		CREATE_NO_WINDOW,
 		NULL,
 		NULL, 
 		&StartupInfo,
@@ -244,37 +316,58 @@ void CMonitorDlg::OnBnClickedOk()
 	inform = cmd;
 	SetDlgItemText(IDC_STATUS, inform);
 
-	////ret = CONNECT_SUCCESS;
-	//ret = CONNECT_SUCCESS;
-
-	//if (CONNECT_FAILED == ret)
-	//{
-	//	inform = "连接服务器失败 ...";
-	//	SetDlgItemText(IDC_STATUS, inform);
-	//}
-
-	//if (CONNECT_SUCCESS == ret)
-	//{
-	//	inform = "正在验证用户名和密码 ...";
-	//	SetDlgItemText(IDC_STATUS, inform);
-	//}
+	inform = "正在登录 ...";
+	SetDlgItemText(IDC_STATUS, inform);
 
 
-	//if (USERNAME_NOT_EXIST == ret)
-	//{
-	//	inform = "用户名不存在 ...";
-	//	SetDlgItemText(IDC_STATUS, inform);
-	//}
+	if (CreateNamedPipeInServer())
+	{
+		inform = "OK ...";
+		SetDlgItemText(IDC_STATUS, inform);
 
-	//if (INVALID_PASSWD == ret)
-	//{
-	//	inform = "密码错误 ...";
-	//	SetDlgItemText(IDC_STATUS, inform);
-	//}
+		int ret = NamedPipeReadInServer();
 
-	//inform = "登录失败";
-	//SetDlgItemText(IDC_STATUS, inform);
+		if (CONNECT_FAILED == ret)
+		{
+			inform = "连接服务器失败,请检查您的网络";
+			SetDlgItemText(IDC_STATUS, inform);
+		}
 
+		if (CONNECT_SUCCESS == ret)
+		{
+			inform = "登录成功 ...";
+			SetDlgItemText(IDC_STATUS, inform);
+			inform = "登录成功";
+			AfxMessageBox(inform);
+		}
+
+
+		if (USERNAME_NOT_EXIST == ret)
+		{
+			inform = "用户名不存在 ...";
+			SetDlgItemText(IDC_STATUS, inform);
+		}
+
+		if (INVALID_PASSWD == ret)
+		{
+			inform = "密码错误 ...";
+			SetDlgItemText(IDC_STATUS, inform);
+		}
+
+		if (ALREADY_LOGIN == ret)
+		{
+			inform = "您已登录过了,不需要重复登录.";
+			AfxMessageBox(inform);
+		}
+	}
+	else
+	{
+		inform = "Failed.";
+		SetDlgItemText(IDC_STATUS, inform);
+	}
+
+
+	CDialogEx::OnOK();
 }
 
 
@@ -299,4 +392,15 @@ void CMonitorDlg::OnBnClickedCancel()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CDialogEx::OnCancel();
+}
+
+
+void CMonitorDlg::OnEnChangePasswd()
+{
+	// TODO:  如果该控件是 RICHEDIT 控件，它将不
+	// 发送此通知，除非重写 CDialogEx::OnInitDialog()
+	// 函数并调用 CRichEditCtrl().SetEventMask()，
+	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+
+	// TODO:  在此添加控件通知处理程序代码
 }
