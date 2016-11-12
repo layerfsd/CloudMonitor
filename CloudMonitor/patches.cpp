@@ -20,6 +20,7 @@ using namespace std;
 extern BOOL g_RUNNING;
 
 
+bool InformUser(int info);
 
 bool GetMyName(char* szBuf, size_t bufSize)
 {
@@ -212,6 +213,8 @@ void InitDir()
 	
 	if (!TryStartUp(sem_name))
 	{
+		InformUser(14);
+
 		exit(3);
 	}
 	RegSigint(); //注册 CTRL+C 信号处理函,正常终止会话.
