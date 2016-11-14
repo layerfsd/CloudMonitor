@@ -134,6 +134,7 @@ bool CheckNetworkApps(vector<Process>& plst, string& logMsg)
 	logMsg.clear();
 	logMsg = FILE_NETEDIT;		// 设置警报类型
 	logMsg += ' ';
+
 	for (DWORD i = 0; i < plst.size()-1; i++)
 	{
 		if (plst[i].code != plst[i+1].code)

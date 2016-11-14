@@ -14,9 +14,9 @@
 #include <string>
 
 
-#define RUN_IN_LOCAL		0	// 定义服务端IP为当前虚拟机地址
+#define RUN_IN_LOCAL		1	// 定义服务端IP为当前虚拟机地址
 #define RUN_IN_SCHOOL		0	// 定义服务端IP为学校内网地址
-#define RUN_IN_COMPANY		1	// 定义服务端IP为具体的工作地址
+#define RUN_IN_COMPANY		0	// 定义服务端IP为具体的工作地址
 
 
 #define TEST_FILENAME		"test.docx"

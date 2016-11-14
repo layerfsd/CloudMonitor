@@ -459,9 +459,14 @@ bool User::GetReplyInfo()
 	memcpy(&restPktSize, buf + CMD_SIZE, 4);
 	restPktSize = n2hi(restPktSize);
 
+	if (0 == reveivedSize)
+	{
+		return true;
+	}
 	if (reveivedSize != HEAD_SIZE)
 	{
 		std::cout << "Receiving Failed!\n" << endl;
+		cout << "receivedSize: " << reveivedSize << endl;
 		this->statu = STATUE_DISCONNECTED;
 		return false;
 	}
@@ -651,6 +656,7 @@ bool User::SendLog(const char* fHash, const char* text)
 	struct tm* now = localtime(&t);
 	char   tmp[MAX_LOG_SIZE];
 
+	memset(tmp, 0, sizeof(tmp));
 	// 获取时间
 	// 将时间和文件哈希拼入同一块缓存
 	sprintf(tmp, "%d-%02d-%02d %02d:%02d\n%s\n",

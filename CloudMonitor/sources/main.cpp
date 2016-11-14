@@ -132,8 +132,8 @@ int main(int argc, char *argv[])
 
 #if SESSION
 
-	//const char*  user_num = "1234567";
-	const char*  user_num = "1234568";
+	const char*  user_num = "1234567";
+	//const char*  user_num = "1234568";
 	if (NULL != user_name)
 	{
 		user_num = user_name;
@@ -150,9 +150,14 @@ int main(int argc, char *argv[])
 	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 
 	string	netApps;
+
+	string keywords = "keywords.txt";
+	
+	app.GetFile(keywords);
+
 	while (g_RUNNING)
 	{
-		//cout << "while looping ..." << endl;
+		cout << "while looping ..." << endl;
 		if (GetInformMessage(localPath, MAX_PATH))
 		{
 			// 查看当前是否有网络进程在运行
@@ -169,7 +174,6 @@ int main(int argc, char *argv[])
 					app.SendLog(file.fileHash.c_str(), logMessage.c_str());
 				}
 			}
-
 		}
 
 		//cout << "No message from >>>Local ..." << endl;
