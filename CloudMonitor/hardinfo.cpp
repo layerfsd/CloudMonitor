@@ -6,6 +6,9 @@
 #include <vector>
 #include <string>
 
+
+#define WIRELESS_TYPE	71
+#define WIRED_TYPE		6
 using namespace std;
 
 #pragma comment(lib, "iphlpapi.lib")
@@ -42,13 +45,14 @@ bool getMAC(vector<string>& mList)
 				pAdapterInfo->Address[0], pAdapterInfo->Address[1],
 				pAdapterInfo->Address[2], pAdapterInfo->Address[3],
 				pAdapterInfo->Address[4], pAdapterInfo->Address[5]);
-			if (strstr(pAdapterInfo->Description, "802.11n"))
+
+			if (WIRELESS_TYPE == pAdapterInfo->Type)
 			{
 				memset(tmp, 0, sizeof(tmp));
 				sprintf(tmp, " %s-%s", mac_addr, "wireless");
 				mList.push_back(tmp);
 			}
-			if (strstr(pAdapterInfo->Description, "NDIS"))
+			if (WIRED_TYPE == pAdapterInfo->Type)
 			{
 				memset(tmp, 0, sizeof(tmp));
 				sprintf(tmp, " %s-%s", mac_addr, "wired");
