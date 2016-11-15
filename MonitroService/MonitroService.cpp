@@ -9,7 +9,7 @@ typedef void(*SignalHandlerPointer)(int);
 
 void SignalHandler(int signal)
 {
-	printf("\MonitorService Exciting...\n");
+	printf("\nMonitorService Exciting...\n");
 	SetHookOff();
 	//exit(signal);
 }
@@ -90,6 +90,7 @@ int main()
 
 	SignalHandlerPointer previousHandler;
 	previousHandler = signal(SIGINT, SignalHandler);
+	signal(SIGABRT, SignalHandler);
 	SetHookOn();	
 	printf("main-end\n");
 	return 0;
