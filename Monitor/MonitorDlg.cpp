@@ -312,6 +312,8 @@ void CMonitorDlg::OnBnClickedOk()
 		inform = sAppPath;
 		inform += " Failed";
 		AfxMessageBox(inform);
+		CDialogEx::OnOK();
+
 	}
 	inform = cmd;
 	SetDlgItemText(IDC_STATUS, inform);
@@ -339,6 +341,7 @@ void CMonitorDlg::OnBnClickedOk()
 			SetDlgItemText(IDC_STATUS, inform);
 			inform = "登录成功";
 			AfxMessageBox(inform);
+			CDialogEx::OnOK();
 		}
 
 
@@ -358,6 +361,7 @@ void CMonitorDlg::OnBnClickedOk()
 		{
 			inform = "您已登录过了,不需要重复登录.";
 			AfxMessageBox(inform);
+			CDialogEx::OnOK();
 		}
 	}
 	else
@@ -367,7 +371,7 @@ void CMonitorDlg::OnBnClickedOk()
 	}
 
 
-	CDialogEx::OnOK();
+	//CDialogEx::OnOK();
 }
 
 
