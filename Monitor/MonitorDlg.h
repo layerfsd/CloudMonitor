@@ -5,6 +5,16 @@
 #pragma once
 #include "afxwin.h"
 
+enum ALB_SOCK_RET
+{
+	NONSENSE = 0,
+	CONNECT_FAILED = 10,
+	CONNECT_SUCCESS,
+	USERNAME_NOT_EXIST,
+	INVALID_PASSWD,
+	ALREADY_LOGIN,
+};
+
 
 // CMonitorDlg 对话框
 class CMonitorDlg : public CDialogEx
@@ -12,6 +22,12 @@ class CMonitorDlg : public CDialogEx
 // 构造
 public:
 	CMonitorDlg(CWnd* pParent = NULL);	// 标准构造函数
+
+	void ThreadWork();
+	void DoEvent();
+
+
+
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -24,6 +40,7 @@ public:
 
 // 实现
 protected:
+
 	HICON m_hIcon;
 
 	// 生成的消息映射函数
@@ -41,4 +58,5 @@ public:
 	afx_msg void OnBnClickedCancel();
 	CStatic inform;
 	afx_msg void OnEnChangePasswd();
+
 };

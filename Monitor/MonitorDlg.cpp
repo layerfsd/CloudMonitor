@@ -110,18 +110,6 @@ void CMonitorDlg::OnNMCustomdrawProgress1(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-
-enum ALB_SOCK_RET
-{
-
-	CONNECT_FAILED = 10,
-	CONNECT_SUCCESS,
-	USERNAME_NOT_EXIST,
-	INVALID_PASSWD,
-	ALREADY_LOGIN,
-};
-
-
 static BOOL isNamePipeStarted = FALSE;
 static HANDLE m_hPipe = NULL;
 
@@ -224,8 +212,19 @@ int NamedPipeReadInServer()
 	return RetValue;
 }
 
+static int  albSockRet;
+
+DWORD WINAPI Func(void* pArg)
+{
+	albSockRet = NamedPipeReadInServer();
+	return 0;
+}
+
 void CMonitorDlg::OnBnClickedOk()
 {
+
+
+	//GetDlgItem(IDOK)->EnableWindow(FALSE);
 	// TODO: 在此添加控件通知处理程序代码
 	CString			s_name, s_pass;
 	//ALB_SOCK_RET	ret;
@@ -297,7 +296,8 @@ void CMonitorDlg::OnBnClickedOk()
 		NULL, 
 		NULL, 
 		FALSE, 
-		CREATE_NO_WINDOW,
+		0,
+		//CREATE_NO_WINDOW,
 		NULL,
 		NULL, 
 		&StartupInfo,
@@ -321,48 +321,59 @@ void CMonitorDlg::OnBnClickedOk()
 	inform = "正在登录 ...";
 	SetDlgItemText(IDC_STATUS, inform);
 
+	DWORD dwRet = 0;
 
 	if (CreateNamedPipeInServer())
 	{
-		inform = "OK ...";
+		inform = "正在打开远程端口 ...";
 		SetDlgItemText(IDC_STATUS, inform);
 
-		int ret = NamedPipeReadInServer();
-
-		if (CONNECT_FAILED == ret)
+		//CWinThread* pThread = NULL;
+	     HANDLE hThread = CreateThread(NULL, 0, Func, 0, NULL, NULL);//创建下载线程
+	//	pThread = AfxBeginThread(StartThread, (LPVOID)NULL);  //起线程  
+		do
 		{
-			inform = "连接服务器失败,请检查您的网络";
-			SetDlgItemText(IDC_STATUS, inform);
-		}
 
-		if (CONNECT_SUCCESS == ret)
-		{
-			inform = "登录成功 ...";
-			SetDlgItemText(IDC_STATUS, inform);
-			inform = "登录成功";
-			AfxMessageBox(inform);
-			CDialogEx::OnOK();
-		}
-
-
-		if (USERNAME_NOT_EXIST == ret)
-		{
-			inform = "用户名不存在 ...";
-			SetDlgItemText(IDC_STATUS, inform);
-		}
-
-		if (INVALID_PASSWD == ret)
-		{
-			inform = "密码错误 ...";
-			SetDlgItemText(IDC_STATUS, inform);
-		}
-
-		if (ALREADY_LOGIN == ret)
-		{
-			inform = "您已登录过了,不需要重复登录.";
-			AfxMessageBox(inform);
-			CDialogEx::OnOK();
-		}
+			dwRet = ::MsgWaitForMultipleObjects(1, &hThread, FALSE, INFINITE, QS_ALLINPUT);
+			DoEvent();
+			if (CONNECT_FAILED == albSockRet)
+			{
+				inform = "连接服务器失败";
+				SetDlgItemText(IDC_STATUS, inform);
+				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
+				break;
+			}
+			if (USERNAME_NOT_EXIST == albSockRet)
+			{
+				inform = "用户名不存在";
+				SetDlgItemText(IDC_STATUS, inform);
+				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
+				break;
+			}
+			if (INVALID_PASSWD == albSockRet)
+			{
+				inform = "密码错误 ...";
+				SetDlgItemText(IDC_STATUS, inform);
+				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
+				break;
+			}
+			if (CONNECT_SUCCESS == albSockRet)
+			{
+				inform = "登录成功";
+				SetDlgItemText(IDC_STATUS, inform);
+				AfxMessageBox(inform);
+				break;
+			}
+			if (ALREADY_LOGIN == albSockRet)
+			{
+				inform = "您已登录过了,不需要重复登录.";
+				SetDlgItemText(IDC_STATUS, inform);
+				AfxMessageBox(inform);
+				break;
+			}
+		} while ((dwRet != WAIT_OBJECT_0) && (dwRet != WAIT_FAILED));
+		CloseHandle(hThread);
+		GetDlgItem(IDOK)->EnableWindow(TRUE);
 	}
 	else
 	{
@@ -370,8 +381,10 @@ void CMonitorDlg::OnBnClickedOk()
 		SetDlgItemText(IDC_STATUS, inform);
 	}
 
-
-	//CDialogEx::OnOK();
+	if (CONNECT_SUCCESS == albSockRet || ALREADY_LOGIN == albSockRet)
+	{
+		CDialogEx::OnOK();
+	}
 }
 
 
@@ -383,6 +396,8 @@ void CMonitorDlg::OnEnChangeUsername()
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
 	// TODO:  在此添加控件通知处理程序代码
+	GetDlgItem(IDOK)->EnableWindow(TRUE);
+
 }
 
 
@@ -407,4 +422,20 @@ void CMonitorDlg::OnEnChangePasswd()
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
 	// TODO:  在此添加控件通知处理程序代码
+}
+
+void CMonitorDlg::ThreadWork()
+{
+	albSockRet = (ALB_SOCK_RET)NamedPipeReadInServer();
+}
+
+void CMonitorDlg::DoEvent()
+{
+	MSG msg;
+	if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))  //取消息，检索应用程序的消息队列，PM_REMOVE取过之后从消息队列中移除  
+	{
+		//发消息  
+		::TranslateMessage(&msg);
+		::DispatchMessage(&msg);
+	}
 }
