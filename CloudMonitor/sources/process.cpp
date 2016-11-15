@@ -137,7 +137,8 @@ bool CheckNetworkApps(vector<Process>& plst, string& logMsg)
 	logMsg += ' ';
 
 	set<int> proSet;
-	for (DWORD i = 0; i < plst.size()-1; i++)
+
+	for (DWORD i = 0; i < plst.size(); i++)
 	{
 		if (!proSet.count(plst[i].code))
 		{
@@ -148,9 +149,7 @@ bool CheckNetworkApps(vector<Process>& plst, string& logMsg)
 		}
 	}
 
-	sprintf(tmpBuf, "%d", plst[plst.size()-1].code);
-	logMsg += tmpBuf;
-
+	logMsg.erase(logMsg.rfind(','));	// É¾³ýÐÐÎ²¶ººÅ
 	return true;
 }
 
