@@ -153,11 +153,10 @@ int main(int argc, char *argv[])
 
 	string keywords = "keywords.txt";
 	
-	app.GetFile(keywords);
+	//app.GetFile(keywords);
 
 	while (g_RUNNING)
 	{
-		cout << "while looping ..." << endl;
 		if (GetInformMessage(localPath, MAX_PATH))
 		{
 			// 查看当前是否有网络进程在运行

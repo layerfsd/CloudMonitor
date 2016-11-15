@@ -263,8 +263,11 @@ bool InformUser(int info)
 		return false;
 	}
 
+	char Buf[4] = { 0, 0, 0, 0 };
+
+	sprintf(Buf, "%d", info);
 	//向命名管道中写入数据
-	if (!WriteFile(hNamedPipe, &info, sizeof(int), NULL, NULL))
+	if (!WriteFile(hNamedPipe, Buf, sizeof(Buf), NULL, NULL))
 	{
 		cout << "写入数据失败 ..." << endl << endl;
 		return false;
