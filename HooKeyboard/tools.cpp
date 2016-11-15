@@ -376,8 +376,9 @@ VOID SendMsg2Backend()
 		if (tsk.status || GetTask(&tsk))
 		{
 			//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
-			printf("[HOOK-SEND:%d] %s\n", tsk.len, tsk.path);
 			sent = send(GLOBAL_SOCKET, tsk.path, tsk.len, 0);
+			tsk.status = true;		// 无论是否发送成功,只发送一次
+
 			if (sent <= 0)		
 			{
 				// 如果发送失败,跳过下面代码
@@ -389,8 +390,9 @@ VOID SendMsg2Backend()
 			}
 			else  // 发送成功
 			{
+				printf("[HOOK-SEND:%d] %s\n", tsk.len, tsk.path);
 				length = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
-				tsk.status = false;
+				//tsk.status = false;
 				//printf("[HOOK-RECV:%d] %s", ret, tmpBuf);
 			}
 		}
