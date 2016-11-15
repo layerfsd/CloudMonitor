@@ -5,7 +5,7 @@
 #include "FileMon.h"
 #include "process.h"
 
-
+#include <string.h>
 #include <iostream>
 
 using namespace std;
@@ -133,13 +133,17 @@ int main(int argc, char *argv[])
 #if SESSION
 
 	const char*  user_num = "1234567";
+	char  authBuf[64];
+	memset(authBuf, 0, sizeof(authBuf));
+
+	sprintf(authBuf, "USER:%sPASS:%s", user_name, user_pass);
 	//const char*  user_num = "1234568";
 	if (NULL != user_name)
 	{
 		user_num = user_name;
 	}
 
-	User app(user_num);
+	User app(authBuf);
 	
 	if (!app.Authentication())  // —È÷§’À∫≈	
 	{

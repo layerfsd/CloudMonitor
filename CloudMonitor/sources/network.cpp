@@ -84,12 +84,14 @@ namespace session
 
 	const char*		FILE_KEEP_DIR	= "DATA\\";
 	const char*		INVALID_ACCOUNT = "INVALID";
+	const char*     WRONG_PASSWD	= "WRONG PASSWD";
 
 	const char*		AUTH_FAILED		= "FAILED";
 	const char*		AUTH_SUCCESS	= "OK";
 	const char*		DNF_SUCCESS		= "OK";
 
 
+	const int		WRONG_PASSWD_LEN	= strlen(WRONG_PASSWD);
 	const int		INVALID_STR_LEN		= strlen(INVALID_ACCOUNT);
 	const int		STATUE_CONNECTED	= 1;
 	const int		STATUE_DISCONNECTED = 2;
@@ -637,6 +639,14 @@ bool User::Authentication()
 		InformUser(USERNAME_NOT_EXIST);
 		return false;
 	}
+
+	if (!memcmp(pkt.text, WRONG_PASSWD, WRONG_PASSWD_LEN))
+	{
+		cout << "Wrong Passwd " << this->userName;
+		InformUser(INVALID_PASSWD);
+		return false;
+	}
+
 
 	if (IsLoginOK(pkt.text) || RegisterClient())
 	{

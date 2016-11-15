@@ -250,7 +250,7 @@ bool InformUser(int info)
 	//等待连接命名管道
 	if (!WaitNamedPipeA(pPipeName, NMPWAIT_WAIT_FOREVER))
 	{
-		cout << "命名管道实例不存在 ..." << endl << endl;
+		cout << "\nDoes not find Pipe: " << pPipeName << endl << endl;
 		return false;
 	}
 
