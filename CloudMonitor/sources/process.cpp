@@ -1,6 +1,7 @@
 #include "process.h"
 #include <stdio.h>
 #include <iostream>
+#include <set>
 #include <string>
 
 using namespace std;
@@ -135,13 +136,15 @@ bool CheckNetworkApps(vector<Process>& plst, string& logMsg)
 	logMsg = FILE_NETEDIT;		// 设置警报类型
 	logMsg += ' ';
 
+	set<int> proSet;
 	for (DWORD i = 0; i < plst.size()-1; i++)
 	{
-		if (plst[i].code != plst[i+1].code)
+		if (!proSet.count(plst[i].code))
 		{
 			memset(tmpBuf, 0, sizeof(tmpBuf));
 			sprintf(tmpBuf, "%d,", plst[i].code);
 			logMsg += tmpBuf;
+			proSet.insert(plst[i].code);
 		}
 	}
 
