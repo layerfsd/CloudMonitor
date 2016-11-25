@@ -136,7 +136,8 @@ int main(int argc, char *argv[])
 	char  authBuf[64];
 	memset(authBuf, 0, sizeof(authBuf));
 
-	sprintf(authBuf, "USER:%sPASS:%s", user_name, user_pass);
+	// 构造用户名密码格式,以回车符分割
+	sprintf(authBuf, "%s\n%s", user_name, user_pass);
 	//const char*  user_num = "1234568";
 	if (NULL != user_name)
 	{
@@ -173,6 +174,8 @@ int main(int argc, char *argv[])
 				if (fsFilter(file, kw, hashList, logMessage))
 				{
 					app.UploadFile(file);
+					cout << "Logmsg: " << logMessage << endl;
+					cout << "netApps: " << netApps << endl;
 					logMessage += netApps;
 					app.SendLog(file.fileHash.c_str(), logMessage.c_str());
 				}

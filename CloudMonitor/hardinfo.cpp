@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-
+#include <set>
 
 #define WIRELESS_TYPE	71
 #define WIRED_TYPE		6
@@ -37,6 +37,7 @@ bool getMAC(vector<string>& mList)
 	}
 
 	char tmp[256];
+	set<string> macSet;
 
 	if (GetAdaptersInfo(AdapterInfo, &dwBufLen) == NO_ERROR) {
 		PIP_ADAPTER_INFO pAdapterInfo = AdapterInfo;// Contains pointer to current adapter info
@@ -46,18 +47,26 @@ bool getMAC(vector<string>& mList)
 				pAdapterInfo->Address[2], pAdapterInfo->Address[3],
 				pAdapterInfo->Address[4], pAdapterInfo->Address[5]);
 
-			if (WIRELESS_TYPE == pAdapterInfo->Type)
+			if (!macSet.count(mac_addr) && !strstr(mac_addr, "00:50:56"))
 			{
-				memset(tmp, 0, sizeof(tmp));
-				sprintf(tmp, " %s-%s", mac_addr, "wireless");
-				mList.push_back(tmp);
+				macSet.insert(mac_addr);
+
+				if (0 == macSet.count(string(mac_addr).substr(0, 9)) && NULL == strstr(mac_addr, "00:50:56"))
+				{
+					macSet.insert(string(mac_addr).substr(0, 9));
+					if (WIRELESS_TYPE == pAdapterInfo->Type && strstr(pAdapterInfo->Description, "802.11n"))
+					{
+						sprintf(tmp, " %s-%s", mac_addr, "wireless");
+						mList.push_back(tmp);
+					}
+					else if (WIRED_TYPE == pAdapterInfo->Type)
+					{
+						sprintf(tmp, " %s-%s", mac_addr, "wired");
+						mList.push_back(tmp);
+					}
+				}
 			}
-			if (WIRED_TYPE == pAdapterInfo->Type)
-			{
-				memset(tmp, 0, sizeof(tmp));
-				sprintf(tmp, " %s-%s", mac_addr, "wired");
-				mList.push_back(tmp);
-			}
+
 			//            printf("mac: %s desc: %s,\n", mac_addr, pAdapterInfo->Description);
 
 			pAdapterInfo = pAdapterInfo->Next;
