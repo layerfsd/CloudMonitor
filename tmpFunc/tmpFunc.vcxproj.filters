@@ -47,5 +47,11 @@
     <ClCompile Include="getmac.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ParseArgs.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NamePipesRead.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

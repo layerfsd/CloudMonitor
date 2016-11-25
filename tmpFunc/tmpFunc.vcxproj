@@ -164,6 +164,8 @@
   <ItemGroup>
     <ClCompile Include="getmac.cpp" />
     <ClCompile Include="listProcess.cpp" />
+    <ClCompile Include="NamePipesRead.cpp" />
+    <ClCompile Include="ParseArgs.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

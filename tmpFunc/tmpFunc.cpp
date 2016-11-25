@@ -496,13 +496,86 @@ void testMemcmp()
 	cout << strncmp(str1, str2, strlen(str2)) << endl;
 }
 
+
+bool GetMyName(char* szBuf, size_t bufSize)
+{
+
+	CHAR    szPath[MAX_PATH] = { 0 };
+
+	if (!GetModuleFileNameA(NULL, szPath, MAX_PATH))
+	{
+		printf("GetModuleFileName failed (%d)\n", GetLastError());
+		return false;
+	}
+
+	char* pos = NULL;
+
+	pos = strrchr(szPath, '\\');
+
+	if (NULL == pos)
+	{
+		return false;
+	}
+
+	strncpy(szBuf, pos + 1, bufSize);
+	return true;
+}
+
+
+void testMutex()
+{
+	char	sem_name[MAX_PATH];
+
+	memset(sem_name, 0, MAX_PATH);
+	if (!GetMyName(sem_name, MAX_PATH))
+	{
+		return;
+	}
+	printf("sem_name: %s\n", sem_name);
+
+	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, sem_name);
+	if (NULL == semhd)
+	{
+		printf("First Startup!\n");
+		semhd = CreateSemaphoreA(NULL, 1, 1, sem_name);
+		if (NULL == semhd)
+		{
+			printf("Create [%s] failed.\n", sem_name);
+			return;
+		}
+		while (1)
+		{
+			Sleep(200);
+		}
+	}
+	else
+	{
+		printf("I am already running ...\n");
+		CloseHandle(semhd);
+	}
+}
+
+void testSendText();
+
+void testNamePipe();
+void testClient();
+
+string FormatMAC();
+
 int main()
 {
 	//testParseProcessSeq();
 	//testDoubleIfinFor();
 
-	InitTcp();  //tcp server listen on localhost:50006
+	//itTcp();  //tcp server listen on localhost:50006
+	//testMutex();
 	//testMemcmp();
+
+	//testSendText();
+	//testNamePipe();
+	string t = "F8:2F:A8:F2:E7:51";
+	cout << t.substr(0, 9) << endl;
+	cout << "mac: " << FormatMAC() << endl;
 
 	//GetProcessList();
 
