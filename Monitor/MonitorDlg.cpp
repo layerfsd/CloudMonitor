@@ -201,14 +201,18 @@ int NamedPipeReadInServer()
  
 	int				 RetValue = 0;
 
+	char recvBuf[4] = { 0 };
+
+
 	//从命名管道中读取数据
-	if (!ReadFile(hNamedPipe, &RetValue, sizeof(int), NULL, NULL))
+	if (!ReadFile(hNamedPipe, recvBuf, 4, NULL, NULL))
 	{
 		return 4;
 	}
 	CloseHandle(hNamedPipe);
 	CloseHandle(hEvent);
 
+	RetValue = atoi(recvBuf);
 	return RetValue;
 }
 
@@ -224,7 +228,7 @@ void CMonitorDlg::OnBnClickedOk()
 {
 
 
-	//GetDlgItem(IDOK)->EnableWindow(FALSE);
+	GetDlgItem(IDOK)->EnableWindow(FALSE);
 	// TODO: 在此添加控件通知处理程序代码
 	CString			s_name, s_pass;
 	//ALB_SOCK_RET	ret;
@@ -296,8 +300,8 @@ void CMonitorDlg::OnBnClickedOk()
 		NULL, 
 		NULL, 
 		FALSE, 
-		0,
-		//CREATE_NO_WINDOW,
+		//0,
+		CREATE_NO_WINDOW,
 		NULL,
 		NULL, 
 		&StartupInfo,
@@ -347,6 +351,7 @@ void CMonitorDlg::OnBnClickedOk()
 			{
 				inform = "用户名不存在";
 				SetDlgItemText(IDC_STATUS, inform);
+				GetDlgItem(IDC_USERNAME)->SetWindowTextW(L"");
 				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
 				break;
 			}
@@ -422,6 +427,8 @@ void CMonitorDlg::OnEnChangePasswd()
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
 	// TODO:  在此添加控件通知处理程序代码
+	GetDlgItem(IDOK)->EnableWindow(TRUE);
+
 }
 
 void CMonitorDlg::ThreadWork()
