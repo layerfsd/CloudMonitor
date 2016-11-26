@@ -373,7 +373,8 @@ void CMonitorDlg::OnBnClickedOk()
 			}
 			if (ALREADY_LOGIN == albSockRet)
 			{
-				inform = "您已登录过了,不需要重复登录.";
+				//inform = "您已登录过了,不需要重复登录.";
+				inform = "一台电脑只允许登录一个用户";
 				SetDlgItemText(IDC_STATUS, inform);
 				AfxMessageBox(inform);
 				break;
@@ -389,7 +390,11 @@ void CMonitorDlg::OnBnClickedOk()
 		CDialogEx::OnOK();
 	}
 
-	if (CONNECT_SUCCESS == albSockRet || ALREADY_LOGIN == albSockRet)
+	if (ALREADY_LOGIN == albSockRet)
+	{
+		CDialogEx::OnOK();
+	}
+	if (CONNECT_SUCCESS == albSockRet)
 	{
 		inform = "登录成功";
 		SetDlgItemText(IDC_STATUS, inform);
