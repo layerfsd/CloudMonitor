@@ -335,14 +335,16 @@ void CMonitorDlg::OnBnClickedOk()
 		//CWinThread* pThread = NULL;
 	     HANDLE hThread = CreateThread(NULL, 0, Func, 0, NULL, NULL);//创建下载线程
 	//	pThread = AfxBeginThread(StartThread, (LPVOID)NULL);  //起线程  
+		 bool proceccFlag = false;
 		do
 		{
 
 			dwRet = ::MsgWaitForMultipleObjects(1, &hThread, FALSE, INFINITE, QS_ALLINPUT);
 			DoEvent();
 			
-			if (NONSENSE == albSockRet)
+			if (proceccFlag != true && NONSENSE == albSockRet)
 			{
+				proceccFlag = true;
 				inform = "正在认证用户名和密码";
 				SetDlgItemText(IDC_STATUS, inform);
 				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
