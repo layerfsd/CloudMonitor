@@ -340,6 +340,15 @@ VOID SendMsg2Backend()
 	CHAR	tmpBuf[MAX_PATH];
 	DWORD  length;
 
+
+	printf("isConnectionOK: %d\n", isConnectionOK);
+	if (!InitTcpConnection())
+	{
+		printf("[ERROR] Not Connected to %s:%d\n", SERV_ADDR, SERV_PORT);
+		isConnectionOK = FALSE;
+	}
+
+
 	HANDLE hd = CreateSemaphore(NULL, 1, 1, SEM_NAME);
 
 	if (NULL == hd)
@@ -352,30 +361,13 @@ VOID SendMsg2Backend()
 	while (KEEP_RUNNING)
 	{
 		Sleep(SLEEP_TIME);
-		//printf("isConnectionOK: %d\n", isConnectionOK);
-		if (!InitTcpConnection())
-		{
-			//printf("[ERROR] Not Connected to %s:%d\n", SERV_ADDR, SERV_PORT);
-			isConnectionOK = FALSE;
-			continue;
-		}
-
-		//if (GetCache(tPath, MAX_PATH))
 
 		length = 0;
-		//memset(tPath, 0, sizeof(tPath));
 
-		// test channel
-		//int sent = send(GLOBAL_SOCKET, "T", 1, 0);
-		//if (sent <= 0)
-		//{
-		//	isConnectionOK = FALSE;
-		//	continue;
-		//}
-
-		if (tsk.status || GetTask(&tsk))
+		if (GetTask(&tsk))
 		{
 			//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
+			printf("[SEND:%d] %s\n", tsk.len, tsk.path);
 			sent = send(GLOBAL_SOCKET, tsk.path, tsk.len, 0);
 			tsk.status = true;		// 无论是否发送成功,只发送一次
 
@@ -384,18 +376,25 @@ VOID SendMsg2Backend()
 				// 如果发送失败,跳过下面代码
 				if (sent < 0)  // TCP连接失效
 				{
+					printf("[SENT-FAILED:]\n");
 					isConnectionOK = FALSE;
 				}
 				continue;
 			}
 			else  // 发送成功
 			{
-				printf("[HOOK-SEND:%d] %s\n", tsk.len, tsk.path);
+				printf("[SENT-OK:]\n");
 				length = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
 				//tsk.status = false;
 				//printf("[HOOK-RECV:%d] %s", ret, tmpBuf);
 			}
 		}
+		if (!InitTcpConnection())
+		{
+			isConnectionOK = FALSE;
+		}
+
+
 	}// end while
 	
 	if (!KEEP_RUNNING)
