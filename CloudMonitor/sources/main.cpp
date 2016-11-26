@@ -164,6 +164,7 @@ int main(int argc, char *argv[])
 	{
 		if (GetInformMessage(localPath, MAX_PATH))
 		{
+			netApps.clear();
 			// 查看当前是否有网络进程在运行
 			if (CheckNetworkApps(plst, netApps))
 			{
