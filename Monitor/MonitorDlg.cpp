@@ -226,9 +226,10 @@ DWORD WINAPI Func(void* pArg)
 
 void CMonitorDlg::OnBnClickedOk()
 {
-
-
+	
 	GetDlgItem(IDOK)->EnableWindow(FALSE);
+	SetDlgItemText(IDC_STATUS, L" ");
+
 	// TODO: 在此添加控件通知处理程序代码
 	CString			s_name, s_pass;
 	//ALB_SOCK_RET	ret;
@@ -310,20 +311,19 @@ void CMonitorDlg::OnBnClickedOk()
 
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
+		inform = "正在登录 ...";
+		SetDlgItemText(IDC_STATUS, inform);
+
 	}
 	else
 	{
 		inform = sAppPath;
-		inform += " Failed";
+		inform += " 登陆失败";
 		AfxMessageBox(inform);
 		CDialogEx::OnOK();
 
 	}
-	inform = cmd;
-	SetDlgItemText(IDC_STATUS, inform);
 
-	inform = "正在登录 ...";
-	SetDlgItemText(IDC_STATUS, inform);
 
 	DWORD dwRet = 0;
 
@@ -340,6 +340,14 @@ void CMonitorDlg::OnBnClickedOk()
 
 			dwRet = ::MsgWaitForMultipleObjects(1, &hThread, FALSE, INFINITE, QS_ALLINPUT);
 			DoEvent();
+			
+			if (NONSENSE == albSockRet)
+			{
+				inform = "正在认证用户名和密码";
+				SetDlgItemText(IDC_STATUS, inform);
+				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
+			}
+
 			if (CONNECT_FAILED == albSockRet)
 			{
 				inform = "连接服务器失败";
@@ -357,15 +365,9 @@ void CMonitorDlg::OnBnClickedOk()
 			}
 			if (INVALID_PASSWD == albSockRet)
 			{
-				inform = "密码错误 ...";
+				inform = "用户名或密码错误！";
 				SetDlgItemText(IDC_STATUS, inform);
 				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
-				break;
-			}
-			if (CONNECT_SUCCESS == albSockRet)
-			{
-				inform = "登录成功";
-				SetDlgItemText(IDC_STATUS, inform);
 				AfxMessageBox(inform);
 				break;
 			}
@@ -382,14 +384,19 @@ void CMonitorDlg::OnBnClickedOk()
 	}
 	else
 	{
-		inform = "Failed.";
+		inform = "登陆失败.";
 		SetDlgItemText(IDC_STATUS, inform);
+		CDialogEx::OnOK();
 	}
 
 	if (CONNECT_SUCCESS == albSockRet || ALREADY_LOGIN == albSockRet)
 	{
+		inform = "登录成功";
+		SetDlgItemText(IDC_STATUS, inform);
+		AfxMessageBox(inform);
 		CDialogEx::OnOK();
 	}
+	albSockRet = NONSENSE;
 }
 
 
@@ -428,7 +435,6 @@ void CMonitorDlg::OnEnChangePasswd()
 
 	// TODO:  在此添加控件通知处理程序代码
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
-
 }
 
 void CMonitorDlg::ThreadWork()
