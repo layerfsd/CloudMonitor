@@ -347,14 +347,14 @@ void CMonitorDlg::OnBnClickedOk()
 				proceccFlag = true;
 				inform = "正在认证用户名和密码";
 				SetDlgItemText(IDC_STATUS, inform);
-				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
+				//GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
 			}
 
 			if (CONNECT_FAILED == albSockRet)
 			{
 				inform = "连接服务器失败";
 				SetDlgItemText(IDC_STATUS, inform);
-				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
+				//GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
 				break;
 			}
 			if (USERNAME_NOT_EXIST == albSockRet)
