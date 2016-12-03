@@ -67,19 +67,16 @@ MyCreateFileW(
 	DWORD					dwFlagsAndAttributes,
 	HANDLE					hTemplateFile)
 {
-	_bstr_t b(lpFileName);
-	//ProcessFilePath(b);
+	CHAR tp[1024] = { 0 };
 
-	HANDLE hRet = NULL;
+	int w_nlen = WideCharToMultiByte(CP_ACP, 0, lpFileName, -1, NULL, 0, NULL, false);
+	WideCharToMultiByte(CP_ACP, 0, lpFileName, -1, tp, w_nlen, NULL, false);
 
-	//ProcessFilePath(b);
-
-	//if (bRet)
-	//	MessageBox(NULL, b, "打开文件", MB_OK);
+	ProcessFilePath(tp);
 
 	CreateFileHook.UnHook();
 
-	hRet = CreateFileW(
+	HANDLE hRet = CreateFileW(
 		lpFileName,
 		dwDesiredAccess,
 		dwShareMode,
