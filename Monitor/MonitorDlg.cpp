@@ -171,6 +171,7 @@ int NamedPipeReadInServer()
 		}
 	}
 
+	return ALREADY_LOGIN;
 	//µÈ´ýÊÂ¼þ hEvent Ê§°Ü
 	if (WAIT_FAILED == WaitForSingleObject(hEvent, INFINITE))
 	{
