@@ -113,29 +113,9 @@ void CMonitorDlg::OnNMCustomdrawProgress1(NMHDR *pNMHDR, LRESULT *pResult)
 static BOOL isNamePipeStarted = FALSE;
 static HANDLE m_hPipe = NULL;
 
-static BOOL InitNamePipe()
-{
-	// 防止多次初始化
-	if (isNamePipeStarted)
-	{
-		return TRUE;
-	}
-	m_hPipe = CreateNamedPipeA("\\.\\Pipe\\LoginPipe", \
-		PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE | PIPE_READMODE_BYTE, 1, 0, 0, 1000, NULL);
-
-	if (m_hPipe == INVALID_HANDLE_VALUE)
-	{
-		return FALSE;
-	}
-	
-
-	return TRUE;
-}
-
 HANDLE            hNamedPipe;
 
-const char *    pStr = "Zachary";
-const char *    pPipeName = "\\\\.\\pipe\\ZacharyPipe";
+const char *    pPipeName = "\\\\.\\pipe\\LoginPipe";
 HANDLE                    hEvent;
 OVERLAPPED                ovlpd;
 

@@ -245,7 +245,7 @@ void InitDir()
 bool InformUser(int info)
 {
 	HANDLE            hNamedPipe;
-	const char * pPipeName = "\\\\.\\pipe\\ZacharyPipe";
+	const char * pPipeName = "\\\\.\\pipe\\LoginPipe";
 
 	//等待连接命名管道
 	if (!WaitNamedPipeA(pPipeName, NMPWAIT_WAIT_FOREVER))
