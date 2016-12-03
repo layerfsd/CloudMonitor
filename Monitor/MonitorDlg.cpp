@@ -7,6 +7,8 @@
 #include "MonitorDlg.h"
 #include "afxdialogex.h"
 
+#pragma comment(lib,"ws2_32.lib")
+
 //#include <vector>
 //#include <map>
 //
@@ -110,98 +112,73 @@ void CMonitorDlg::OnNMCustomdrawProgress1(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-static BOOL isNamePipeStarted = FALSE;
-static HANDLE m_hPipe = NULL;
-
-HANDLE            hNamedPipe;
-
-const char *    pPipeName = "\\\\.\\pipe\\LoginPipe";
-HANDLE                    hEvent;
-OVERLAPPED                ovlpd;
-
-
-//创建命名管道
-bool CreateNamedPipeInServer();
-
-//从命名管道中读取数据
-int NamedPipeReadInServer();
-
-
-
-bool CreateNamedPipeInServer()
+SOCKET slisten;
+int Talk2Client()
 {
+	SOCKET sClient;
+	sockaddr_in remoteAddr;
+	int nAddrlen = sizeof(remoteAddr);
+	char revData[32];
 
-	//首先需要创建命名管道
-	//这里创建的是双向模式且使用重叠模式的命名管道
-	hNamedPipe = CreateNamedPipeA(pPipeName,
-		PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
-		0, 1, 1024, 1024, 0, NULL);
+	memset(revData, 0, sizeof(revData));
+	sClient = accept(slisten, (SOCKADDR *)&remoteAddr, &nAddrlen);
 
-	if (INVALID_HANDLE_VALUE == hNamedPipe)
-	{
-		hNamedPipe = NULL;
-		return false;
-	}
-	return true;
+	//接收数据
+	recv(sClient, revData, sizeof(revData)-1, 0);
+
+	closesocket(sClient);
+	closesocket(slisten);
+	
+	WSACleanup();
+	return atoi(revData);
 }
 
-int NamedPipeReadInServer()
+bool CreateTCPServer()
 {
-	//添加事件以等待客户端连接命名管道
-	//该事件为手动重置事件，且初始化状态为无信号状态
-	hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-	if (!hEvent)
+	//初始化WSA
+	WORD sockVersion = MAKEWORD(2, 2);
+	WSADATA wsaData;
+	if (WSAStartup(sockVersion, &wsaData) != 0)
 	{
-		return 1;
+		return false;
 	}
 
-	memset(&ovlpd, 0, sizeof(OVERLAPPED));
-
-	//将手动重置事件传递给 ovlap 参数
-	ovlpd.hEvent = hEvent;
-
-	//等待客户端连接
-	if (!ConnectNamedPipe(hNamedPipe, &ovlpd))
+	//创建套接字
+	slisten = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (slisten == INVALID_SOCKET)
 	{
-		if (ERROR_IO_PENDING != GetLastError())
-		{
-			CloseHandle(hNamedPipe);
-			CloseHandle(hEvent);
-			return 2;
-		}
+		printf("socket error !");
+		return false;
 	}
 
-	return ALREADY_LOGIN;
-	//等待事件 hEvent 失败
-	if (WAIT_FAILED == WaitForSingleObject(hEvent, INFINITE))
+	//绑定IP和端口
+	sockaddr_in sin;
+	sin.sin_family = AF_INET;
+	sin.sin_port = htons(159);
+
+	inet_pton(AF_INET, "127.0.0.1", &sin.sin_addr);
+	//sin.sin_addr.S_un.S_addr = INADDR_ANY;
+	if (bind(slisten, (LPSOCKADDR)&sin, sizeof(sin)) == SOCKET_ERROR)
 	{
-		CloseHandle(hNamedPipe);
-		CloseHandle(hEvent);
-		return 3;
+		printf("bind error !");
+		return false;
 	}
- 
-	int				 RetValue = 0;
 
-	char recvBuf[4] = { 0 };
-
-
-	//从命名管道中读取数据
-	if (!ReadFile(hNamedPipe, recvBuf, 4, NULL, NULL))
+	//开始监听
+	if (listen(slisten, 1) == SOCKET_ERROR)
 	{
-		return 4;
+		printf("listen error !");
+		return false;
 	}
-	CloseHandle(hNamedPipe);
-	CloseHandle(hEvent);
 
-	RetValue = atoi(recvBuf);
-	return RetValue;
+	return true;
 }
 
 static int  albSockRet;
 
 DWORD WINAPI Func(void* pArg)
 {
-	albSockRet = NamedPipeReadInServer();
+	albSockRet = Talk2Client();
 	return 0;
 }
 
@@ -235,10 +212,6 @@ void CMonitorDlg::OnBnClickedOk()
 		SetDlgItemText(IDC_STATUS, inform);
 		return;
 	}
-
-
-
-	
 
 	char cWinDir[MAX_PATH];
 	char cmd[MAX_PATH];
@@ -308,7 +281,7 @@ void CMonitorDlg::OnBnClickedOk()
 
 	DWORD dwRet = 0;
 
-	if (CreateNamedPipeInServer())
+	if (CreateTCPServer())
 	{
 		inform = "正在打开远程端口 ...";
 		SetDlgItemText(IDC_STATUS, inform);
@@ -425,10 +398,6 @@ void CMonitorDlg::OnEnChangePasswd()
 	GetDlgItem(IDOK)->EnableWindow(TRUE);
 }
 
-void CMonitorDlg::ThreadWork()
-{
-	albSockRet = (ALB_SOCK_RET)NamedPipeReadInServer();
-}
 
 void CMonitorDlg::DoEvent()
 {

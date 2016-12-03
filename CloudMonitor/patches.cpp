@@ -244,34 +244,43 @@ void InitDir()
 
 bool InformUser(int info)
 {
-	HANDLE            hNamedPipe;
-	const char * pPipeName = "\\\\.\\pipe\\LoginPipe";
-
-	//等待连接命名管道
-	if (!WaitNamedPipeA(pPipeName, NMPWAIT_WAIT_FOREVER))
+	WORD sockVersion = MAKEWORD(2, 2);
+	WSADATA data;
+	if (WSAStartup(sockVersion, &data) != 0)
 	{
-		cout << "\nDoes not find Pipe: " << pPipeName << endl << endl;
-		return false;
+		return 0;
 	}
 
-	//打开命名管道
-	hNamedPipe = CreateFileA(pPipeName, GENERIC_READ | GENERIC_WRITE,
-		0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (INVALID_HANDLE_VALUE == hNamedPipe)
+	SOCKET sclient = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (sclient == INVALID_SOCKET)
 	{
-		cout << "打开命名管道失败 ..." << endl << endl;
-		return false;
+		printf("invalid socket !");
+		return 0;
+	}
+
+	sockaddr_in serAddr;
+	serAddr.sin_family = AF_INET;
+	serAddr.sin_port = htons(159);
+	serAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+	if (connect(sclient, (sockaddr *)&serAddr, sizeof(serAddr)) == SOCKET_ERROR)
+	{
+		printf("connect error !");
+		closesocket(sclient);
+		return 0;
 	}
 
 	char Buf[4] = { 0, 0, 0, 0 };
 
 	sprintf(Buf, "%d", info);
-	//向命名管道中写入数据
-	if (!WriteFile(hNamedPipe, Buf, sizeof(Buf), NULL, NULL))
+	
+	if (!send(sclient, Buf, strlen(Buf), 0))
 	{
 		cout << "写入数据失败 ..." << endl << endl;
 		return false;
 	}
 	cout << "写入数据成功：    " << info << endl << endl;
+	closesocket(sclient);
+	WSACleanup();
+
 	return true;
 }
