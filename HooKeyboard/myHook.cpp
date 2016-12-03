@@ -72,10 +72,7 @@ MyCreateFileW(
 
 	HANDLE hRet = NULL;
 
-	ProcessFilePath(b);
-
-
-	BOOL bRet = ProcessFilePath(b);
+	//ProcessFilePath(b);
 
 	//if (bRet)
 	//	MessageBox(NULL, b, "打开文件", MB_OK);
