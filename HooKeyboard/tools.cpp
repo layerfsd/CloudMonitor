@@ -191,6 +191,7 @@ BOOL GetTask(TASK* tsk)
 		{
 			memset(tsk, 0, sizeof(TASK));
 			*tsk = cur;
+			LastTask = cur;
 			//*dwSize = cur.len;
 			//strncpy(lpFilePath, cur.path, cur.len);
 			gll_head = nxtPos;
@@ -367,7 +368,7 @@ VOID SendMsg2Backend()
 		if (GetTask(&tsk))
 		{
 			//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
-			printf("[SEND:%d] %s\n", tsk.len, tsk.path);
+			printf("[SEND:%d] %s\n", tsk.ltime, tsk.path);
 			sent = send(GLOBAL_SOCKET, tsk.path, tsk.len, 0);
 			tsk.status = true;		// 无论是否发送成功,只发送一次
 

@@ -264,7 +264,7 @@ bool InformUser(int info)
 	serAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
 	if (connect(sclient, (sockaddr *)&serAddr, sizeof(serAddr)) == SOCKET_ERROR)
 	{
-		printf("connect error !");
+		printf("[INFORM] connect error !");
 		closesocket(sclient);
 		return 0;
 	}

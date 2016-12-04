@@ -679,6 +679,7 @@ bool User::SendLog(const char* fHash, const char* text)
 
 
 	// 构造日志
+	this->message.clear();
 	this->message = tmp;	
 	this->message += text;	// 追加 (关键字信息+日志详情)
 
@@ -991,7 +992,9 @@ int InitTcp()
 
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_port = htons(50006);
-	serveraddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
+	inet_pton(AF_INET, "127.0.0.1", &serveraddr.sin_addr);
+
+	//serveraddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
 
 	if (bind(serversoc, (SOCKADDR *)&serveraddr, sizeof(serveraddr)) != 0)
 	{
