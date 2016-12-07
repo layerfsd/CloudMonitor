@@ -344,6 +344,8 @@ BOOL GetProcessList(vector<Process>& plst)
 	// Now walk the snapshot of processes, and
 	// display information about each process in turn
 	Process pro;
+	set<int> proSet;
+
 	bool	NoEmpty = false;
 	do
 	{
@@ -356,7 +358,7 @@ BOOL GetProcessList(vector<Process>& plst)
 		pro.pid = pe32.th32ProcessID;
 		pro.status = RUNNING;
 		pro.shutdown = false;
-
+		
 		for (int i = 0; i < monProcessNum; i++)
 		{
 			if (!_strnicmp(pe32.szExeFile, monProcessList[i].name, MAX_PATH))
@@ -365,7 +367,12 @@ BOOL GetProcessList(vector<Process>& plst)
 				//_tprintf(TEXT("NAME:  %-20s PID: %-5d\n"), pe32.szExeFile, pe32.th32ProcessID);
 				pro.seq = plst.size();
 				pro.code = monProcessList[i].code;
-				plst.push_back(pro);
+				if (0 == proSet.count(pro.code))
+				{
+					proSet.insert(pro.code);
+					plst.push_back(pro);
+				}
+				printf("proSet[%d] = %d\n", pro.code, proSet.count(pro.code));
 				break;
 			}
 		}
