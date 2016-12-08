@@ -262,12 +262,17 @@ inline bool KillProcessByPid(DWORD pid)
 
 	 for (size_t j = 0; j < seqList.size(); j++)
 	 {
-		 seq = seqList[j];
-		 pid = plst[seq].pid;  // 根据进程序号定位到到进程 Pid
-		 cout << "killing " << seq+1 << endl;
-	
-	 	 memset(num, 0, sizeof(num));
-		 
+		 for (size_t k = 0; k < plst.size(); k++)
+		 {
+			 // 根据进程编号定位到到进程 Pid
+			 if (seqList[k] == plst[k].code)
+			 {
+				 pid = plst[k].pid;
+				 break;
+			 }
+		 }
+		 cout << "<Killing Process>" << pid << endl;
+			 
 #if 0
 	 	 if (KillProcessByPid(plst[j].pid))	   //判断是否成功关闭指定Pid 的进程
 	 	 {
@@ -282,6 +287,7 @@ inline bool KillProcessByPid(DWORD pid)
 		 KillProcessByPid(plst[j].pid);
 
 #endif
+		 memset(num, 0, sizeof(num));
 		 sprintf(num, "%d\n", seq);
 		 logMsg += num;						//记录关闭进程的序列号
 		 //printf("j: %d seq: %d\n", j, seqList[j]);
