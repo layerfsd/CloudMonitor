@@ -140,6 +140,7 @@ void DumpByte(const char *str);
 // c++字符串编码GBK到UTF8的转换
 string GBKToUTF8(const char* strGBK);
 
+bool IsGbk(const char* FileName);
 
 
 // 判断文件类型，决定是否要扫描该文件

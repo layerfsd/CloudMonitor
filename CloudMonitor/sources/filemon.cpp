@@ -447,6 +447,34 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 
 
 
+bool IsGbk(const char* FileName)
+{
+	FILE *fp = NULL;
+	size_t FileSize = 0;
+	char *fileBuf = NULL;
+
+
+	GetFileSize(FileName, &FileSize);
+	fileBuf = (char *)malloc(FileSize);
+	DumpFromFile(FileName, fileBuf, FileSize);
+
+	size_t i = 0;
+	bool ret = true;
+
+	for (; i < FileSize; i++)
+	{
+		if (!(0x80 & fileBuf[i]))
+		{
+			ret = false;
+			break;
+		}
+	}
+
+
+	free(fileBuf);
+	return ret;
+}
+
 
 bool isContinue(const char* lPath, int length)
 {

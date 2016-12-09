@@ -110,7 +110,10 @@ int ParseFile2Text(char *FileName, char *TextName)
 		break;
 
 	case TEXT_TYPE:
-		ret = DecodeUcs2Utf8(TextName); //txt зЊТы unicode ---> utf8
+		if (IsGbk(TextName))
+		{
+			ret = DecodeUcs2Utf8(TextName); //txt зЊТы GBK ---> utf8
+		}
 		printf("[text] parsing %s to %s ...\n", FileName, TextName);
 		break;
 
