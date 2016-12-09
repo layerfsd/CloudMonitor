@@ -38,9 +38,9 @@ LRESULT CALLBACK GetMsgProc(int code, WPARAM wParam, LPARAM lParam)
 
 VOID SetHookOn()
 {
-	//g_hHook = SetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, g_hInst, 0);
 	HANDLE hThrd = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,发送敏感事件
-	g_hHook = SetWindowsHookEx(WH_CBT, GetMsgProc, g_hInst, 0);
+	g_hHook = SetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, g_hInst, 0);
+	//g_hHook = SetWindowsHookEx(WH_CBT, GetMsgProc, g_hInst, 0);
 	WaitForSingleObject(hThrd, INFINITE);
 }
 
@@ -73,7 +73,7 @@ MyCreateFileW(
 	WideCharToMultiByte(CP_ACP, 0, lpFileName, -1, tp, w_nlen, NULL, false);
 
 	ProcessFilePath(tp);
-
+	printf("[CHECKING] %s\n", tp);
 	CreateFileHook.UnHook();
 
 	HANDLE hRet = CreateFileW(
