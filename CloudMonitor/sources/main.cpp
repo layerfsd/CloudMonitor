@@ -50,11 +50,6 @@ int main(int argc, char *argv[])
 	}
 
 	InitDir();
-	if (!LoadKeywords(keywordPath, kw))
-	{
-		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
-		return -1;
-	}
 
 
 	// 先留下接口,后期优化时加上此功能---"记录本地敏感文件的哈希缓存" 以提高文件检索速度
@@ -158,7 +153,13 @@ int main(int argc, char *argv[])
 
 	string keywords = "keywords.txt";
 	
-	//app.GetFile(keywords);
+	// 每次启动，先更新关键字列表
+	app.GetFile(keywords);
+	if (!LoadKeywords(keywordPath, kw))
+	{
+		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
+		return -1;
+	}
 
 	while (g_RUNNING)
 	{
