@@ -12,6 +12,7 @@
 *.doc
 *.docx
 *.zip
+*.lib
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
