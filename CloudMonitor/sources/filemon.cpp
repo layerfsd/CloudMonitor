@@ -446,8 +446,54 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 }
 
 
+int GB2312ToUtf8(const char* gb2312, char* utf8)
+{
+	int len = MultiByteToWideChar(CP_ACP, 0, gb2312, -1, NULL, 0);
 
-bool IsGbk(const char* FileName)
+	wchar_t* wstr = new wchar_t[len + 1];
+	memset(wstr, 0, len + 1);
+
+	MultiByteToWideChar(CP_ACP, 0, gb2312, -1, wstr, len);
+	len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+
+	WideCharToMultiByte(CP_UTF8, 0, wstr, -1, utf8, len, NULL, NULL);
+
+	if (wstr) delete[] wstr;
+
+	return len;
+}
+
+int DecodeGB2312ToUtf8(const char* FileName)
+{
+	size_t FileSize = 0;
+	int    ret;
+	char *buf1 = NULL;
+	char *buf2 = NULL;
+
+	GetFileSize(FileName, &FileSize);
+
+	// 申请总空间 = ucs2_FileSize + 1.5 * ucs_FileSize = 2.5 *ucs_FileSize
+	// 为保证鲁棒性,申请三倍空间
+	if ((buf1 = (char *)malloc(FileSize * 3)) == NULL)
+	{
+		perror("malloc");
+		exit(1);
+	}
+	buf2 = buf1 + FileSize + 1;
+
+	DumpFromFile(FileName, buf1, FileSize);
+	buf1[FileSize] = 0;
+
+	size_t fs2 = GB2312ToUtf8(buf1, buf2);
+	ret = DumpToFile(FileName, buf2, fs2 - 1);
+
+	free(buf1);
+	return 0;
+}
+
+
+typedef unsigned char Uchar;
+bool IsUtf8(const char* FileName)
 {
 	FILE *fp = NULL;
 	size_t FileSize = 0;
@@ -461,20 +507,49 @@ bool IsGbk(const char* FileName)
 	size_t i = 0;
 	bool ret = true;
 
-	for (; i < FileSize; i++)
+	for (; ret && (i < FileSize); i++)
 	{
-		if (!(0x80 & fileBuf[i]))
+		Uchar hexchar = fileBuf[i];
+		// ignore ascii code
+		if (!(hexchar & 0x80))
 		{
-			ret = false;
-			break;
+			continue;
 		}
+
+		// calculate how many serial "1"
+		int   BitOneCount = 0;
+		Uchar num = hexchar;
+		while (num & 0x80)
+		{
+			if (num & 0x80)
+			{
+				BitOneCount += 1;
+			}
+			num <<= 1;
+		}
+
+		BitOneCount -= 1;
+		while (BitOneCount > 0)
+		{
+			i += 1;
+			num = fileBuf[i];   // num suppose to be 10xx xxxx
+			num >>= 6;		    // num = 0000 0010
+			if (2 != num)
+			{
+				ret = false;
+				//printf("i = %d num = %d hexchar = 0x%x BitOneCount= %d\n", i, num, hexchar, BitOneCount);
+				break;
+			}
+			BitOneCount -= 1;
+		}
+
+		//end for
 	}
 
 
 	free(fileBuf);
 	return ret;
 }
-
 
 bool isContinue(const char* lPath, int length)
 {
