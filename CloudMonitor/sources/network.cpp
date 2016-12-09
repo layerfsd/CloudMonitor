@@ -753,6 +753,10 @@ bool User::GetFile(string &FileName)
 	
 	// get fileHash
 	GetReplyInfo();
+	if (FileName == "keywords.txt")
+	{
+		FileName.insert(0, FILE_KEEP_DIR);
+	}
 	if (IsHashEqual(FileName.c_str(), this->pkt.text))
 	{
 		this->SendInfo(CMD_RPL, "EXISTED");
