@@ -254,6 +254,8 @@ VOID AddTask(CONST CHAR* lpFilePath, DWORD dwSize)
 BOOL ProcessFilePath(LPCSTR lpFilePath)
 {
 	static LPCSTR matchList[] = {
+		".txt",
+		".text",
 		".doc",
 		".docx"
 	};
