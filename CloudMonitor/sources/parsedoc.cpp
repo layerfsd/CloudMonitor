@@ -110,6 +110,7 @@ int ParseFile2Text(char *FileName, char *TextName)
 		break;
 
 	case TEXT_TYPE:
+		ret = DecodeUcs2Utf8(TextName); //txt зЊТы unicode ---> utf8
 		printf("[text] parsing %s to %s ...\n", FileName, TextName);
 		break;
 
