@@ -352,7 +352,7 @@ bool initSFile(SFile &sf)
 		return false;
 	}
 
-
+	// 对于 txt 文件,不需要文件解析,可能需要转码
 	if (sf.fileName.substr(sf.fileName.rfind('.')) == ".text")
 	{
 		sf.txtName = sf.fileName;
