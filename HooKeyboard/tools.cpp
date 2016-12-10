@@ -257,7 +257,7 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 		".txt",
 		".text",
 		".doc",
-		".docx"
+		".docx",
 		".wps",
 	};
 
