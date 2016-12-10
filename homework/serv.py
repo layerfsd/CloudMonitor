@@ -12,11 +12,9 @@ tcpSerSock=socket(AF_INET,SOCK_STREAM)  #生成新的socket对象
 tcpSerSock.bind(ADDR)  #将ip与端口号绑定
 tcpSerSock.listen(5) #监听
 
-print "Waiting for connection......"
-tcpCliSock,addr=tcpSerSock.accept()   #利用accept函数被动连接
-print "connected from:",addr #获取连接客户端的ip和端口号
 
 
+# 当前函数只负责接收数据并显示
 def child():
         while True:
                 data=tcpCliSock.recv(BUFSIZ) #接收数据
@@ -25,6 +23,8 @@ def child():
                 print "From client:"
                 print data
                 print 'server:'
+        tcpCliSock.close() #关闭连接
+
 
 def parent():
         pid=os.fork() #fork函数产生子进程
@@ -41,4 +41,3 @@ def parent():
 
 if __name__=='__main__':
         parent()
-        tcpCliSock.close() #关闭连接
