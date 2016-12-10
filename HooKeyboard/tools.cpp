@@ -27,7 +27,7 @@ TASK gll_queue[MAX_QUEUE_SIZE] = {0};
 #define SERV_ADDR  "127.0.0.1"
 #define SERV_PORT	50006
 #define SLEEP_TIME	500
-#define MIN_SENT_INTERVAL 10  // 最短发送间隔时间:10秒
+#define MIN_SENT_INTERVAL 30  // 最短发送间隔时间(秒)
 
 BOOL		KEEP_RUNNING = TRUE;
 BOOL		isConnectionOK = FALSE;
@@ -179,7 +179,7 @@ BOOL GetTask(TASK* tsk)
 	
 	if (bRet)	// 成功领取到任务
 	{
-		// 10 秒钟以内,不允许重复发送.
+		// 在一定时间内,不允许重复发送.
 		// 检测是否与上一个任务一致
 
 		if (!memcmp(cur.path, LastTask.path, cur.len) && \
