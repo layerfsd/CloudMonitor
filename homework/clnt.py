@@ -13,18 +13,13 @@ tcpCliSock.connect(ADDR)  #连接服务器
 
 def parent():   #定义子函数
         while True:
-                pid=os.fork()    #fork函数产生子进程
-                if pid<=0:
-                        print "fork failed!"
+                datasend=raw_input('client:')
+                if not datasend:
                         break
-                elif pid==0:#进入子进程
-                        child() 
-                else:
-                        datasend=raw_input('client:')
-                        if not datasend:
-                                break
-                        tcpCliSock.send(datasend)  #send函数发送数据
-                        print "send to server %s" %datasend
+                tcpCliSock.send(datasend)  #send函数发送数据
+                print "send to server %s" %datasend
+
+
 def child():
         while True:
                 data=tcpCliSock.recv(BUFSIZ) #recv函数接收数据

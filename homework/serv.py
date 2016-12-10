@@ -27,19 +27,16 @@ def child():
                 print 'server:'
 
 def parent():
-        while True:
-                pid=os.fork() #fork函数产生子进程
-                if pid<=0:
-                        print "fork failed!"
+        pid=os.fork() #fork函数产生子进程
+
+        if pid==0:      #与子进程交互
+                child()
+        else:           #在父进程中与子进程聊天
+                datac=raw_input("server:")
+                if not datac:
                         break
-                elif pid==0:#进入子进程
-                        child()
-                else:
-                        datac=raw_input("server:")
-                        if not datac:
-                                break
-                        tcpCliSock.send('%s' %(datac)) #发送数据
-                        print "send to client %s"%datac
+                tcpCliSock.send('%s' %(datac)) #发送数据
+                print "send to client %s"%datac
 
 
 if __name__=='__main__':
