@@ -11,20 +11,6 @@ ADDR=(HOST,PORT)   #ip和端口构成地址
 tcpCliSock=socket(AF_INET,SOCK_STREAM)   #生成新的socket对象
 tcpCliSock.connect(ADDR)  #连接服务器
 
-def parent():   #定义子函数
-        while True:
-                pid=os.fork()    #fork函数产生子进程
-                if pid<=0:
-                        print "fork failed!"
-                        break
-                elif pid==0:#进入子进程
-                        child() 
-                else:
-                        datasend=raw_input('client:')
-                        if not datasend:
-                                break
-                        tcpCliSock.send(datasend)  #send函数发送数据
-                        print "send to server %s" %datasend
 def child():
         while True:
                 data=tcpCliSock.recv(BUFSIZ) #recv函数接收数据
@@ -34,5 +20,4 @@ def child():
                 print data
                 print 'client:'
 if __name__=='__main__':
-        parent()
         tcpCliSock.close()   #关闭连接
