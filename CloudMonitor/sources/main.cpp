@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
 	const char* user_name = NULL;
 	const char* user_pass = NULL;
 
+
 	if (argc == 3)
 	{
 		user_name = argv[1];
@@ -56,76 +57,8 @@ int main(int argc, char *argv[])
 	//LoadHashList(hashPath, hashList);
 
 
-#if CONTROL
-	string	netApps;
-	if (CheckNetworkApps(plst, netApps))
-	{
-		cout << netApps << endl;
-	}
-
-	//if (!GetProcessList(plst))
-	//{
-	//	cout << "GetProcessList: empty!" << endl;
-	//	return -1;
-	//}
-	//plst[0].shutdown = true;
-	//if (KillProcess(plst))
-	//{
-	//	GenKillResult(plst, message);
-	//	cout << "kill result: [" << message << "]" << endl;
-	//}
-	//else
-	//{
-	//	cout << "No Process to kill ..." << endl;
-	//}
-	//ShowProcessList(plst);
-#endif
-
-#if DEBUG_PARSE_FILE
-	char *fList[] = {
-		"F:\\NutStore\\SSL传输\\ClientPython2CPP.txt",
-		"F:\\NutStore\\SSL传输\\安全办公信息监控平台项目研发方案20160922.docx",
-		"F:\\NutStore\\SSL传输\\软件.doc"
-	};
-	int len = sizeof(fList) / sizeof(fList[0]);
-	for (int i = 0; i < len; i++)
-	{
-		memset(&file, 0, sizeof(file));
-		file.localPath = fList[i];
-		int ret = fsFilter(file, kw, hashList, logMessage);
-	}
-#endif
-
-#if FULL_DEBUG
-	char mac[32];
-	vector<Connection> cons;
-	vector<Service> KeyPorts;
-
-	cout << "Getting MAC address ..." << endl;
-	if (!GetMac(mac))
-		cout << mac << endl;
-
-	// -1 error, 0 Ok
-	if (!IsCnt2Internet())
-		cout << "Connect to Internet OK..." << endl;
-	else
-		cout << "Connect to Internet Failed!" << endl;
-	
-	
-	//ParseText("test.docx", "test.txt");
-	//NetStat();
-	GetConnections(cons);
-	ReadKeyPorts("res/tcpList.txt", KeyPorts);
-
-	//DisplayPorts(KeyPorts);
-	int ret = CheckKeyConnections(cons, KeyPorts);
-	ShowKeyConnections(cons, ret);
-#endif
-
-
 	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
 
-#if SESSION
 
 	const char*  user_num = "1234567";
 	char  authBuf[64];
@@ -200,12 +133,6 @@ int main(int argc, char *argv[])
 		}
 	}
 
-#else
-	if (NULL != hThread)
-	{
-		WaitForSingleObject(hThread, INFINITE);  // wait
-	}
-#endif // Session
 
 	return 0;
 }
