@@ -11,6 +11,8 @@ ADDR=(HOST,PORT)   #ip和端口构成地址
 tcpCliSock=socket(AF_INET,SOCK_STREAM)   #生成新的socket对象
 tcpCliSock.connect(ADDR)  #连接服务器
 
+
+#该函数负责与serv 通信
 def parent():   #定义子函数
         while True:
                 datasend=raw_input('client:')
