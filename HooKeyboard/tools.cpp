@@ -1,7 +1,11 @@
 #include "tools.h"
 #include <stdio.h>
+#include <map>
+#include <string>
 #include <time.h>
 #include <windows.h>
+
+using namespace std;
 
 struct TASK
 {
@@ -121,11 +125,12 @@ VOID TellBackend(const char* lPath, int length)
 	return;
 }
 
-//BOOL GetTask(TASK* tsk, DWORD* dwSize)
+static 	map<string,size_t> LastTask;
+
 BOOL GetTask(TASK* tsk)
 {
 	static HANDLE semhd = OpenSemaphore(SEMAPHORE_MODIFY_STATE, FALSE, SEM_NAME);
-	static TASK LastTask = { 0 };	// 保存上一个任务
+
 	TASK cur, nxt;
 
 	if (NULL == semhd)
@@ -181,9 +186,7 @@ BOOL GetTask(TASK* tsk)
 	{
 		// 在一定时间内,不允许重复发送.
 		// 检测是否与上一个任务一致
-
-		if (!memcmp(cur.path, LastTask.path, cur.len) && \
-			(cur.ltime - LastTask.ltime < MIN_SENT_INTERVAL) )
+		if (cur.ltime - LastTask[cur.path] < MIN_SENT_INTERVAL)
 		{
 			bRet = FALSE;
 		}
@@ -191,9 +194,7 @@ BOOL GetTask(TASK* tsk)
 		{
 			memset(tsk, 0, sizeof(TASK));
 			*tsk = cur;
-			LastTask = cur;
-			//*dwSize = cur.len;
-			//strncpy(lpFilePath, cur.path, cur.len);
+			LastTask[cur.path] = cur.ltime;
 			gll_head = nxtPos;
 		}
 		//MessageBox(NULL, lpFilePath, "Release SEM", MB_OK);
@@ -309,32 +310,6 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 
 	return retValue;
 }
-
-
-
-#if 0
-BOOL SetCache(LPCSTR lpFilePath)
-{
-	//g_PathList.push(lpFilePath);
-	//char text[1024];
-	//sprintf(text, "%d %s", g_PathList.size(), lpFilePath);
-	//MessageBox(NULL, text, "RUNNING-APP添加路径", MB_OK);
-	return TRUE;
-}
-
-BOOL GetCache(char* lpBuf, size_t bufSize)
-{
-	if (g_PathList.size() > 0)
-	{
-		strncpy(lpBuf, g_PathList.front().c_str(), bufSize);
-		g_PathList.pop();
-
-		return TRUE;
-	}
-	return FALSE;
-}
-
-#endif
 
 
 // 向后台程序发送一条信息
