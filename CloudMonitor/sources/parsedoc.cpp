@@ -52,6 +52,7 @@ int ExtractDocxFile(char *FileName, char *TextName)
 int GetFileType(char *FileName)
 {
 	static SuffixMap FileTypeList[] = {
+		{".wps",        DOC_TYPE },
 		{ ".doc",		DOC_TYPE },
 		{ ".pdf",		PDF_TYPE },
 		{ ".docx",		DOCX_TYPE },

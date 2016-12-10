@@ -258,6 +258,7 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 		".text",
 		".doc",
 		".docx"
+		".wps",
 	};
 
 	//SetCache(lpFilePath);
