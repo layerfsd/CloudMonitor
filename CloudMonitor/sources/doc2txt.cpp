@@ -1010,7 +1010,7 @@ static int GetFileSize(char *FileName, size_t *FileSize)
 	return 0;
 }
 
-int DecodeUcs2Utf8(char *FileName)
+int DecodeUcs2Utf8(const char *FileName)
 {
 	size_t FileSize = 0;
 	int    ret;
