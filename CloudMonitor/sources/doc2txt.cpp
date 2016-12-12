@@ -1038,7 +1038,7 @@ int DecodeUcs2Utf8(char *FileName)
 	return ret;
 }
 
-int ParseDoc(char *docFileName, char *txtFileName)
+int ParseDoc(const char *docFileName, const char *txtFileName)
 {
 
 	if (!parse_doc(docFileName, txtFileName, NULL))

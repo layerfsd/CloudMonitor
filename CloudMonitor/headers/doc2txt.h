@@ -2,6 +2,7 @@
 #define _DOC2TXT_H__
 
 #include <cstdio>
+#include "parsedoc.h"
 
 typedef unsigned char uchar;
 typedef unsigned short ushort;
@@ -30,6 +31,5 @@ public:
 //char *doc_txt(const Storage &storage);
 //bool parse_doc(const char *doc_file_path, const char *text_file_path, const char *image_dir_path);
 //int DecodeUcs2Utf8(char *FileName);
-int ParseDoc(char *docFileName, char *txtFileName);
 
 #endif

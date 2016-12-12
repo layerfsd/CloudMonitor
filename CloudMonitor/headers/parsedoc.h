@@ -28,5 +28,6 @@
 //int ParseFile2Text(SFile &sf);
 int ParseFile2Text(char *FileName, char *TextName);
 int DecodeUcs2Utf8(char *FileName);
+int ParseDoc(const char *docFileName, const char *txtFileName);
 
 #endif
