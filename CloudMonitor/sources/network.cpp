@@ -1,4 +1,5 @@
 #include "network.h"
+#include "ReadConfig.h"
 #include "FileMon.h"
 #include "process.h"  // 远程控制接口函数声明
 
@@ -437,14 +438,15 @@ User::User(const char *userName)
 	strncpy(this->userName, userName, MAX_USERNAME);
 	//cout << "workdir: " << workDir << endl;
 
-	char  _servip[32] = { 0 };
-	int	  _servpt = SERV_PORT;
+	AppConfig acfg = { 0 };
 
-	if (GetServerAddress(_servip, &_servpt))
+	LoadConfig(CONFIG_PATH, MyParseFunc, &acfg);
+
+	if (!LoadConfig(CONFIG_PATH, MyParseFunc, &acfg))
 	{
 		exit(4);
 	}
-	if (0 != InitSSL(_servip, _servpt))
+	if (0 != InitSSL(acfg.ServAddr, acfg.ServPort))
 	{
 		exit(3);
 	}

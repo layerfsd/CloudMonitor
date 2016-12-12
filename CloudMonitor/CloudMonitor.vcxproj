@@ -182,6 +182,7 @@
     <ClCompile Include="sources\network.cpp" />
     <ClCompile Include="sources\parsedoc.cpp" />
     <ClCompile Include="sources\process.cpp" />
+    <ClCompile Include="sources\ReadConfig.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\doc2txt.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="headers\NetMon.h" />
     <ClInclude Include="headers\network.h" />
     <ClInclude Include="headers\parsedoc.h" />
+    <ClInclude Include="headers\ReadConfig.h" />
     <ClInclude Include="patches.h" />
     <ClInclude Include="sources\process.h" />
   </ItemGroup>

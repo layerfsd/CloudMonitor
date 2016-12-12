@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-bool LoadKeywords(const char* ConfigFilePath, ParseFunCallback ParseFuncCallback, AppConfig *acfg)
+bool LoadConfig(const char* ConfigFilePath, ParseFunCallback ParseFuncCallback, AppConfig *acfg)
 {
 	FILE *fp = NULL;
 	char  buf[MAXLINE];
@@ -97,6 +97,7 @@ void ShowConfig(AppConfig& acfg)
 	printf("UpdtADDR: [%s]\n", acfg.UpdateServ);
 }
 
+#if 0
 int main()
 {
 	AppConfig acfg = {0};
@@ -107,3 +108,4 @@ int main()
 
 	return 0;
 }
+#endif

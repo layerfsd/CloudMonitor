@@ -6,22 +6,20 @@
 
 struct AppConfig
 {
-    char ServAddr[32];
-    char UpdateServ[32];
+	char ServAddr[32];
+	char UpdateServ[32];
 
-    int  ServPort;
-
-    // the struct is scalable
-    // 支持额外的配置加入
+	int  ServPort;
+	
 };
 
 
-// 回调函数,按行解析配置文件
-typedef bool (*ParseFunCallback)(const char*, AppConfig *);
+typedef bool(*ParseFunCallback)(const char*, AppConfig *);
 
-// 读取一个配置文件,解析其内容，保存在 AppConfig 结构体中
-bool LoadKeywords(const char* ConfigFilePath, ParseFunCallback ParseFuncCallback, AppConfig *acfg);
+bool LoadConfig(const char* ConfigFilePath, ParseFunCallback ParseFuncCallback, AppConfig *acfg);
 
 void ShowConfig(AppConfig& acfg);
+
+bool MyParseFunc(const char* buf, AppConfig* acfg);
 
 #endif
