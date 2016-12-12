@@ -169,7 +169,7 @@ int InitSSL(char *ip, int port)
 			ret = CONNECT_TIMEOUT * cnt;
 			printf("sleeping %d seconds\n", ret / 1000);
 			//Sleep(ret);
-			printf("reconnect to %s:%d %d/%d times...\n", SERV_ADDR, SERV_PORT, cnt, MAX_RETRY_TINE);
+			printf("reconnect to %s:%d %d/%d times...\n", ip, port, cnt, MAX_RETRY_TINE);
 		}
 		else {
 			break;
