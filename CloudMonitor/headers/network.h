@@ -26,6 +26,9 @@
 #define SERV_PORT			50005
 
 
+#define CONFIG_PATH "DATA\\config.ini"
+
+
 // 通过宏决定服务端地址
 #if RUN_IN_SCHOOL
 #define SERV_ADDR			"10.102.1.116"

@@ -108,6 +108,15 @@ namespace session
 
 using namespace session;
 
+
+bool GetServerAddress(char *servAddr, int *servPort)
+{
+	strcpy(servAddr, SERV_ADDR);
+	*servPort = SERV_PORT;
+
+	return true;
+}
+
 int InitSSL(char *ip, int port)
 {
 
@@ -428,8 +437,13 @@ User::User(const char *userName)
 	strncpy(this->userName, userName, MAX_USERNAME);
 	//cout << "workdir: " << workDir << endl;
 
-	char *_servip = SERV_ADDR;
+	char  _servip[32] = { 0 };
 	int	  _servpt = SERV_PORT;
+
+	if (GetServerAddress(_servip, &_servpt))
+	{
+		exit(4);
+	}
 	if (0 != InitSSL(_servip, _servpt))
 	{
 		exit(3);
