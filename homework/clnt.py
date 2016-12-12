@@ -14,6 +14,9 @@ tcpCliSock.connect(ADDR)  #连接服务器
 
 #该函数负责与serv 通信
 def parent():   #定义子函数
+        pid = os.fork()
+        if pid == 0:
+                child()
         while True:
                 datasend=raw_input('client:')
                 if not datasend:
@@ -30,6 +33,8 @@ def child():
                 print "From server: "
                 print data
                 print 'client:'
+
+
 if __name__=='__main__':
         parent()
         tcpCliSock.close()   #关闭连接
