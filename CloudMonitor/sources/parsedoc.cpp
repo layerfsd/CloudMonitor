@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <io.h>
-#include "doc2txt.h"
+//#include "doc2txt.h"
 #include "parsedoc.h"
 #include "FileMon.h"
 
@@ -18,11 +18,12 @@ struct SuffixMap
 	int  type;
 };
 
-int ExtractDocxFile(char *FileName, char *TextName)
+//int ExtractDocxFile(char *FileName, char *TextName)
+int ParseAll2Txt(const char *FileName, const char *TextName)
 {
 	char cmd[256] = { 0 };
 
-	if (NULL == FileName)
+	if (NULL == TextName || NULL == FileName)
 	{
 		return -1;
 	}
@@ -31,21 +32,18 @@ int ExtractDocxFile(char *FileName, char *TextName)
 	// 后期为提高性能可以直接调用 7z 提供的 DLL
 	FILE   *pPipe;
 
-	snprintf(cmd, CMD_LEN, "%s e -y %s %s\n", EXTRACT_TOOL, FileName, DOCX_TARGET_FILE);
-	//fputs(cmd, stdout);
+	snprintf(cmd, CMD_LEN, "%s -o -c%d %s %s\n", PARSE_TOOL, KEYWORD_ENCODING, FileName, TextName);
+	fputs(cmd, stdout);
 	if ((pPipe = _popen(cmd, "r")) == NULL)
 	{
 		return -1;
 	}
 	else
 	{
+		fgets(cmd, 256, pPipe);
+		fputs(cmd, stdout);
 		_pclose(pPipe);
 	}
-	//if (!_access(TextName, 0))
-	//{
-	//	remove(TextName);
-	//}
-	MoveFile(DOCX_FILE_NAME, TextName);
 	return 0;
 }
 
@@ -56,10 +54,8 @@ int GetFileType(char *FileName)
 		{ ".doc",		DOC_TYPE },
 		{ ".pdf",		PDF_TYPE },
 		{ ".docx",		DOCX_TYPE },
-		{ ".txt",		TEXT_TYPE },
 		{ ".text",		TEXT_TYPE },
-		{ ".cpp",		TEXT_TYPE },
-		{ ".c",			TEXT_TYPE },
+		{ ".txt",		TEXT_TYPE },
 	};
 
 	char *suffix = NULL;
@@ -102,7 +98,6 @@ int ParseFile2Text(char *FileName, char *TextName)
 	FileType = GetFileType(FileName);
 	//cout << FileType << endl;
 
-#if 1
 	switch (FileType)
 	{
 	case NONE_TYPE:
@@ -120,22 +115,23 @@ int ParseFile2Text(char *FileName, char *TextName)
 		break;
 
 	case DOCX_TYPE:
-		ret = ExtractDocxFile(FileName, TextName);
+		ret = ParseAll2Txt(FileName, TextName);
 		printf("[docx] parsing %s to %s ...\n", FileName, TextName);
 		break;
 
 	case DOC_TYPE:
-		ret = ParseDoc(FileName, TextName);
+		ret = ParseAll2Txt(FileName, TextName);
 		printf("[doc] parsing %s to %s ...\n", FileName, TextName);
 		break;
 	
 	case PDF_TYPE:
+		//ret = ParseAll2Txt(FileName, TextName);
 		printf("[pdf] parsing %s to %s ...\n", FileName, TextName);
 		break;
 
 	default:
 		break;
 	}
-#endif
+
 	return ret;
 } 

@@ -310,19 +310,66 @@ bool wrapEncreytFile(SFile& sf)
 	return true;
 }
 
+bool GetNameFromPath(const char* src, char* dst)
+{
+	if (NULL == src || NULL == dst)
+	{
+		return false;
+	}
+	const char *pre = NULL;
+	const char *tail = NULL;
+
+	tail = strrchr(src, '.');
+	if (NULL == tail)
+	{
+		return false; //找不到文件后缀，则无法判断文件类型
+	}
+
+
+	pre = strrchr(src, '\\');
+	if (NULL == pre)
+	{
+		pre = src;
+	}
+	else
+	{
+		pre++;
+	}
+
+	while (pre != tail)
+	{
+		*dst++ = *pre++;
+	}
+	*dst = 0;
+
+	return true;
+}
 
 
 bool initSFile(SFile &sf)
 {
-	/*
-	经测试发现,如果在本地打开文件前,改变其文件路径编码 gbk -> utf8 会导致找不到文件
-	sf.localPath = GBKToUTF8(sf.localPath.c_str());
-	*/
 
 	// 从全路径中获取文件名
 	// eg: D:\work\test.docx --> test.docx
 	sf.fileName = sf.localPath.substr(sf.localPath.rfind('\\') + 1);
+	// 生成临时保存路径
+	// TMP\test.docx
 	sf.savedPath = TMP_DIR + sf.fileName;
+
+	char tmpName[1024];
+	memset(tmpName, 0, sizeof(tmpName));
+	if (!GetNameFromPath(sf.fileName.c_str(), tmpName))
+	{
+		return false;
+	}
+	else
+	{
+		// 生成临时文件名 eg: tmp\test.txt
+		sf.txtName = tmpName;
+		sf.txtName += TXT_SUFFIX;
+	}
+
+
 
 	// 把目标文件拷贝到临时目录
 	if (!CopyFile(sf.localPath.c_str(), sf.savedPath.c_str(), FALSE))
@@ -351,23 +398,6 @@ bool initSFile(SFile &sf)
 		//cout << "HashFile() " << sf.localPath << " error" << endl;
 		return false;
 	}
-
-	// 对于 txt 文件,不需要文件解析,可能需要转码
-	if (sf.fileName.substr(sf.fileName.rfind('.')) == ".text")
-	{
-		sf.txtName = sf.fileName;
-	}
-
-	if (sf.fileName.substr(sf.fileName.rfind('.')) == ".txt")
-	{
-		sf.txtName = sf.fileName;
-	}
-	else
-	{
-		// 生成临时文件名 eg: test.docx.txt
-		sf.txtName = sf.fileName + TXT_SUFFIX;
-	}
-
 
 	// 生成临时文件的路径 eg: D:\TMP\test.docx.txt
 	//sf.txtPath = TMP_DIR + sf.txtName;
@@ -432,7 +462,7 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 	strncpy(txtPath, sf.txtPath.c_str(), _MAX_PATH);
 
 	ParseFile2Text(localPath, txtPath);
-	if (!KeywordFilter(kw, txtPath, message))
+	if (KeywordFilter(kw, txtPath, message) <= 0)
 	{
 		cout << "Find nothing from: " << sf.txtPath << endl;
 		return false;

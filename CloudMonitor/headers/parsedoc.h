@@ -8,6 +8,8 @@
 #define DOCX_FILE_NAME		"document.xml"
 
 #define EXTRACT_TOOL		"7-Zip\\7z.exe"
+#define PARSE_TOOL			"all2txt\\a2tcmd.exe"
+
 #define CMD_LEN				256
 
 #define NONE_TYPE		0
@@ -20,6 +22,7 @@
 #define MIN_SUFFIX_LEN  2
 #define MAX_SUFFIX_LEN  4
 
+#define KEYWORD_ENCODING 65001
 
 #define WORK_DIRECTORY  "TMP"
 
@@ -29,5 +32,7 @@
 int ParseFile2Text(char *FileName, char *TextName);
 int DecodeUcs2Utf8(const char *FileName);
 int ParseDoc(const char *docFileName, const char *txtFileName);
+
+int ParseAll2Txt(const char *FileName, const char *TextName);
 
 #endif
