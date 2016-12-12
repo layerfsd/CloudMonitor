@@ -6,7 +6,7 @@ windows客户端技术说明
 
 	依赖环境为：
 		OpenSSL		-->		安全信道的建立、文件加密、文件MD5哈希计算
-		7z			--> 	zip、docx 文件解析
+		7z		--> 	        zip、docx 文件解析
 
 
 	编程语言主要为：
@@ -81,12 +81,11 @@ windows客户端技术说明
 			     |---tools.h
 			     | 
 			     | 
-			     |---ILHook.cpp		(BASIC HOOk)
+			     |---ILHook.cpp	(BASIC HOOk)
 			     |---myHook.cpp 	(CreateFileW Hook)
 			     |---NamePipe.cpp
-			     |---tools.cpp		(通过本地socket与CloudMonitor异步通信，报告特定类型的文件打开事件)
+			     |---tools.cpp	(通过本地socket与CloudMonitor异步通信，报告特定类型的文件打开事件)
 			     | 
-
 
 	如何部署？
 		1. 将CloudMonior 文件夹下的 DEV 文件夹复制到C盘根目录			     
