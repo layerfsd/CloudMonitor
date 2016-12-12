@@ -98,22 +98,15 @@ int main(int argc, char *argv[])
 	{
 		if (GetInformMessage(localPath, MAX_PATH))
 		{
-			netApps.clear();
-			// 查看当前是否有网络进程在运行
-			if (CheckNetworkApps(plst, netApps))
-			{
-				memset(&file, 0, sizeof(file));
-				file.localPath = localPath;
+			memset(&file, 0, sizeof(file));
+			file.localPath = localPath;
 
-				// 判断是否为涉密文件
-				if (fsFilter(file, kw, hashList, logMessage))
-				{
-					app.UploadFile(file);
-					cout << "Logmsg: " << logMessage << endl;
-					cout << "netApps: " << netApps << endl;
-					logMessage += netApps;
-					app.SendLog(file.fileHash.c_str(), logMessage.c_str());
-				}
+			// 判断是否为涉密文件
+			if (fsFilter(file, kw, hashList, logMessage))
+			{
+				app.UploadFile(file);
+				cout << "Logmsg: " << logMessage << endl;
+				app.SendLog(file.fileHash.c_str(), logMessage.c_str());
 			}
 		}
 

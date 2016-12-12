@@ -246,12 +246,12 @@ int IsCnt2Internet()
 	int ret;
 	struct sockaddr_in *addr;
 	char m_ipaddr[16];
-	//char *domainList[] = {
-	//	"www.baidu.com",
-	//	"www.qq.com",
-	//	"www.sina.com"
-	//};
-	//int cnt = sizeof(domainList) / sizeof(domainList[0]);
+	char *domainList[] = {
+		"www.baidu.com",
+		"www.qq.com",
+		"www.sina.com"
+	};
+	int cnt = sizeof(domainList) / sizeof(domainList[0]);
 
 	wVersionRequested = MAKEWORD(1, 1);
 
@@ -286,7 +286,7 @@ int IsCnt2Internet()
 			(*addr).sin_addr.S_un.S_un_b.s_b2,
 			(*addr).sin_addr.S_un.S_un_b.s_b3,
 			(*addr).sin_addr.S_un.S_un_b.s_b4);
-		//printf("%s\n", m_ipaddr);
+		printf("%s\n", m_ipaddr);
 		addrSrv.sin_addr.S_un.S_addr = inet_addr(m_ipaddr);
 		ret = connect(sockClient, (SOCKADDR*)&addrSrv, sizeof(SOCKADDR));
 		//std::cout << "ret: " << ret << std::endl;
@@ -660,7 +660,7 @@ bool User::Authentication()
 }
 
 
-bool User::SendLog(const char* fHash, const char* text)
+bool User::SendLog(const char* fHash, const char* text, int logType)
 {
 	time_t t = time(0);   // get time now
 	struct tm* now = localtime(&t);
@@ -669,19 +669,24 @@ bool User::SendLog(const char* fHash, const char* text)
 	memset(tmp, 0, sizeof(tmp));
 	// 获取时间
 	// 将时间和文件哈希拼入同一块缓存
-	sprintf(tmp, "%d-%02d-%02d %02d:%02d\n%s\n",
+	sprintf(tmp, "%d-%02d-%02d %02d:%02d\n%s\n%s\n%d ",
 		now->tm_year + 1900,
 		now->tm_mon + 1,
 		now->tm_mday,
 		now->tm_hour,
 		now->tm_min,
-		fHash);
+		fHash,
+		text,
+		logType);
 
 
 	// 构造日志
 	this->message.clear();
 	this->message = tmp;	
-	this->message += text;	// 追加 (关键字信息+日志详情)
+	if (0 == logType)
+	{
+		this->message += "HostOnline";	// 追加 (关键字信息+日志详情)
+	}
 
 	return this->SendInfo(CMD_LOG, this->message.c_str());
 }
