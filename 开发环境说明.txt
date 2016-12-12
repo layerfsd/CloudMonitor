@@ -1,0 +1,88 @@
+(建议采用 vim 或者 sublime 浏览)
+windows客户端技术说明
+
+	开发工具：
+		 Visutl Studio 2015 comminity 开发。
+
+	依赖环境为：
+		OpenSSL		-->		安全信道的建立、文件加密、文件MD5哈希计算
+		7z			--> 	zip、docx 文件解析
+
+
+	编程语言主要为：
+		C、C++
+		其中 C 占有多数，大概85% 左右
+		C++ 主要是用了一些该语言的特性，包括类、stl 通用容器(vector、map)
+
+
+	涉及到的技术有：
+		1、 windows mfc 编程（该技术在本程序中涉密量非常少，设计了一个面向用户的登录窗口、接收用户名、密码，
+			以参数调用的形式启动客户端核心进程`CloudMonitor.exe`）
+		2、 windows 进程枚举
+		3、 关键字过滤
+		4、 文件解析 （doc、docx、wps、txt、xls、pdf）
+		5、 socket 套接字编程，包括IO异步
+
+	开发文件清单：
+		CloudMonitor
+			-Depends (开发环境依赖)
+			|---OpenSSL
+			     | 
+				 |--include
+				 |---lib
+			     | 
+			-MoniroService (本地IO监控)
+			     | 
+			     |---MonitroService.cpp
+			     |---stdafx.cpp
+			     |---targetver.h
+			     | 
+			-Monitor (MFC:用户登录程序)
+				 |
+			     |---Monitor.cpp
+			     |---MonitorDlg.cpp 
+			     |---stdafx.cpp
+			     |---Monitor.h
+			     |---MonitorDlg.h
+			     |---resource.h
+			     |---stdafx.h
+			     |---res
+			     	  |
+			     	  |---Monitor.ico
+			     	  |---Monitor.rc2
+			     	  |
+			-CloudMonitor (客户端核心程序)
+				 |
+				 |---headers
+			     	  | 
+					  |---doc2txt.h 
+					  |---Encrypt.h
+					  |---FileMon.h
+					  |---NetMon.h
+					  |---network.h
+					  |---parsedoc.h
+			     	  | 
+				 |---sources
+					  | 
+					  |---doc2txt.cpp  (doc 文件解析)
+					  |---encrypt.cpp  (文件加密)
+					  |---filemon.cpp  (文件处理函数)
+					  |---main.cpp	   
+					  |---netmon.cpp   (网络监控)
+					  |---netstat.cpp  
+					  |---network.cpp  (网络通信)
+					  |---parsedoc.cpp (文件解析中心)
+					  |---process.cpp  (进程管理)
+					  | 
+			-HooKeyboard (DLL: 生成文件IO监控依赖)
+			     | 
+			     |---ILHook.h
+			     |---NamePipe.h
+			     |---tools.h
+			     | 
+			     | 
+			     |---ILHook.cpp		(BASIC HOOk)
+			     |---myHook.cpp 	(CreateFileW Hook)
+			     |---NamePipe.cpp
+			     |---tools.cpp		(通过本地socket与CloudMonitor异步通信，报告特定类型的文件打开事件)
+			     | 
