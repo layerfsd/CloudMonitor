@@ -12,12 +12,27 @@
 
 #define CMD_LEN				256
 
-#define NONE_TYPE		0
-#define DOC_TYPE		1
-#define DOCX_TYPE		2
-#define TEXT_TYPE		3
-#define PDF_TYPE		4
-#define WPS_TYPE		5
+enum FILE_TYPE
+{
+	NONE_TYPE,
+
+	WPS_TYPE,
+
+	DOC_TYPE,
+	DOCX_TYPE,
+
+	TEXT_TYPE,
+
+	PDF_TYPE,
+
+	PPT_TYPE,
+
+	XLS_TYPE,
+
+	RTF_TYPE,
+};
+
+
 
 #define SEPERATOR		'.'
 #define MIN_SUFFIX_LEN  2

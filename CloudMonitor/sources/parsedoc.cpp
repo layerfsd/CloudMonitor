@@ -22,18 +22,19 @@ struct SuffixMap
 int ParseAll2Txt(const char *FileName, const char *TextName)
 {
 	char cmd[256] = { 0 };
+	FILE   *pPipe;
 
 	if (NULL == TextName || NULL == FileName)
 	{
 		return -1;
 	}
 
-	// 暂时先调用 7z.exe 执行解压缩与问价加/解密
-	// 后期为提高性能可以直接调用 7z 提供的 DLL
-	FILE   *pPipe;
+
+	printf("[pdf] parsing %s to %s ...\n", FileName, TextName);
 
 	snprintf(cmd, CMD_LEN, "%s -o -c%d %s %s\n", PARSE_TOOL, KEYWORD_ENCODING, FileName, TextName);
 	fputs(cmd, stdout);
+
 	if ((pPipe = _popen(cmd, "r")) == NULL)
 	{
 		return -1;
@@ -50,12 +51,24 @@ int ParseAll2Txt(const char *FileName, const char *TextName)
 int GetFileType(char *FileName)
 {
 	static SuffixMap FileTypeList[] = {
-		{ ".wps",        WPS_TYPE },
+		{ ".wps",       WPS_TYPE },
 		{ ".doc",		DOC_TYPE },
-		{ ".pdf",		PDF_TYPE },
 		{ ".docx",		DOCX_TYPE },
+
+
 		{ ".text",		TEXT_TYPE },
 		{ ".txt",		TEXT_TYPE },
+
+		{ ".pdf",		PDF_TYPE },
+
+		{ ".xls",		XLS_TYPE },
+		{ ".xlsx",		XLS_TYPE },
+
+
+		{ ".ppt",		PPT_TYPE },
+		{ ".pptx",		PPT_TYPE },
+
+		{".rtf",		RTF_TYPE},
 	};
 
 	char *suffix = NULL;
@@ -114,11 +127,6 @@ int ParseFile2Text(char *FileName, char *TextName)
 		printf("[text] parsing %s to %s ...\n", FileName, TextName);
 		break;
 
-	case DOCX_TYPE:
-		ret = ParseAll2Txt(FileName, TextName);
-		printf("[docx] parsing %s to %s ...\n", FileName, TextName);
-		break;
-
 	case DOC_TYPE:
 		ret = ParseAll2Txt(FileName, TextName);
 		printf("[doc] parsing %s to %s ...\n", FileName, TextName);
@@ -131,12 +139,8 @@ int ParseFile2Text(char *FileName, char *TextName)
 		break;
 
 
-	case PDF_TYPE:
-		//ret = ParseAll2Txt(FileName, TextName);
-		printf("[pdf] parsing %s to %s ...\n", FileName, TextName);
-		break;
-
 	default:
+		ret = ParseAll2Txt(FileName, TextName);
 		break;
 	}
 
