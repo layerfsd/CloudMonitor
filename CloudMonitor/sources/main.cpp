@@ -130,10 +130,8 @@ int main(int argc, char *argv[])
 			app.EndSession();
 			break;
 		}
-		if (app.isEndSession())  //检测服务端是否发出 "终止会话"命令
-		{
-			break;
-		}
+		
+		app.KeepAlive();  // 当检测到客户端掉线时，尝试重新连接
 	}
 
 

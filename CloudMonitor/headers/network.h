@@ -140,7 +140,7 @@ public:
 		this->EndSession();
 	}
 
-	bool isEndSession();
+	void KeepAlive();
 
 
 	// 接收服务端远程控制指令

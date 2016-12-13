@@ -325,9 +325,14 @@ inline int n2hi(int num)
 }
 
 
-bool User::isEndSession()
+void User::KeepAlive()
 {
-	return STATUE_DISCONNECTED == statu;
+	if (this->statu != STATUE_DISCONNECTED)
+	{
+		return;
+	}
+
+	this->Authentication();
 }
 
 
@@ -437,20 +442,6 @@ User::User(const char *userName)
 	}
 	strncpy(this->userName, userName, MAX_USERNAME);
 	//cout << "workdir: " << workDir << endl;
-
-	AppConfig acfg = { 0 };
-
-	LoadConfig(CONFIG_PATH, MyParseFunc, &acfg);
-
-	if (!LoadConfig(CONFIG_PATH, MyParseFunc, &acfg))
-	{
-		exit(4);
-	}
-	if (0 != InitSSL(acfg.ServAddr, acfg.ServPort))
-	{
-		exit(3);
-	}
-
 }
 
 
@@ -636,6 +627,15 @@ inline bool IsInvalidUser(const char *status)
 
 bool User::Authentication()
 {
+	AppConfig acfg = { 0 };
+
+	LoadConfig(CONFIG_PATH, MyParseFunc, &acfg);
+
+	if (0 != InitSSL(acfg.ServAddr, acfg.ServPort))
+	{
+		return false;
+	}
+
 	this->statu = STATUE_CONNECTED;
 
 	GetReplyInfo();
@@ -716,11 +716,8 @@ bool User::GetRegistInf()
 bool User::EndSession()
 {
 	cout << "Disconnecting from Server...\n" << endl;
-	if (this->isEndSession())
+	if (this->statu == STATUE_DISCONNECTED)
 	{
-		cout << "Before I say Good-Bye to Server" << endl;
-		cout << "Server Already Disconnected from me ...\n" << endl;
-		EndSSL();
 		return true;
 	}
 	this->SendInfo(CMD_END, "Bye-bye.");
