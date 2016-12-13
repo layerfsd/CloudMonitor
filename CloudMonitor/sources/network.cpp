@@ -874,9 +874,9 @@ bool User::UploadFile(SFile &file)
 	fclose(fp);
 
 	// É¾³ýÁÙÊ±ÎÄ¼þ
-	remove(file.savedPath.c_str());
-	remove(file.encPath.c_str());
-	remove(file.txtPath.c_str());
+	remove(file.savedPath.c_str());		// tmp\doc
+	remove(file.encPath.c_str());		// tmp\aes
+	remove(file.txtPath.c_str());		// tmp\txt
 
 	return true;
 }
