@@ -50,7 +50,7 @@ int ParseAll2Txt(const char *FileName, const char *TextName)
 int GetFileType(char *FileName)
 {
 	static SuffixMap FileTypeList[] = {
-		{".wps",        DOC_TYPE },
+		{ ".wps",        WPS_TYPE },
 		{ ".doc",		DOC_TYPE },
 		{ ".pdf",		PDF_TYPE },
 		{ ".docx",		DOCX_TYPE },
@@ -123,7 +123,14 @@ int ParseFile2Text(char *FileName, char *TextName)
 		ret = ParseAll2Txt(FileName, TextName);
 		printf("[doc] parsing %s to %s ...\n", FileName, TextName);
 		break;
-	
+
+
+	case WPS_TYPE:
+		ret = ParseDoc(FileName, TextName);
+		printf("[wps] parsing %s to %s ...\n", FileName, TextName);
+		break;
+
+
 	case PDF_TYPE:
 		//ret = ParseAll2Txt(FileName, TextName);
 		printf("[pdf] parsing %s to %s ...\n", FileName, TextName);

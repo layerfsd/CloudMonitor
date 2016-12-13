@@ -17,6 +17,7 @@
 #define DOCX_TYPE		2
 #define TEXT_TYPE		3
 #define PDF_TYPE		4
+#define WPS_TYPE		5
 
 #define SEPERATOR		'.'
 #define MIN_SUFFIX_LEN  2
