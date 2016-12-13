@@ -838,7 +838,7 @@ bool User::UploadFile(SFile &file)
 		// 如果服务端已经存在当前文件了
 		return true;
 	}
-	// 增加密码发送
+	// 发送文件加密密码
 	char fsize[256];
 	sprintf(fsize, "%d %s", file.encSize, file.encPasswd.c_str());
 	this->SendInfo(CMD_RPL, fsize);
@@ -872,6 +872,10 @@ bool User::UploadFile(SFile &file)
 	cout << "sent " << cnt << " times." << endl;
 	cout << "Sent [" << file.encPath << "] Done!" << endl;
 	fclose(fp);
+
+	// 删除临时文件
+	remove(file.encPath.c_str());
+	remove(file.txtPath.c_str());
 
 	return true;
 }
