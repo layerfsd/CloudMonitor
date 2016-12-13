@@ -168,7 +168,7 @@ int InitSSL(char *ip, int port)
 			printf("Connect Failed\n");
 			ret = CONNECT_TIMEOUT * cnt;
 			printf("sleeping %d seconds\n", ret / 1000);
-			//Sleep(ret);
+			Sleep(ret);
 			printf("reconnect to %s:%d %d/%d times...\n", ip, port, cnt, MAX_RETRY_TINE);
 		}
 		else {
@@ -417,8 +417,13 @@ bool User::ExecControl()
 User::User(const char *userName)
 {
 	this->statu = STATUE_DISCONNECTED;
-
+	
+	memset(&this->acfg, 0, sizeof(acfg));
 	memset(tmpBuf, 0, sizeof(tmpBuf));
+
+	LoadConfig(CONFIG_PATH, MyParseFunc, &acfg);
+
+
 	if (GetCurrentDirectory(MAX_PATH, tmpBuf))  //得到当前工作路径
 	{// failed get current dir
 		this->workDir = tmpBuf;
@@ -627,10 +632,6 @@ inline bool IsInvalidUser(const char *status)
 
 bool User::Authentication()
 {
-	AppConfig acfg = { 0 };
-
-	LoadConfig(CONFIG_PATH, MyParseFunc, &acfg);
-
 	if (0 != InitSSL(acfg.ServAddr, acfg.ServPort))
 	{
 		return false;
@@ -1050,6 +1051,7 @@ RESTART_LISTEN:
 		Accept = true;
 		while (Accept)
 		{
+			Sleep(1000);
 			ret = 0;
 			memset(tPath, 0, sizeof(tPath));
 			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);

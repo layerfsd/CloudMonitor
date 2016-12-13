@@ -81,20 +81,44 @@ int main(int argc, char *argv[])
 		user_num = user_name;
 	}
 
-	User app(authBuf);
-	
-	if (!app.Authentication())  // 验证账号	
-	{
-		cout << "Auth Failed!" << endl;
-		return -1;
-	}
-
 	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 
 	string	netApps;
 
 	string keywords = "keywords.txt";
 	
+
+#if 0
+	if (!LoadKeywords(keywordPath, kw))
+	{
+		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
+		return -1;
+	}
+
+	while (g_RUNNING)
+	{
+		if (GetInformMessage(localPath, MAX_PATH))
+		{
+			memset(&file, 0, sizeof(file));
+			file.localPath = localPath;
+
+			// 判断是否为涉密文件
+			if (fsFilter(file, kw, hashList, logMessage))
+			{
+				cout << "Logmsg: " << logMessage << endl;
+			}
+			CleanTmpFiles(file);
+		}
+	}
+#else
+	User app(authBuf);
+
+	if (!app.Authentication())  // 验证账号	
+	{
+		cout << "Auth Failed!" << endl;
+		return -1;
+	}
+
 	// 每次启动，先更新关键字列表
 	app.GetFile(keywords);
 	if (!LoadKeywords(keywordPath, kw))
@@ -133,7 +157,7 @@ int main(int argc, char *argv[])
 		
 		app.KeepAlive();  // 当检测到客户端掉线时，尝试重新连接
 	}
-
+#endif
 
 	return 0;
 }

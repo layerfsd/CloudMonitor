@@ -3,6 +3,7 @@
 #define _NETWORK_H__
 
 #include "FileMon.h"
+#include "ReadConfig.h"
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -51,7 +52,7 @@
 #define MAX_USERNAME		32
 #define MAC_SIZE			20
 #define IP_SIZE				16
-#define MAX_RETRY_TINE		1
+#define MAX_RETRY_TINE		10000
 
 #define	LOOP_SLEEP_TIME		500 // 休眠 500 毫秒
 #define HEART_BEAT_TIME		60  //定义心跳时间(秒)
@@ -201,6 +202,10 @@ private:
 	string		workDir;
 	char		tmpBuf[MAXBUF];
 	int			statu;
+
+	AppConfig acfg;
+
+
 
 	// 远程控制任务列表
 	vector<RemoteControl> taskList;
