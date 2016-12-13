@@ -280,38 +280,26 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 	{
 		return FALSE;
 	}
-
-	// 粗略过滤wps产生的临时路径
-	if (NULL != strstr(lpFilePath, "\\\\?"))
-	{
-		return FALSE;
-	}
-
-	if (NULL != strstr(lpFilePath, "~$"))
-	{
-		return FALSE;
-	}
-	// 过滤完成
-
 	//　获取文件后缀
 	LPCSTR pos = strrchr(lpFilePath, '.');
-	if (NULL == pos)
+
+	if (NULL == pos || '\\' == lpFilePath[0])
+	{
+		return FALSE;
+	}
+
+	if (NULL != strchr(lpFilePath, '$'))
 	{
 		return FALSE;
 	}
 
 
-	// 过滤回收站文件
-	if (!strstr(lpFilePath, TRASH_FILE))
-	{
-		return FALSE;
-	}
 
-	// 过滤系统临时文件
-	if (TMPPATH_GOT && !strstr(lpFilePath, SYS_TMP_PATH))
-	{
-		return FALSE;
-	}
+	//// 过滤系统临时文件
+	//if (TMPPATH_GOT && !strstr(lpFilePath, SYS_TMP_PATH))
+	//{
+	//	return FALSE;
+	//}
 
 
 
