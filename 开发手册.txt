@@ -89,3 +89,7 @@ windows客户端技术说明
 
 	如何部署？
 		1. 将CloudMonior 文件夹下的 DEV 文件夹复制到C盘根目录			     
+
+	如何运行？
+		1. 将CloudMonior 文件夹下的 all2txt 文件夹复制到编译后的 Release 文件夹
+        2. 执行 Monitor.exe
