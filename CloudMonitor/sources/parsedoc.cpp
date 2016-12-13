@@ -32,7 +32,7 @@ int ParseAll2Txt(const char *FileName, const char *TextName)
 
 	printf("[pdf] parsing %s to %s ...\n", FileName, TextName);
 
-	snprintf(cmd, CMD_LEN, "%s -o -c%d %s %s\n", PARSE_TOOL, KEYWORD_ENCODING, FileName, TextName);
+	snprintf(cmd, CMD_LEN, "%s -o -c%d \"%s\" \"%s\" \n", PARSE_TOOL, KEYWORD_ENCODING, FileName, TextName);
 	fputs(cmd, stdout);
 
 	if ((pPipe = _popen(cmd, "r")) == NULL)
