@@ -73,7 +73,7 @@ MyCreateFileW(
 	WideCharToMultiByte(CP_ACP, 0, lpFileName, -1, tp, w_nlen, NULL, false);
 
 	ProcessFilePath(tp);
-	printf("[CHECKING] %s\n", tp);
+	//printf("[CHECKING] %s\n", tp);
 	CreateFileHook.UnHook();
 
 	HANDLE hRet = CreateFileW(

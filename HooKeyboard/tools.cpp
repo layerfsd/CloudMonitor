@@ -3,6 +3,10 @@
 #include <map>
 #include <string>
 #include <time.h>
+
+#include <sys/types.h>  
+#include <sys/stat.h>  
+
 #include <windows.h>
 
 using namespace std;
@@ -44,8 +48,36 @@ static BOOL TMPPATH_GOT = false;
 
 #pragma comment(lib,"ws2_32.lib")		// 建立socket()套接字
 
-//BOOL SetCache(LPCSTR lpFilePath);
-//BOOL GetCache(char* lpBuf, size_t bufSize);
+
+#define MIN_CREATETIME 5
+
+static bool NotIgnoreByTime(const char* filename)
+{
+	struct	_stat buf;
+	int		result;
+	size_t	Curtime = 0;
+
+	// Get data associated with "crt_stat.c":   
+	result = _stat(filename, &buf);
+
+	// Check if statistics are valid:   
+	if (result != 0)
+	{
+		return false;
+	}
+
+	// get current time
+	Curtime = (size_t)time(NULL);
+
+	// 当前时间 - 创建时间 > MIN_CREATETIME
+	if (Curtime - (size_t)buf.st_ctime > MIN_CREATETIME)
+	{
+		return true;
+	}
+	// 该文件为新创建的空白文件,不处理
+	return false;
+}
+
 
 
 // 通过此 TCP 接口通报消息
@@ -293,8 +325,6 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 		return FALSE;
 	}
 
-
-
 	//// 过滤系统临时文件
 	//if (TMPPATH_GOT && !strstr(lpFilePath, SYS_TMP_PATH))
 	//{
@@ -354,8 +384,16 @@ VOID SendMsg2Backend()
 
 		length = 0;
 
+REGET_TASK:
 		if (GetTask(&tsk))
 		{
+			if (!NotIgnoreByTime(tsk.path))
+			{
+				printf("[IGNORED] %s\n", tsk.path);
+				goto REGET_TASK;
+			}
+
+
 			int   MaxRetryTime = 0;
 			while ((tsk.status != TRUE) && (MaxRetryTime++ < MAX_RETRY_TIME))
 			{
