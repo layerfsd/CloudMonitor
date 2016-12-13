@@ -352,8 +352,10 @@ bool initSFile(SFile &sf)
 	// 从全路径中获取文件名
 	// eg: D:\work\test.docx --> test.docx
 	sf.fileName = sf.localPath.substr(sf.localPath.rfind('\\') + 1);
+
 	// 生成临时保存路径
 	// TMP\test.docx
+	// all2txt 工具貌似无法正常识别路径
 	sf.savedPath = TMP_DIR + sf.fileName;
 
 	char tmpName[1024];
@@ -462,6 +464,8 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 	strncpy(txtPath, sf.txtPath.c_str(), _MAX_PATH);
 
 	ParseFile2Text(localPath, txtPath);
+
+	// 如果没有匹配到关键字，则忽略该文件
 	if (KeywordFilter(kw, txtPath, message) <= 0)
 	{
 		cout << "Find nothing from: " << sf.txtPath << endl;

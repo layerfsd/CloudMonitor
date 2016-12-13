@@ -352,8 +352,8 @@ VOID SendMsg2Backend()
 
 		if (GetTask(&tsk))
 		{
-			int   MaxRetryTime = MAX_RETRY_TIME;
-			while ((tsk.status != TRUE) && (MaxRetryTime-- > 0))
+			int   MaxRetryTime = 0;
+			while ((tsk.status != TRUE) && (MaxRetryTime++ < MAX_RETRY_TIME))
 			{
 				//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
 				printf("[SEND:%d] %s\n", tsk.ltime, tsk.path);
@@ -361,25 +361,24 @@ VOID SendMsg2Backend()
 
 				if (sent <= 0)
 				{
-					// 如果发送失败,跳过下面代码
+					// 如果发送失败，设置网络状况为:已断开连接
 					if (sent < 0)  // TCP连接失效
 					{
 						printf("[SENT-FAILED:]\n");
 						isConnectionOK = FALSE;
 					}
-					continue;
 				}
 				else  // 发送成功
 				{
 					printf("[SENT-OK:]\n");
 					length = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
 					tsk.status = true;		// 如果发送成功,标记发送状态为 真
-					//tsk.status = false;
-					//printf("[HOOK-RECV:%d] %s", ret, tmpBuf);
 				}
 
 				if (!tsk.status)
 				{
+					// 尝试重新连接之前，先等待一会儿
+					Sleep(MaxRetryTime * 1000);
 					isConnectionOK = FALSE;
 					InitTcpConnection();
 				}

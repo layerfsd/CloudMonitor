@@ -26,6 +26,15 @@ void InitDir();					//patches.cpp
 
 BOOL g_RUNNING = TRUE;
 
+
+// É¾³ýÁÙÊ±ÎÄ¼þ
+void CleanTmpFiles(SFile& file)
+{
+	remove(file.savedPath.c_str());		// tmp\doc
+	remove(file.encPath.c_str());		// tmp\aes
+	remove(file.txtPath.c_str());		// tmp\txt
+}
+
 int main(int argc, char *argv[])
 {
 	string keywordPath = KEYWORD_PATH;
@@ -108,6 +117,7 @@ int main(int argc, char *argv[])
 				cout << "Logmsg: " << logMessage << endl;
 				app.SendLog(file.fileHash.c_str(), logMessage.c_str());
 			}
+			CleanTmpFiles(file);
 		}
 
 		//cout << "No message from >>>Local ..." << endl;

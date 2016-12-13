@@ -873,11 +873,6 @@ bool User::UploadFile(SFile &file)
 	cout << "Sent [" << file.encPath << "] Done!" << endl;
 	fclose(fp);
 
-	// É¾³ýÁÙÊ±ÎÄ¼þ
-	remove(file.savedPath.c_str());		// tmp\doc
-	remove(file.encPath.c_str());		// tmp\aes
-	remove(file.txtPath.c_str());		// tmp\txt
-
 	return true;
 }
 
