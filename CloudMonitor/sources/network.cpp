@@ -571,7 +571,7 @@ bool User::SendInfo(const char *cmdType, const char* text)
 	cout << "[CMD] " << cmdType << endl;
 	cout << "[TXT] " << text << " [textLen] " << textLen << endl;
 	cout << "***************> CLIENT END <********************\n" << endl;
-
+	printf("[SSL_write RETURN] %d\n", ret);
 	return true;
 }
 
@@ -886,6 +886,8 @@ bool User::HeartBeat()
 	}
 
 	//cout << "LOOP_SLEEP_TIME: " << count << endl;
+
+	this->KeepAlive();  // 当检测到客户端掉线时，尝试重新连接
 
 	count += 1;
 	Sleep(LOOP_SLEEP_TIME);

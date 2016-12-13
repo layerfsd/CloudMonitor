@@ -153,9 +153,7 @@ int main(int argc, char *argv[])
 		{
 			app.EndSession();
 			break;
-		}
-		
-		app.KeepAlive();  // 当检测到客户端掉线时，尝试重新连接
+		}		
 	}
 #endif
 
