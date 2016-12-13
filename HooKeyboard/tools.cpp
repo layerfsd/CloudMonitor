@@ -37,6 +37,10 @@ BOOL		KEEP_RUNNING = TRUE;
 BOOL		isConnectionOK = FALSE;
 SOCKET      GLOBAL_SOCKET = { 0 };
 
+#define TRASH_FILE   "$RECYCLE.BIN"
+
+static CHAR SYS_TMP_PATH[MAX_PATH];
+static BOOL TMPPATH_GOT = false;
 
 #pragma comment(lib,"ws2_32.lib")		// 建立socket()套接字
 
@@ -269,8 +273,6 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 		".wps",
 	};
 
-	//SetCache(lpFilePath);
-
 
 	DWORD dwMatchListLen = sizeof(matchList) / sizeof(matchList[0]);
 
@@ -293,11 +295,25 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 
 	//　获取文件后缀
 	LPCSTR pos = strrchr(lpFilePath, '.');
-
 	if (NULL == pos)
 	{
 		return FALSE;
 	}
+
+
+	// 过滤回收站文件
+	if (!strstr(lpFilePath, TRASH_FILE))
+	{
+		return FALSE;
+	}
+
+	// 过滤系统临时文件
+	if (TMPPATH_GOT && !strstr(lpFilePath, SYS_TMP_PATH))
+	{
+		return FALSE;
+	}
+
+
 
 	BOOL retValue = FALSE;
 
@@ -372,7 +388,7 @@ VOID SendMsg2Backend()
 				{
 					printf("[SENT-OK:]\n");
 					length = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
-					tsk.status = true;		// 如果发送成功,标记发送状态为 真
+					tsk.status = TRUE;		// 如果发送成功,标记发送状态为 真
 				}
 
 				if (!tsk.status)
@@ -405,8 +421,18 @@ VOID SendMsg2Backend()
 
 DWORD WINAPI ThreadProc(LPVOID lpParam)
 {
-	//cout << "sub thread started\n" << endl;
-	//CreateNamedPipeInServer();
+	char *pEn = getenv("TMP");
+	if (pEn)
+	{
+		strncpy(SYS_TMP_PATH, pEn, MAX_PATH);
+		TMPPATH_GOT = TRUE;
+		printf("TMP is [%s]\n", SYS_TMP_PATH);
+	}
+	else
+	{
+		printf("undefined [TMP]\n");
+	}
+
 	SendMsg2Backend();
 	return 0;
 }
