@@ -49,7 +49,7 @@
 
 #define MAX_FILENAME		128
 #define MAX_SYSVER			48
-#define MAX_USERNAME		32
+#define MAX_USERNAME		128
 #define MAC_SIZE			20
 #define IP_SIZE				16
 #define MAX_RETRY_TINE		10000
@@ -118,7 +118,7 @@ enum ALB_SOCK_RET
 	USERNAME_NOT_EXIST,
 	INVALID_PASSWD,
 	ALREADY_LOGIN,
-	NOT_SPECIFIC_MAC,
+	MAC_DIFF,
 };
 
 // 远程控制结构体

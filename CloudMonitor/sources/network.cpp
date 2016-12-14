@@ -94,7 +94,6 @@ namespace session
 	const int		authStrLen		    = strlen(AuthString);
 	const int		CMD_BGN_LEN		    = strlen(CMD_BGN);
 	const int		CMD_CONTROL_LEN		= strlen(CMD_CONTROL);
-
 };
 
 using namespace session;
@@ -561,7 +560,7 @@ bool User::SendInfo(const char *cmdType, const char* text)
 	cout << "[CMD] " << cmdType << endl;
 	cout << "[TXT] " << text << " [textLen] " << textLen << endl;
 	cout << "***************> CLIENT END <********************\n" << endl;
-	printf("[SSL_write RETURN] %d\n", ret);
+	//printf("[SSL_write RETURN] %d\n", ret);
 	return true;
 }
 
@@ -637,16 +636,12 @@ bool User::Authentication()
 	}
 	
 	// 尝试登陆
+	cout << "SENDING " << userName << endl;
 	SendInfo(CMD_ATH, userName);
 	GetReplyInfo();
 
-	if (IsInvalidUser(pkt.text))
-	{
-		cout << "Invalid user: " << this->userName;
-		InformUser(USERNAME_NOT_EXIST);
-		return false;
-	}
 
+	// 检查密码
 	if (!memcmp(pkt.text, WRONG_PASSWD, WRONG_PASSWD_LEN))
 	{
 		cout << "Wrong Passwd " << this->userName;
@@ -654,16 +649,29 @@ bool User::Authentication()
 		return false;
 	}
 
-
-	if (IsLoginOK(pkt.text) || RegisterClient())
+	// 检查 mac 是否与注册时的一致
+	const char* mac_diff = "MAC_DIFF";
+	if (!memcmp(mac_diff, pkt.text, strlen(mac_diff)))
 	{
-		cout << "Client Login success." << endl;
-		InformUser(CONNECT_SUCCESS);
-		return true;
+		cout << mac_diff << endl;
+		InformUser(MAC_DIFF);
+		return false;
 	}
-	InformUser(INVALID_PASSWD);
-	cout << "Register client failed!" << endl;
-	return false;
+
+	// 首次登陆，需要注册
+	const char* needReg = "NEED REGISTER";
+	if (!memcmp(needReg, pkt.text, strlen(needReg)))
+	{
+		if (!RegisterClient())
+		{
+			// 注册失败
+			InformUser(CONNECT_FAILED);
+		}
+	}
+
+	// 登录成功
+	InformUser(CONNECT_SUCCESS);
+	return true;
 }
 
 

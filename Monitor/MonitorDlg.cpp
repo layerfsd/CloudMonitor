@@ -313,7 +313,7 @@ void CMonitorDlg::OnBnClickedOk()
 			}
 			if (NOT_SPECIFIC_MAC == albSockRet)
 			{
-				inform = "改用户名与您的计算机不匹配";
+				inform = "当前用户名不允许在您的计算机上登录";
 				SetDlgItemText(IDC_STATUS, inform);
 				AfxMessageBox(inform);
 				break;

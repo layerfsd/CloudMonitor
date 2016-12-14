@@ -35,6 +35,10 @@ void CleanTmpFiles(SFile& file)
 	remove(file.txtPath.c_str());		// tmp\txt
 }
 
+// 获取本机有线网卡地址
+bool GetWiredMac(string& wiredMac);
+
+
 int main(int argc, char *argv[])
 {
 	string keywordPath = KEYWORD_PATH;
@@ -70,16 +74,19 @@ int main(int argc, char *argv[])
 
 
 	const char*  user_num = "1234567";
-	char  authBuf[64];
+	char  authBuf[128];
 	memset(authBuf, 0, sizeof(authBuf));
 
-	// 构造用户名密码格式,以回车符分割
-	sprintf(authBuf, "%s\n%s", user_name, user_pass);
-	//const char*  user_num = "1234568";
-	if (NULL != user_name)
+	string wiredMac;
+
+	if (!GetWiredMac(wiredMac))
 	{
-		user_num = user_name;
+		cout << "GetWiredMac Error" << endl;
+		exit(1);
 	}
+	// 构造用户名密码格式,以回车符分割
+	sprintf(authBuf, "%s\n%s\n%s", user_name, user_pass, wiredMac.c_str());
+	//const char*  user_num = "1234568";
 
 	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 
