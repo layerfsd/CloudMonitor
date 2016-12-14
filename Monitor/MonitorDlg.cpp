@@ -311,12 +311,11 @@ void CMonitorDlg::OnBnClickedOk()
 				//GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
 				break;
 			}
-			if (USERNAME_NOT_EXIST == albSockRet)
+			if (NOT_SPECIFIC_MAC == albSockRet)
 			{
-				inform = "用户名不存在";
+				inform = "改用户名与您的计算机不匹配";
 				SetDlgItemText(IDC_STATUS, inform);
-				GetDlgItem(IDC_USERNAME)->SetWindowTextW(L"");
-				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
+				AfxMessageBox(inform);
 				break;
 			}
 			if (INVALID_PASSWD == albSockRet)

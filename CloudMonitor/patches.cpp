@@ -1,6 +1,7 @@
 
 // Use signal to attach a signal handler to the abort routine
-#include "headers\FileMon.h"
+#include "FileMon.h"
+#include "network.h"
 #include "patches.h"
 #include <signal.h>
 #include <tchar.h>
@@ -214,7 +215,7 @@ void InitDir()
 	
 	if (!TryStartUp(sem_name))
 	{
-		InformUser(14);
+		InformUser(ALREADY_LOGIN);
 
 		exit(3);
 	}

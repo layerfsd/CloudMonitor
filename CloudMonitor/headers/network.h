@@ -107,6 +107,20 @@ enum ProcessResult
 	FINISHED = 1,
 	FAILED
 };
+
+
+// 通过命名管道,通知用户界面登录结果
+enum ALB_SOCK_RET
+{
+
+	CONNECT_FAILED = 10,
+	CONNECT_SUCCESS,
+	USERNAME_NOT_EXIST,
+	INVALID_PASSWD,
+	ALREADY_LOGIN,
+	NOT_SPECIFIC_MAC,
+};
+
 // 远程控制结构体
 struct RemoteControl
 {

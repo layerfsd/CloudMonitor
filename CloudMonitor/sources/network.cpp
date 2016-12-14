@@ -32,16 +32,6 @@ namespace session
 		char	    funcDesc[32];   // 控制函数描述
 	};
 
-	// 通过命名管道,通知用户界面登录结果
-	enum ALB_SOCK_RET
-	{
-
-		CONNECT_FAILED = 10,
-		CONNECT_SUCCESS,
-		USERNAME_NOT_EXIST,
-		INVALID_PASSWD,
-	};
-
 
 	const char*		AuthString		= "WHO ARE YOU";
 	const char*		CMD_LOG			= "LOG";
