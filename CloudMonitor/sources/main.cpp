@@ -66,13 +66,12 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 	}
-	// 用户手动运行该程序，则刷新认证信息到注册表
+
 	if (argc == 3)
 	{
 		// 初始化账户信息
 		strcpy_s(act.username, 32, argv[1]);
 		strcpy_s(act.password, 32, argv[2]);
-		SetAuth(&act);
 	}
 
 	InitDir(hide);
@@ -133,6 +132,11 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	// 用户手动运行该程序并且登录成功，则刷新认证信息到注册表
+	if (3 == argc)
+	{
+		SetAuth(&act);
+	}
 	// 每次启动，先更新关键字列表
 	app.GetFile(keywords);
 	if (!LoadKeywords(keywordPath, kw))
