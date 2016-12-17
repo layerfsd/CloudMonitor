@@ -4,6 +4,6 @@
 #include <Windows.h>
 
 
-void InitDir();
+void InitDir(bool hide);
 
 #endif // ! _PATCHES_ALBERT__

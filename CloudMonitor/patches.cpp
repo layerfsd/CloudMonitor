@@ -208,11 +208,18 @@ void SetWorkPath()
 	GetCurrentDirectory(sizeof(strModule), strModule);
 }
 
-void InitDir()
+void InitDir(bool hide)
 {
 	char	sem_name[MAX_PATH];
 
 	memset(sem_name, 0, MAX_PATH);
+
+	// Òþ²Ø¿ØÖÆÌ¨´°¿Ú
+	if (hide)
+	{
+		ShowWindow(GetConsoleWindow(), SW_HIDE);
+	}
+
 	GetMyName(sem_name, MAX_PATH);
 	
 	if (!TryStartUp(sem_name))

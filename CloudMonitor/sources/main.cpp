@@ -5,6 +5,7 @@
 #include "FileMon.h"
 #include "process.h"
 #include "../AutoStart.h"
+#include "../patches.h"
 
 #include <string.h>
 #include <iostream>
@@ -22,8 +23,6 @@ using namespace std;
 #define DEBUG_PARSE_FILE	0
 #define SESSION				1
 
-
-void InitDir();					//patches.cpp
 
 BOOL g_RUNNING = TRUE;
 
@@ -55,14 +54,16 @@ int main(int argc, char *argv[])
 
 	SFile file;
 	Account act;
+	bool hide = false;
 
 	// 当该程序自动运行时，默认从注册表中解析出认证信息
 	if (2 == argc && !strncmp(argv[1], "--autostart", 32))
 	{
+		hide = true;
 		if (!GetAuth(&act))
 		{
 			printf("[FAILED] GetAuth\n");
-			exit(1);
+			return 1;
 		}
 	}
 	// 用户手动运行该程序，则刷新认证信息到注册表
@@ -74,7 +75,7 @@ int main(int argc, char *argv[])
 		SetAuth(&act);
 	}
 
-	InitDir();
+	InitDir(hide);
 
 
 	// 先留下接口,后期优化时加上此功能---"记录本地敏感文件的哈希缓存" 以提高文件检索速度
@@ -92,7 +93,7 @@ int main(int argc, char *argv[])
 	if (!GetWiredMac(wiredMac))
 	{
 		cout << "GetWiredMac Error" << endl;
-		exit(1);
+		return 1;
 	}
 	// 构造用户名密码格式,以回车符分割
 	sprintf(authBuf, "%s\n%s\n%s", act.username, act.password, wiredMac.c_str());
