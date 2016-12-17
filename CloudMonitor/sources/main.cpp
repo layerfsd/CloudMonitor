@@ -81,10 +81,6 @@ int main(int argc, char *argv[])
 	// 先留下接口,后期优化时加上此功能---"记录本地敏感文件的哈希缓存" 以提高文件检索速度
 	//LoadHashList(hashPath, hashList);
 
-
-	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
-
-
 	char  authBuf[128];
 	memset(authBuf, 0, sizeof(authBuf));
 

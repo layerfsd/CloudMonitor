@@ -248,6 +248,8 @@ void InitDir(bool hide)
 	{
 		DeleteDirectory(TMP_DIR);	// 程序每次启动时,清空所有临时文件
 	}
+	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
+
 	return;
 }
 
