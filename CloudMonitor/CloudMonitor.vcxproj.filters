@@ -56,6 +56,9 @@
     <ClCompile Include="sources\ReadConfig.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="AutoStart.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\doc2txt.h">
@@ -83,6 +86,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="headers\ReadConfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoStart.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

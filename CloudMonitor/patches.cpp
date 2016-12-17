@@ -3,6 +3,8 @@
 #include "FileMon.h"
 #include "network.h"
 #include "patches.h"
+#include "AutoStart.h"
+
 #include <signal.h>
 #include <tchar.h>
 #include <Windows.h>
@@ -224,6 +226,9 @@ void InitDir()
 
 	SetWorkPath();
 	StartHookService();
+
+	// 检查本程序是否已经加入到开机自启动项目
+	RegisterProgram();
 
 	// 创建临时目录
 	if (-1 == _access(TMP_DIR, 0))

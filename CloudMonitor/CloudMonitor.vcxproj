@@ -171,6 +171,7 @@
     <None Include="res\README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AutoStart.cpp" />
     <ClCompile Include="hardinfo.cpp" />
     <ClCompile Include="patches.cpp" />
     <ClCompile Include="sources\doc2txt.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="sources\ReadConfig.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AutoStart.h" />
     <ClInclude Include="headers\doc2txt.h" />
     <ClInclude Include="headers\Encrypt.h" />
     <ClInclude Include="headers\FileMon.h" />

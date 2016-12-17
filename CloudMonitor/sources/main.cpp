@@ -4,6 +4,7 @@
 #include "parsedoc.h"
 #include "FileMon.h"
 #include "process.h"
+#include "../AutoStart.h"
 
 #include <string.h>
 #include <iostream>
@@ -53,14 +54,24 @@ int main(int argc, char *argv[])
 	vector<Process> plst;
 
 	SFile file;
-	const char* user_name = NULL;
-	const char* user_pass = NULL;
+	Account act;
 
-
+	// 当该程序自动运行时，默认从注册表中解析出认证信息
+	if (2 == argc && !strncmp(argv[1], "--autostart", 32))
+	{
+		if (!GetAuth(&act))
+		{
+			printf("[FAILED] GetAuth\n");
+			exit(1);
+		}
+	}
+	// 用户手动运行该程序，则刷新认证信息到注册表
 	if (argc == 3)
 	{
-		user_name = argv[1];
-		user_pass = argv[2];
+		// 初始化账户信息
+		strcpy_s(act.username, 32, argv[1]);
+		strcpy_s(act.password, 32, argv[2]);
+		SetAuth(&act);
 	}
 
 	InitDir();
@@ -73,7 +84,6 @@ int main(int argc, char *argv[])
 	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
 
 
-	const char*  user_num = "1234567";
 	char  authBuf[128];
 	memset(authBuf, 0, sizeof(authBuf));
 
@@ -85,7 +95,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	// 构造用户名密码格式,以回车符分割
-	sprintf(authBuf, "%s\n%s\n%s", user_name, user_pass, wiredMac.c_str());
+	sprintf(authBuf, "%s\n%s\n%s", act.username, act.password, wiredMac.c_str());
 	//const char*  user_num = "1234568";
 
 	char localPath[MAX_PATH];	// 临时存储敏感文件路径
