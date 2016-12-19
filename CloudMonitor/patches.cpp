@@ -211,8 +211,20 @@ void SetWorkPath()
 void InitDir(bool hide)
 {
 	char	sem_name[MAX_PATH];
+	// 生成日志文件名，取当天日期 YYYY-MM-DD.txt
+	char LogName[MAX_PATH];
+	FILE *stream;
+	time_t timep;
+	struct tm *p;
+
 
 	memset(sem_name, 0, MAX_PATH);
+
+	time(&timep);
+	p = localtime(&timep);
+	memset(LogName, 0, sizeof(LogName));
+	snprintf(LogName, MAX_PATH, "LOG\\%d-%d-%d.txt", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday);
+
 
 	// 隐藏控制台窗口
 	if (hide)
@@ -220,21 +232,11 @@ void InitDir(bool hide)
 		ShowWindow(GetConsoleWindow(), SW_HIDE);
 		// 如果为开机自启动，先休眠30秒，等待系统连接网络
 		Sleep(30000);
+		if ((stream = freopen(LogName, "a+", stdout)) == NULL)
+		{
+			exit(-1);
+		}
 	}
-
-	// 生成日志文件名，取当天日期 YYYY-MM-DD.txt
-	char LogName[MAX_PATH] = { 0 };
-	FILE *stream;
-	time_t timep;
-	struct tm *p;
-	time(&timep);
-	p = gmtime(&timep);
-	snprintf(LogName, MAX_PATH, "LOG\\%d-%d-%d.txt", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday);
-	if ((stream = freopen(LogName, "a+", stdout)) == NULL)
-	{
-		exit(-1);
-	}
-
 
 
 	GetMyName(sem_name, MAX_PATH);

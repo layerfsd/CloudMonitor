@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 
 #ifdef LOCAL_SCAN
 	PickLocalPath(collector);
-	cout << "扫描到文件总数量：" << collector.size() << endl;
+	cout << "Scaned File Count：" << collector.size() << endl;
 
 	for (size_t i = 0; i < collector.size(); i++)
 	{
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	cout << "待上传文件数量：" << uploadList.size() << endl;
+	cout << "Uploading File Count：" << uploadList.size() << endl;
 
 	return 0;
 #endif
