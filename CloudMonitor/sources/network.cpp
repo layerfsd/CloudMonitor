@@ -659,9 +659,10 @@ bool User::Authentication()
 	}
 
 	// Ê×´ÎµÇÂ½£¬ÐèÒª×¢²á
-	const char* needReg = "NEED REGISTER";
+	const char* needReg = "NEED REGIST";
 	if (!memcmp(needReg, pkt.text, strlen(needReg)))
 	{
+		cout << "Registering " << endl;
 		if (!RegisterClient())
 		{
 			// ×¢²áÊ§°Ü
@@ -774,6 +775,7 @@ bool User::GetFile(string &FileName)
 	{
 		FileName.insert(0, FILE_KEEP_DIR);
 	}
+	cout << "[keyword hash] " << this->pkt.text << endl;
 	if (IsHashEqual(FileName.c_str(), this->pkt.text))
 	{
 		this->SendInfo(CMD_RPL, "EXISTED");
@@ -789,22 +791,25 @@ bool User::GetFile(string &FileName)
 	cout << FileName << " size: " << pkt.text << endl;
 	cout << "atoi: " << fileSize << endl;
 
-	string saveFilePath = this->workDir + FileName;
+	string saveFilePath = FileName;
 
 	if (fileSize <= 0)
 	{
+		cout << "Invalid file size " << fileSize << endl;
 		return false;
 	}
 	FILE *fp = NULL;
 
 	if ((fp = fopen(saveFilePath.c_str(), "wb")) == NULL)
 	{
+		cout << "Create [" << saveFilePath << "] error" << endl;
 		return false;
 	}
 
 	int restSize = fileSize;
 	int recvSize = 0;
 
+	printf("Begin receiving %d bytes\n", recvSize);
 	while (restSize > 0)
 	{
 		memset(tmpBuf, 0, sizeof(tmpBuf));

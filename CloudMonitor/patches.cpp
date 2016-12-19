@@ -218,6 +218,8 @@ void InitDir(bool hide)
 	if (hide)
 	{
 		ShowWindow(GetConsoleWindow(), SW_HIDE);
+		// 如果为开机自启动，先休眠30秒，等待系统连接网络
+		Sleep(30000);
 	}
 
 	GetMyName(sem_name, MAX_PATH);
