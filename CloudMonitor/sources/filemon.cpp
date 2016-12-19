@@ -186,7 +186,7 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 
 	if (GetFileSize(FileName, &FileSize) != 0)
 	{
-		printf("GetFileSize error");
+		// printf("GetFileSize error");
 		return -1;
 	}
 	if ((FileBuf = (char *)malloc(FileSize)) == NULL)
@@ -197,7 +197,7 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 
 	if (DumpFromFile(FileName, FileBuf, FileSize) != 0)
 	{
-		printf("DumpFileByte error");
+		perror("DumpFileByte error");
 		return -1;
 	}
 
@@ -376,7 +376,7 @@ bool initSFile(SFile &sf)
 	// 把目标文件拷贝到临时目录
 	if (!CopyFile(sf.localPath.c_str(), sf.savedPath.c_str(), FALSE))
 	{
-		printf("CopyFile Error: %x\n", GetLastError());
+		//perror("CopyFile Error: \n");
 		return false;
 	}
 
@@ -417,7 +417,7 @@ bool initSFile(SFile &sf)
 	// 由于服务端采用 utf-8 编码，因此转换文件名编码,  gbk -> utf8 
 	// 防止服务端显示上传的文件名为乱码
 	sf.fileName = GBKToUTF8(sf.fileName.c_str());
-
+	sf.utf8Path = GBKToUTF8(sf.localPath.c_str());
 	return true;
 }
 
@@ -455,7 +455,7 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 
 	if (!initSFile(sf))
 	{
-		cout << "initSfile Failed!" << endl;
+		//cout << "initSfile Failed!" << endl;
 		return false;
 	}
 	char localPath[_MAX_PATH], txtPath[_MAX_PATH];

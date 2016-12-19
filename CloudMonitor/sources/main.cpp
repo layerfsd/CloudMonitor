@@ -1,3 +1,6 @@
+#include <string.h>
+#include <iostream>
+
 #include "network.h"
 #include "Encrypt.h"
 #include "NetMon.h"
@@ -8,9 +11,6 @@
 #include "../patches.h"
 #include "../PickFiles.h"
 
-#include <string.h>
-#include <iostream>
-
 using namespace std;
 
 #pragma comment(lib,"ws2_32.lib")		// 建立socket()套接字
@@ -18,7 +18,7 @@ using namespace std;
 #pragma comment(lib,"libssl.lib")		// ssl 安全信道 
 #pragma comment(lib, "iphlpapi.lib")	// 获取网络连接状况
 
-//#define LOCAL_SCAN
+#define LOCAL_SCAN
 
 #define CONTROL				0
 #define FULL_DEBUG			0
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 
 	if (!GetWiredMac(wiredMac))
 	{
-		cout << "GetWiredMac Error" << endl;
+		//cout << "GetWiredMac Error" << endl;
 		return 1;
 	}
 
@@ -143,15 +143,13 @@ int main(int argc, char *argv[])
 		// 判断是否为涉密文件
 		if (fsFilter(file, kw, hashList, logMessage))
 		{
+			cout << file.utf8Path << endl;
+			cout << logMessage << endl;
 			uploadList.push_back(file.localPath);
 		}
 	}
 
 	cout << "待上传文件数量：" << uploadList.size() << endl;
-	for (size_t i = 0; i < uploadList.size(); i++)
-	{
-		cout << uploadList[i] << endl;
-	}
 
 	return 0;
 #endif

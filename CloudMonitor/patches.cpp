@@ -222,6 +222,21 @@ void InitDir(bool hide)
 		Sleep(30000);
 	}
 
+	// 生成日志文件名，取当天日期 YYYY-MM-DD.txt
+	char LogName[MAX_PATH] = { 0 };
+	FILE *stream;
+	time_t timep;
+	struct tm *p;
+	time(&timep);
+	p = gmtime(&timep);
+	snprintf(LogName, MAX_PATH, "LOG\\%d-%d-%d.txt", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday);
+	if ((stream = freopen(LogName, "a+", stdout)) == NULL)
+	{
+		exit(-1);
+	}
+
+
+
 	GetMyName(sem_name, MAX_PATH);
 	
 	if (!TryStartUp(sem_name))

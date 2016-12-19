@@ -79,6 +79,7 @@ struct SFile
 	// 后期还将支持 .rtf .cls .pdf ...
 	string fileName;		// 原始文件名称	 eg: 财务报表.doc
 	string localPath;		// 文件本地路径  eg: C:\Users\王老五\Desktop\账务信息\财务报表.doc
+	string utf8Path;		// 文件本地路径  eg: C:\Users\王老五\Desktop\账务信息\财务报表.doc
 	string savedPath;		//原始文件临时保存路径  TMP\\财务报表.doc
 	string fileHash;		// 原始文件哈希 (固定长度,32 bytes)
 	size_t fileSize;		// 原始文件的大小 
