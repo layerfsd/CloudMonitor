@@ -56,6 +56,12 @@ int main(int argc, char *argv[])
 	Account act;
 	bool hide = false;
 
+	if (1 == argc)
+	{
+		printf("Need args\n");
+		return 1;
+	}
+
 	// 当该程序自动运行时，默认从注册表中解析出认证信息
 	if (2 == argc && !strncmp(argv[1], "--autostart", 32))
 	{
