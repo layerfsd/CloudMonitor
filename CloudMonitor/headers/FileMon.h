@@ -150,4 +150,7 @@ int DecodeGB2312ToUtf8(const char* FileName);
 
 bool GetNameFromPath(const char* src, char* dst);
 
+//加密一个文件
+bool wrapEncreytFile(SFile& sf);
+
 #endif // _FILEMON_H__

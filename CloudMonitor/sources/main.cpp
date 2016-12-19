@@ -18,6 +18,7 @@ using namespace std;
 #pragma comment(lib,"libssl.lib")		// ssl 安全信道 
 #pragma comment(lib, "iphlpapi.lib")	// 获取网络连接状况
 
+//#define LOCAL_SCAN
 
 #define CONTROL				0
 #define FULL_DEBUG			0
@@ -25,6 +26,7 @@ using namespace std;
 #define SESSION				1
 
 
+// 控制本程序主循环
 BOOL g_RUNNING = TRUE;
 
 
@@ -44,7 +46,6 @@ int main(int argc, char *argv[])
 {
 	string keywordPath = KEYWORD_PATH;
 	string hashPath = HASHLST_PATH;
-	string sensiFilePath;
 	string logMessage;
 
 	vector<Keyword> kw;
@@ -55,15 +56,12 @@ int main(int argc, char *argv[])
 
 	// 保存本地硬盘的所有符合后缀的文件
 	vector<string> collector;
+	vector<string> uploadList;
 
 	SFile file;
 	Account act;
 	bool hide = false;
 
-	PickLocalPath(collector);
-
-	cout << collector.size() << endl;
-	return 0;
 
 	if (1 == argc)
 	{
@@ -95,9 +93,6 @@ int main(int argc, char *argv[])
 	// 先留下接口,后期优化时加上此功能---"记录本地敏感文件的哈希缓存" 以提高文件检索速度
 	//LoadHashList(hashPath, hashList);
 
-	char  authBuf[128];
-	memset(authBuf, 0, sizeof(authBuf));
-
 	string wiredMac;
 
 	if (!GetWiredMac(wiredMac))
@@ -105,40 +100,17 @@ int main(int argc, char *argv[])
 		cout << "GetWiredMac Error" << endl;
 		return 1;
 	}
+
+	char  authBuf[128];
+	memset(authBuf, 0, sizeof(authBuf));
+
 	// 构造用户名密码格式,以回车符分割
 	sprintf(authBuf, "%s\n%s\n%s", act.username, act.password, wiredMac.c_str());
-	//const char*  user_num = "1234568";
 
 	char localPath[MAX_PATH];	// 临时存储敏感文件路径
-
-	string	netApps;
-
 	string keywords = "keywords.txt";
 	
 
-#if 0
-	if (!LoadKeywords(keywordPath, kw))
-	{
-		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
-		return -1;
-	}
-
-	while (g_RUNNING)
-	{
-		if (GetInformMessage(localPath, MAX_PATH))
-		{
-			memset(&file, 0, sizeof(file));
-			file.localPath = localPath;
-
-			// 判断是否为涉密文件
-			if (fsFilter(file, kw, hashList, logMessage))
-			{
-				cout << "Logmsg: " << logMessage << endl;
-			}
-			CleanTmpFiles(file);
-		}
-	}
-#else
 	User app(authBuf);
 
 	if (!app.Authentication())  // 验证账号	
@@ -160,6 +132,33 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+
+#ifdef LOCAL_SCAN
+	PickLocalPath(collector);
+	cout << "扫描到文件总数量：" << collector.size() << endl;
+
+	for (size_t i = 0; i < collector.size(); i++)
+	{
+		file.localPath = collector[i];
+		// 判断是否为涉密文件
+		if (fsFilter(file, kw, hashList, logMessage))
+		{
+			uploadList.push_back(file.localPath);
+		}
+	}
+
+	cout << "待上传文件数量：" << uploadList.size() << endl;
+	for (size_t i = 0; i < uploadList.size(); i++)
+	{
+		cout << uploadList[i] << endl;
+	}
+
+	return 0;
+#endif
+
+
+
+
 	while (g_RUNNING)
 	{
 		if (GetInformMessage(localPath, MAX_PATH))
@@ -170,6 +169,7 @@ int main(int argc, char *argv[])
 			// 判断是否为涉密文件
 			if (fsFilter(file, kw, hashList, logMessage))
 			{
+				wrapEncreytFile(file);
 				app.UploadFile(file);
 				cout << "Logmsg: " << logMessage << endl;
 				app.SendLog(file.fileHash.c_str(), logMessage.c_str());
@@ -188,7 +188,6 @@ int main(int argc, char *argv[])
 			break;
 		}		
 	}
-#endif
 
 	return 0;
 }

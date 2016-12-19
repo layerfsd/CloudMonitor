@@ -30,10 +30,10 @@ int ParseAll2Txt(const char *FileName, const char *TextName)
 	}
 
 
-	printf("[pdf] parsing %s to %s ...\n", FileName, TextName);
+	//printf("[pdf] parsing %s to %s ...\n", FileName, TextName);
 
 	snprintf(cmd, CMD_LEN, "%s -o -c%d \"%s\" \"%s\" \n", PARSE_TOOL, KEYWORD_ENCODING, FileName, TextName);
-	fputs(cmd, stdout);
+	//fputs(cmd, stdout);
 
 	if ((pPipe = _popen(cmd, "r")) == NULL)
 	{
@@ -42,7 +42,7 @@ int ParseAll2Txt(const char *FileName, const char *TextName)
 	else
 	{
 		fgets(cmd, 256, pPipe);
-		fputs(cmd, stdout);
+		//fputs(cmd, stdout);
 		_pclose(pPipe);
 	}
 	return 0;
@@ -113,7 +113,7 @@ int ParseFile2Text(const char *FileName, char *TextName)
 	{
 	case NONE_TYPE:
 		ret = -1;
-		printf("[none] parsing %s to %s ...\n", FileName, TextName);
+		//printf("[none] parsing %s to %s ...\n", FileName, TextName);
 		break;
 
 	case TEXT_TYPE:
@@ -127,13 +127,13 @@ int ParseFile2Text(const char *FileName, char *TextName)
 
 	case DOC_TYPE:
 		ret = ParseAll2Txt(FileName, TextName);
-		printf("[doc] parsing %s to %s ...\n", FileName, TextName);
+		//printf("[doc] parsing %s to %s ...\n", FileName, TextName);
 		break;
 
 
 	case WPS_TYPE:
 		ret = ParseDoc(FileName, TextName);
-		printf("[wps] parsing %s to %s ...\n", FileName, TextName);
+		//printf("[wps] parsing %s to %s ...\n", FileName, TextName);
 		break;
 
 

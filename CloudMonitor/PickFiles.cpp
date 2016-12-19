@@ -43,6 +43,12 @@ static BOOL ScanFile(LPCSTR lpFilePath)
 	{
 		return FALSE;
 	}
+	
+	// 忽略垃圾文件
+	if (NULL != strchr(lpFilePath, '$'))
+	{
+		return FALSE;
+	}
 
 	BOOL retValue = FALSE;
 
@@ -89,7 +95,7 @@ static void FindAllFiles(vector<string>& collector, string& folderName)
 				// 扫描该文件
 				if (ScanFile(CurPath.c_str()))
 				{
-					cout << CurPath << endl;
+					//cout << CurPath << endl;
 					collector.push_back(CurPath);
 				}
 			}
