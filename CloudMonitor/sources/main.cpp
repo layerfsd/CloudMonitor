@@ -6,6 +6,7 @@
 #include "process.h"
 #include "../AutoStart.h"
 #include "../patches.h"
+#include "../PickFiles.h"
 
 #include <string.h>
 #include <iostream>
@@ -52,9 +53,17 @@ int main(int argc, char *argv[])
 	vector<HashItem> hashList;
 	vector<Process> plst;
 
+	// 保存本地硬盘的所有符合后缀的文件
+	vector<string> collector;
+
 	SFile file;
 	Account act;
 	bool hide = false;
+
+	PickLocalPath(collector);
+
+	cout << collector.size() << endl;
+	return 0;
 
 	if (1 == argc)
 	{

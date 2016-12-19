@@ -45,7 +45,7 @@ enum FILE_TYPE
 #include "FileMon.h"
 
 //int ParseFile2Text(SFile &sf);
-int ParseFile2Text(char *FileName, char *TextName);
+int ParseFile2Text(const char *FileName, char *TextName);
 int DecodeUcs2Utf8(const char *FileName);
 int ParseDoc(const char *docFileName, const char *txtFileName);
 

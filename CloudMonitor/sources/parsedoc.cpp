@@ -48,7 +48,7 @@ int ParseAll2Txt(const char *FileName, const char *TextName)
 	return 0;
 }
 
-int GetFileType(char *FileName)
+int GetFileType(const char *FileName)
 {
 	static SuffixMap FileTypeList[] = {
 		{ ".wps",       WPS_TYPE },
@@ -71,13 +71,11 @@ int GetFileType(char *FileName)
 		{".rtf",		RTF_TYPE},
 	};
 
-	char *suffix = NULL;
+	const char *suffix = NULL;
 	int   length = sizeof(FileTypeList) / sizeof(FileTypeList[0]);
 	int   type = NONE_TYPE;
 
 	suffix = strrchr(FileName, SEPERATOR);
-	//printf("FileTypeList size: %d\n", length);
-	//printf("Get Suffix: %s\n", suffix);
 
 	if ((NULL == suffix ) || (strlen(suffix) < MIN_SUFFIX_LEN))
 	{
@@ -98,7 +96,7 @@ int GetFileType(char *FileName)
 }
 
 
-int ParseFile2Text(char *FileName, char *TextName)
+int ParseFile2Text(const char *FileName, char *TextName)
 {
 	int ret = 0;
 	int FileType = 0;

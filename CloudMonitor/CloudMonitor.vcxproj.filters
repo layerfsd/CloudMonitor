@@ -59,6 +59,9 @@
     <ClCompile Include="AutoStart.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="PickFiles.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\doc2txt.h">
@@ -89,6 +92,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="AutoStart.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PickFiles.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

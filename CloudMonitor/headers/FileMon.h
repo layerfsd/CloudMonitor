@@ -148,4 +148,6 @@ bool isContinue(const char* lPath, int length);
 
 int DecodeGB2312ToUtf8(const char* FileName);
 
+bool GetNameFromPath(const char* src, char* dst);
+
 #endif // _FILEMON_H__
