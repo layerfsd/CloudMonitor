@@ -236,8 +236,10 @@ void CMonitorDlg::OnBnClickedOk()
 	memset(cmd, 0, MAX_PATH);
 	GetCurrentDirectoryA(MAX_PATH, cWinDir);
 
-	char* sAppPath = strcat(cWinDir, "\\CloudMonitor.exe");
-	sprintf(cmd, "%s %s %s", sAppPath, cname, cpass);
+	char* sAppPath = cWinDir;
+	strcat_s(cWinDir, sizeof(cWinDir), "\\CloudMonitor.exe");
+
+	sprintf_s(cmd, MAX_PATH, "%s %s %s", sAppPath, cname, cpass);
 
 
 	STARTUPINFOA   StartupInfo;//创建进程所需的信息结构变量    

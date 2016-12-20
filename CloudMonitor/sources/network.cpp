@@ -389,16 +389,21 @@ bool User::ExecControl()
 			*   起初选择方式1,后考虑到审计功能,采用方式2
 			*   这样可以支持服务器查找对应主机的任务执行状况
 			*/
-			execStatus = this->taskList[i].func(this->message, taskList[i].ctlDetails);		// 传送User类中的message引用给远程处理函数,远程处理函数产生的处理结果存储在 message 中
+
+			// 传送User类中的message引用给远程处理函数,远程处理函数产生的处理结果存储在 message 中
+			cout << "Executing task ..." << endl;
+			execStatus = this->taskList[i].func(this->message, taskList[i].ctlDetails);	
 			if (execStatus)
 			{
-				this->SendInfo(CTL_RPL_OK, message.c_str());							// 任务成功执行,通知服务端处理结果 
+				// 任务成功执行,通知服务端处理结果 
+				this->SendInfo(CTL_RPL_OK, message.c_str());							
 			}
 			else
 			{
-				this->SendInfo(CTL_RPL_FAILED, message.c_str());						// 任务执行失败,也通知服务端处理结果 
+				// 任务执行失败,也通知服务端处理结果 
+				this->SendInfo(CTL_RPL_FAILED, message.c_str());						
 			}
-			this->taskList[i].notExecuted = false;								 // 任务执行后,标记任务`未执行状态`为假
+			this->taskList[i].notExecuted = false;			 // 任务执行后,标记任务`未执行状态`为假
 			break;
 		//end if
 		}
@@ -514,7 +519,7 @@ bool User::GetReplyInfo()
 				<< "\tfunc at: " << tmpTask.func << endl
 				<< "\tfuncDesc: " << funcList[instructionCode].funcDesc << endl;
 			cout << "}" << endl;
-			
+			return true;
 		}
 		else // 如果远程控制编码不支持,则通知服务端此条控制信息为非法指令
 		{

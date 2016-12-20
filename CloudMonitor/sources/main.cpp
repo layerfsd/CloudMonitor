@@ -162,8 +162,10 @@ int main(int argc, char *argv[])
 			CleanTmpFiles(file);
 		}
 
-		//cout << "No message from >>>Local ..." << endl;
+		//cout << "Before GetFromServer" << endl;
 		app.GetFromServer();   // 接收服务端发送的 远程控制指令
+		//cout << "After GetFromServer" << endl;
+
 		app.ExecControl();    // 处理远程控制任务
 		app.HeartBeat();	  // 休眠 CLIENT_SLEEP_TIME 毫秒定时向服务端发送一个心跳包
 

@@ -179,7 +179,7 @@ bool RemoteScanLocalFiles(string& message, string& args)
 	for (size_t i = 0; i < scanResults.size(); i++)
 	{
 		message += scanResults[i].fullPath;
-		message += "\n";
+		message += "|";
 		message += scanResults[i].matchDetail;
 		message += "\n";
 	}
