@@ -122,6 +122,9 @@ bool PickLocalPath(vector<string>& collector)
 	{
 		driveList.push(szDrive);
 		szDrive += (lstrlen(szDrive) + 1);
+
+		// 为测试方便，暂时只扫描本地的第一个盘符
+		break;
 	} while (*szDrive != '\x00');
 
 	while (!driveList.empty())
@@ -133,4 +136,52 @@ bool PickLocalPath(vector<string>& collector)
 	return true;
 }
 
+extern vector<HashItem> hashList;
+extern vector<Keyword> kw;
 
+bool ScanLocalFiles(vector<Match>& scanResults)
+{
+	Match	tFile;		// 记录临时文件日志
+	SFile	file;		// 记录临时文件信息					
+	string  tMatch;		// 记录临时匹配详情
+
+	vector<string> collector;	// 保存本地硬盘的所有符合后缀的文件
+
+								// 检索出本地硬盘的所有“特定后缀”格式的文件
+	PickLocalPath(collector);
+
+	for (size_t i = 0; i < collector.size(); i++)
+	{
+		file.localPath = collector[i];
+		// 判断是否为涉密文件
+		if (fsFilter(file, kw, hashList, tMatch))
+		{
+			memset(&tFile, 0, sizeof(tFile));
+			strncpy(tFile.fullPath, file.utf8Path.c_str(), 256);
+			strncpy(tFile.matchDetail, tMatch.c_str(), 512);
+			scanResults.push_back(tFile);
+		}
+	}
+
+	return true;
+}
+
+bool RemoteScanLocalFiles(string& message, string& args)
+{
+	vector<Match> scanResults;	// 保存本地全盘扫描的结果
+
+	if (!ScanLocalFiles(scanResults))
+	{
+		return false;
+	}
+
+	message.clear();
+	for (size_t i = 0; i < scanResults.size(); i++)
+	{
+		message += scanResults[i].fullPath;
+		message += "\n";
+		message += scanResults[i].matchDetail;
+		message += "\n";
+	}
+	return true;
+}

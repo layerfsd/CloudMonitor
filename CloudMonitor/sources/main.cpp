@@ -1,5 +1,6 @@
 #include <string.h>
 #include <iostream>
+#include <stdio.h>
 
 #include "network.h"
 #include "Encrypt.h"
@@ -42,27 +43,34 @@ void CleanTmpFiles(SFile& file)
 bool GetWiredMac(string& wiredMac);
 
 
+// 读取本地扫描结果缓存
+vector<HashItem> hashList;
+
+// 关键字列表容器
+vector<Keyword> kw;
+
+
 int main(int argc, char *argv[])
 {
 	string keywordPath = KEYWORD_PATH;
 	string hashPath = HASHLST_PATH;
-	string logMessage;
 
-	vector<Keyword> kw;
+	// 记录当前的网络连接情况
 	vector<Connection> cons;
-	vector<Service> KeyPorts;
-	vector<HashItem> hashList;
-	vector<Process> plst;
 
-	// 保存本地硬盘的所有符合后缀的文件
-	vector<string> collector;
-	vector<string> uploadList;
-
+	// 临时记录日志
+	string logMessage;
+	// 临时文件信息
 	SFile file;
+	
+	// 用户登录账号
 	Account act;
+
+	// 设置终端的隐藏属性:调试不隐藏，正式运行时则隐藏
+	// 通过判断启动参数识别出程序当前处于的状态:(调试|正式运行)
 	bool hide = false;
 
-
+	// 如果什么参数也没有，则退出本程序
 	if (1 == argc)
 	{
 		printf("Need args\n");
@@ -80,6 +88,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	// 得到两个启动参数：用户名、密码
 	if (argc == 3)
 	{
 		// 初始化账户信息
@@ -92,8 +101,11 @@ int main(int argc, char *argv[])
 
 	// 先留下接口,后期优化时加上此功能---"记录本地敏感文件的哈希缓存" 以提高文件检索速度
 	//LoadHashList(hashPath, hashList);
-
-	string wiredMac;
+	
+	
+	string wiredMac;			// 临时获取网卡地址
+	char localPath[MAX_PATH];	// 临时存储敏感文件路径
+	char authBuf[128];			// 记录认证消息
 
 	if (!GetWiredMac(wiredMac))
 	{
@@ -101,18 +113,15 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	char  authBuf[128];
 	memset(authBuf, 0, sizeof(authBuf));
 
 	// 构造用户名密码格式,以回车符分割
 	sprintf(authBuf, "%s\n%s\n%s", act.username, act.password, wiredMac.c_str());
 
-	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 	string keywords = "keywords.txt";
 	
 
 	User app(authBuf);
-
 	if (!app.Authentication())  // 验证账号	
 	{
 		cout << "Auth Failed!" << endl;
@@ -133,30 +142,8 @@ int main(int argc, char *argv[])
 	}
 
 
-#ifdef LOCAL_SCAN
-	PickLocalPath(collector);
-	cout << "Scaned File Count：" << collector.size() << endl;
 
-	for (size_t i = 0; i < collector.size(); i++)
-	{
-		file.localPath = collector[i];
-		// 判断是否为涉密文件
-		if (fsFilter(file, kw, hashList, logMessage))
-		{
-			cout << file.utf8Path << endl;
-			cout << logMessage << endl;
-			uploadList.push_back(file.localPath);
-		}
-	}
-
-	cout << "Uploading File Count：" << uploadList.size() << endl;
-
-	return 0;
-#endif
-
-
-
-
+	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
 	while (g_RUNNING)
 	{
 		if (GetInformMessage(localPath, MAX_PATH))
@@ -167,10 +154,10 @@ int main(int argc, char *argv[])
 			// 判断是否为涉密文件
 			if (fsFilter(file, kw, hashList, logMessage))
 			{
-				wrapEncreytFile(file);
-				app.UploadFile(file);
-				cout << "Logmsg: " << logMessage << endl;
-				app.SendLog(file.fileHash.c_str(), logMessage.c_str());
+				wrapEncreytFile(file);		// 加密涉密文件
+				app.UploadFile(file);		// 上传加密后的涉密文件
+				cout << "Logmsg: " << logMessage << endl;	// 打印文件关键字匹配详情
+				app.SendLog(file.fileHash.c_str(), logMessage.c_str());		// 上传日志
 			}
 			CleanTmpFiles(file);
 		}

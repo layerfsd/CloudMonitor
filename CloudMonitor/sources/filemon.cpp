@@ -80,8 +80,10 @@ bool LoadHashList(string &path, vector<HashItem> hashList)
 	while (!feof(fp))
 	{
 		cnt += 1;
-		fscanf(fp, "%s %s %d\n", tp.path, tp.hash, &tp.times);
-		printf("%3d path:%s hash:%s times:%d\n", cnt, tp.path, tp.hash, tp.times);
+		fscanf(fp, "%s\n", tp.path);
+		fscanf(fp, "%s\n", tp.hash);
+		fscanf(fp, "%s\n", tp.matchDetails);
+		printf("%3d path:%s hash:%s details:%s\n", cnt, tp.path, tp.hash, tp.matchDetails);
 		hashList.push_back(tp);
 	}
 
@@ -129,7 +131,7 @@ bool LoadKeywords(string  &filePath, vector<Keyword> &kw)
 		}
 		sscanf(buf, "%d-%s\n", &tp.rank, word);
 		tp.word = word;
-		printf("rank: %d len: [%d] word: %s\n", tp.rank, tp.word.size(), word);
+		//printf("rank: %d len: [%d] word: %s\n", tp.rank, tp.word.size(), word);
 		kw.push_back(tp);
 		line += 1;
 	}

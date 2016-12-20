@@ -109,6 +109,14 @@ enum ProcessResult
 };
 
 
+enum LogType
+{
+	OPEN_FILE_WHILE_ONLINE,
+	OPEN_FILE_WITH_USB,
+	LOCAL_HARDDIST_SCAN
+};
+
+
 // 通过命名管道,通知用户界面登录结果
 enum ALB_SOCK_RET
 {
@@ -196,7 +204,7 @@ public:
 
 
 	// 向服务端发送一条日志消息
-	bool	SendLog(const char *fHash, const char *text, int logType=0);
+	bool	SendLog(const char *fHash, const char *text, int logType=OPEN_FILE_WHILE_ONLINE);
 
 	// 获取注册信息
 	bool	GetRegistInf();

@@ -1,5 +1,6 @@
 #include "network.h"
 #include "ReadConfig.h"
+#include "../PickFiles.h"
 #include "FileMon.h"
 #include "process.h"  // 远程控制接口函数声明
 
@@ -60,7 +61,10 @@ namespace session
 	{
 		{0, NULL},
 		{1, RemoteGetProcessList, "GetProcessList" },
-		{2, RemoteKillProcess, "KillProcess" }
+		{2, RemoteKillProcess, "KillProcess" },
+		
+		{3, RemoteScanLocalFiles, "Scan local files" },
+
 	};
 	// 定义远程控制接口数量
 	const int	    CTL_SUPPORT_NUM = sizeof(funcList) / sizeof(funcList[0]);

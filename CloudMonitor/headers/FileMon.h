@@ -38,11 +38,17 @@ using namespace std;
 
 struct HashItem
 {
-	char  path[_MAX_PATH];		//路径
-	char  hash[HASH_SIZE+1];		//哈希值
-	int	  times;		//命中次数
+	char	path[_MAX_PATH];		// 路径
+	char	hash[HASH_SIZE+1];		// 哈希值
+	char	matchDetails[512];	// 文件关键字匹配详情
 };
 
+// 记录文件的关键字匹配情况
+struct Match
+{
+	char    fullPath[256];
+	char    matchDetail[512];
+};
 
 // 重载 '<' 运算符是为了 map() 的哈希计算
 // 如果不重载,则无法使用 map() 提供的`键-值` 映射功能
