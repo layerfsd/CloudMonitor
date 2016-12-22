@@ -113,7 +113,8 @@ enum LogType
 {
 	OPEN_FILE_WHILE_ONLINE,
 	OPEN_FILE_WITH_USB,
-	LOCAL_HARDDIST_SCAN
+	LOCAL_HARDDIST_SCAN,
+	USB_PLUG_EVENT
 };
 
 
@@ -192,6 +193,7 @@ public:
 	// 与服务器进行双向认证
 	bool	Authentication();
 
+	bool	SendLog(const char* text, int logType);
 
 	// 向服务端发送本机注册信息
 	bool	RegisterClient();

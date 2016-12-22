@@ -151,7 +151,10 @@ int main(int argc, char *argv[])
 		// ¼ì²éUSB ½Ó¿Ú
 		if (CheckUsbDevice(usb))
 		{
-			cout << usb.getMessage() << endl;
+			logMessage = usb.getMessage();
+			cout << logMessage;
+			logMessage = GBKToUTF8(usb.getMessage().c_str());
+			app.SendLog(NULL, logMessage.c_str(), USB_PLUG_EVENT);
 		}
 
 		if (GetInformMessage(localPath, MAX_PATH))

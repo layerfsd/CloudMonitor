@@ -12,8 +12,10 @@ using namespace std;
 
 
 static const char *status[] = {
-	"USB Plugedged OUT",
-	"USB Plugedged IN",
+	//"USB Plugedged OUT",
+	//"USB Plugedged IN",
+	"statu: OUT",
+	"statu: IN",
 };
 class USB
 {
@@ -60,7 +62,7 @@ public:
 	{
 		// 记录usb状态(plug [in|out])
 		message = status[this->isPlug];
-		message += '\n';
+		message += '|';
 
 
 		// 记录usb参数

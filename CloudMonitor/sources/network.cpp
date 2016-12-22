@@ -692,9 +692,15 @@ bool User::SendLog(const char* fHash, const char* text, int logType)
 	char   tmp[MAX_LOG_SIZE];
 
 	memset(tmp, 0, sizeof(tmp));
+
+	if (USB_PLUG_EVENT == logType)
+	{
+		fHash = "abcd1234";
+	}
+	
 	// 获取时间
 	// 将时间和文件哈希拼入同一块缓存
-	sprintf(tmp, "%d-%02d-%02d %02d:%02d\n%s\n%s\n%d ",
+	snprintf(tmp, MAX_LOG_SIZE, "%d-%02d-%02d %02d:%02d\n%s\n%s\n%d ",
 		now->tm_year + 1900,
 		now->tm_mon + 1,
 		now->tm_mday,
@@ -712,6 +718,7 @@ bool User::SendLog(const char* fHash, const char* text, int logType)
 	{
 		this->message += "HostOnline";	// 追加 (关键字信息+日志详情)
 	}
+
 
 	return this->SendInfo(CMD_LOG, this->message.c_str());
 }
