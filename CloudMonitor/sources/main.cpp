@@ -11,6 +11,7 @@
 #include "../AutoStart.h"
 #include "../patches.h"
 #include "../PickFiles.h"
+#include "mUSB.h"
 
 using namespace std;
 
@@ -49,12 +50,11 @@ vector<HashItem> hashList;
 // 关键字列表容器
 vector<Keyword> kw;
 
+static string keywordPath = KEYWORD_PATH;
+static string hashPath = HASHLST_PATH;
 
 int main(int argc, char *argv[])
 {
-	string keywordPath = KEYWORD_PATH;
-	string hashPath = HASHLST_PATH;
-
 	// 记录当前的网络连接情况
 	vector<Connection> cons;
 
@@ -122,6 +122,8 @@ int main(int argc, char *argv[])
 	
 
 	User app(authBuf);
+	USB	 usb;
+
 	if (!app.Authentication())  // 验证账号	
 	{
 		cout << "Auth Failed!" << endl;
@@ -146,6 +148,12 @@ int main(int argc, char *argv[])
 	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
 	while (g_RUNNING)
 	{
+		// 检查USB 接口
+		if (CheckUsbDevice(usb))
+		{
+			cout << usb.getMessage() << endl;
+		}
+
 		if (GetInformMessage(localPath, MAX_PATH))
 		{
 			memset(&file, 0, sizeof(file));

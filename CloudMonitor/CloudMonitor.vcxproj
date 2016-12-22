@@ -172,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoStart.cpp" />
+    <ClCompile Include="CheckUSB.cpp" />
     <ClCompile Include="hardinfo.cpp" />
     <ClCompile Include="patches.cpp" />
     <ClCompile Include="PickFiles.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="headers\doc2txt.h" />
     <ClInclude Include="headers\Encrypt.h" />
     <ClInclude Include="headers\FileMon.h" />
+    <ClInclude Include="headers\mUSB.h" />
     <ClInclude Include="headers\NetMon.h" />
     <ClInclude Include="headers\network.h" />
     <ClInclude Include="headers\parsedoc.h" />
