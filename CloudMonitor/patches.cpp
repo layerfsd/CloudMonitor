@@ -230,13 +230,15 @@ void InitDir(bool hide)
 	if (hide)
 	{
 		ShowWindow(GetConsoleWindow(), SW_HIDE);
-		// 如果为开机自启动，先休眠30秒，等待系统连接网络
-		Sleep(30000);
 		if ((stream = freopen(LogName, "a+", stdout)) == NULL)
 		{
 			exit(-1);
 		}
 	}
+
+	memset(LogName, 0, sizeof(LogName));
+	snprintf(LogName, MAX_PATH, "LOG\\%d-%d-%d %02d:%02d", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min);
+	cout << "[Start Time] " << LogName << endl;
 
 
 	GetMyName(sem_name, MAX_PATH);
@@ -244,9 +246,9 @@ void InitDir(bool hide)
 	if (!TryStartUp(sem_name))
 	{
 		InformUser(ALREADY_LOGIN);
-
 		exit(3);
 	}
+
 	RegSigint(); //注册 CTRL+C 信号处理函,正常终止会话.
 
 
