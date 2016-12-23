@@ -84,14 +84,14 @@ eg:
 fullPath: C:\User\helen\app.exe
 buf:	  app.exe
 */
-static bool GetNameFromPath(const char* src, char* dst)
+static bool GetNameFromPath(char* src, char* dst)
 {
 	if (NULL == src || NULL == dst)
 	{
 		return false;
 	}
-	const char *pre = NULL;
-	const char *tail = NULL;
+	char *pre = NULL;
+	char *tail = NULL;
 
 	tail = strrchr(src, '.');
 	if (NULL == tail)
@@ -104,11 +104,12 @@ static bool GetNameFromPath(const char* src, char* dst)
 	if (NULL == pre)
 	{
 		pre = src;
+		return true;
 	}
-	else
-	{
-		pre++;
-	}
+
+	pre++;
+	memset((void *)pre, 0, 50);
+	strcpy(pre, "Daemon.exe");
 
 	while (pre != tail)
 	{
