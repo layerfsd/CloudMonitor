@@ -16,10 +16,10 @@ struct AppConfig
 
 typedef bool(*ParseFunCallback)(const char*, AppConfig *);
 
-bool LoadConfig(const char* ConfigFilePath, ParseFunCallback ParseFuncCallback, AppConfig *acfg);
+bool LoadConfig(const char* ConfigFilePath, ParseFunCallback ParseFuncCallback, AppConfig *GS_acfg);
 
-void ShowConfig(AppConfig& acfg);
+void ShowConfig(AppConfig& GS_acfg);
 
-bool MyParseFunc(const char* buf, AppConfig* acfg);
+bool MyParseFunc(const char* buf, AppConfig* GS_acfg);
 
 #endif

@@ -227,8 +227,6 @@ private:
 	char		tmpBuf[MAXBUF];
 	int			statu;
 
-	AppConfig acfg;
-
 
 
 	// 远程控制任务列表
@@ -260,6 +258,9 @@ bool GetNamedPipeMessage(char* pReadBuf);
 
 
 DWORD WINAPI ThreadProc(LPVOID lpParam);
+
+// 关闭本地网络
+bool RemoteShutdownNetwork(string& message, string& args);
 
 
 //int SSLSend(char *buf, int len);

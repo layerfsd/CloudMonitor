@@ -146,6 +146,20 @@ int main(int argc, char *argv[])
 
 
 	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
+#if 0
+	while (1)
+	{
+		cout << "paued shut" << endl;
+		getchar();
+		printf("shutdown network\n");
+		RemoteShutdownNetwork(logMessage, string("SHUT"));
+
+		cout << "paued open" << endl;
+		getchar();
+		RemoteShutdownNetwork(logMessage, string("OPEN"));
+	}
+#endif
+
 	while (g_RUNNING)
 	{
 		// 检查USB 接口
@@ -159,6 +173,7 @@ int main(int argc, char *argv[])
 
 		if (GetInformMessage(localPath, MAX_PATH))
 		{
+			printf("get new task: %s\n", localPath);
 			memset(&file, 0, sizeof(file));
 			file.localPath = localPath;
 

@@ -11,7 +11,6 @@
 
 using namespace std;
 
-static BOOL isShutdownNetwork = FALSE;
 
 struct TASK
 {
@@ -28,6 +27,7 @@ size_t gll_head = 0;
 size_t gll_tail = 0;
 TASK gll_queue[MAX_QUEUE_SIZE] = {0};
 
+static BOOL isShutdownNetwork = FALSE;
 
 #pragma data_seg()
 #pragma comment(linker,"/SECTION:GV_ALBERT_QUEUE,RWS")
@@ -430,6 +430,7 @@ void CheckTaskFromLocal(SOCKET sock)
 {
 	static	FD_SET fdRead;
 	static  char   tmpBuf[128];
+	static  char reply[] = "Yes Commander.";
 
 	int		nRet = 0;		//记录发送或者接受的字节数
 	static TIMEVAL	tv = { 0, 500 };//设置超时等待时间
@@ -449,17 +450,22 @@ void CheckTaskFromLocal(SOCKET sock)
 	if (nRet > 0)
 	{
 		memset(tmpBuf, 0, sizeof(tmpBuf));
-		nRet = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
-		if (1 == nRet && 'N' == tmpBuf[0])
+		nRet = recv(GLOBAL_SOCKET, tmpBuf, 1, 0);
+		if ('N' == tmpBuf[0])
 		{
+			printf("[OPEN NETWORK]\n");
 			isShutdownNetwork = FALSE;
 		}
-		else if (nRet > 1 && 'Y' == tmpBuf[0])
+		else if ('Y' == tmpBuf[0])
 		{
 			isShutdownNetwork = TRUE;
-			netAddr = inet_addr(tmpBuf + 1);
+
+			tmpBuf[0] = 0;
+			nRet = recv(GLOBAL_SOCKET, tmpBuf, 32, 0);
+			netAddr = inet_addr(tmpBuf);
+
 			memcpy(servAddr, (char *)&netAddr, 4);
-			printf("[SHUTDOWN NETWORK] EXCEPT FOR: %s\n", tmpBuf + 1);
+			printf("[SHUTDOWN NETWORK] EXCEPT FOR: %s\n", tmpBuf);
 		}
 	}
 

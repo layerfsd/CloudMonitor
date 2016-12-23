@@ -457,7 +457,7 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 
 	if (!initSFile(sf))
 	{
-		//cout << "initSfile Failed!" << endl;
+		cout << "initSfile Failed!" << endl;
 		return false;
 	}
 	char localPath[_MAX_PATH], txtPath[_MAX_PATH];
@@ -470,7 +470,7 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 	// 如果没有匹配到关键字，则忽略该文件
 	if (KeywordFilter(kw, txtPath, message) <= 0)
 	{
-		//cout << "Find nothing from: " << sf.txtPath << endl;
+		cout << "Find nothing from: " << sf.txtPath << endl;
 		return false;
 	}
 

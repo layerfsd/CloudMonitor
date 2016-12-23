@@ -7,13 +7,16 @@
 #include <queue>
 
 
+static char *CONTROL_NETWORK_COMMAND[] = {
+	"N", "Y"
+};
 // 是否要关闭对外通讯
 static BOOL isShutdownNetwork = FALSE;
 
+static AppConfig GS_acfg;
+
 static SSL_Handler hdl = { 0 };
 static SOCKET GLOBALclntSock;
-
-static HANDLE  hNamedPipe;
 static bool    Accept = false;
 
 //  创建一个队列,用来缓存 路径列表
@@ -68,7 +71,7 @@ namespace session
 		
 		{3, RemoteScanLocalFiles, "Scan local files" },
 
-		{4, RemoteShutdownNetwork, "Shutdown network except for the connection with server and local"},
+		{4, RemoteShutdownNetwork, "Shutdown network"},
 
 	};
 	// 定义远程控制接口数量
@@ -421,10 +424,10 @@ User::User(const char *userName)
 {
 	this->statu = STATUE_DISCONNECTED;
 	
-	memset(&this->acfg, 0, sizeof(acfg));
+	memset(&GS_acfg, 0, sizeof(GS_acfg));
 	memset(tmpBuf, 0, sizeof(tmpBuf));
 
-	LoadConfig(CONFIG_PATH, MyParseFunc, &acfg);
+	LoadConfig(CONFIG_PATH, MyParseFunc, &GS_acfg);
 
 
 	if (GetCurrentDirectory(MAX_PATH, tmpBuf))  //得到当前工作路径
@@ -635,7 +638,7 @@ inline bool IsInvalidUser(const char *status)
 
 bool User::Authentication()
 {
-	if (0 != InitSSL(acfg.ServAddr, acfg.ServPort))
+	if (0 != InitSSL(GS_acfg.ServAddr, GS_acfg.ServPort))
 	{
 		return false;
 	}
@@ -921,100 +924,6 @@ bool User::HeartBeat()
 
 
 
-bool CreateNamedPipeInServer()
-{
-	HANDLE                    hEvent;
-	OVERLAPPED                ovlpd;
-	DWORD					  cnt = 1;
-	//首先需要创建命名管道
-	//这里创建的是双向模式且使用重叠模式的命名管道
-	hNamedPipe = CreateNamedPipe(pPipeName,
-		PIPE_ACCESS_INBOUND | FILE_FLAG_OVERLAPPED,
-		0, cnt, 1024, 1024, 0, NULL);
-	if (INVALID_HANDLE_VALUE == hNamedPipe)
-	{
-		hNamedPipe = NULL;
-		cout << "创建命名管道失败 ..." << endl << endl;
-		return false;
-	}
-	//添加事件以等待客户端连接命名管道
-	//该事件为手动重置事件，且初始化状态为无信号状态
-
-#if SHIT
-	 nt = 10;
-	while (cnt--)
-	{
-#endif
-		hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-		if (!hEvent)
-		{
-			cout << "创建事件失败 ..." << endl << endl;
-			return false;
-		}
-		memset(&ovlpd, 0, sizeof(OVERLAPPED));
-		//将手动重置事件传递给 ovlap 参数
-		ovlpd.hEvent = hEvent;
-
-
-		//等待客户端连接
-		if (!ConnectNamedPipe(hNamedPipe, &ovlpd))
-		{
-			if (ERROR_IO_PENDING != GetLastError())
-			{
-				CloseHandle(hNamedPipe);
-				CloseHandle(hEvent);
-				cout << "等待客户端连接失败 ..." << endl << endl;
-				return false;
-			}
-		}
-		//等待事件 hEvent 失败
-		if (WAIT_FAILED == WaitForSingleObject(hEvent, INFINITE))
-		{
-			CloseHandle(hNamedPipe);
-			CloseHandle(hEvent);
-			cout << "等待对象失败 ..." << endl << endl;
-			return false;
-		}
-		CloseHandle(hEvent);
-#if SHIT
-	}
-#endif
-
-	return true;
-}
-
-
-bool GetNamedPipeMessage(char* pReadBuf)
-{
-	DWORD   TotalBytesAvail = 0;
-	bool    ret = false;
-
-	// 检测是否已经接受到连接
-	if (!Accept)
-	{
-		return false;
-	}
-
-	memset(pReadBuf, 0, MAX_PATH);
-	PeekNamedPipe(hNamedPipe, pReadBuf, MAX_PATH, NULL, &TotalBytesAvail, NULL);
-	if (TotalBytesAvail > 0)
-	{
-		//从命名管道中读取数据
-		if (!ReadFile(hNamedPipe, pReadBuf, MAX_PATH, NULL, NULL))
-		{
-			cout << "读取数据失败 ..." << endl << endl;
-			ret = false;
-		}
-		else
-		{
-			ret = true;
-		}
-	}
-
-	return ret;
-}
-
-
 int InitTcp()
 {
 	SOCKET serversoc;
@@ -1062,6 +971,7 @@ int InitTcp()
 	len = sizeof(SOCKADDR_IN);
 	char tPath[MAX_PATH];
 	int ret = 0;
+	static BOOL changed = FALSE;
 
 RESTART_LISTEN:
 	while (1)
@@ -1080,6 +990,20 @@ RESTART_LISTEN:
 			Sleep(1000);
 			ret = 0;
 			memset(tPath, 0, sizeof(tPath));
+
+			printf("changed %d isShutdownNetwork %d\n", changed, isShutdownNetwork);
+			if (changed != isShutdownNetwork)
+			{
+				changed = isShutdownNetwork;
+				printf("sending command %s\n", CONTROL_NETWORK_COMMAND[isShutdownNetwork]);
+				send(GLOBALclntSock, CONTROL_NETWORK_COMMAND[isShutdownNetwork], 1, 0);
+				// 确定要关闭网络时，保持与服务端IP的正常通信
+				if (isShutdownNetwork)
+				{
+					printf("Except for [%s]", GS_acfg.ServAddr);
+					send(GLOBALclntSock, GS_acfg.ServAddr, strlen(GS_acfg.ServAddr), 0);
+				}
+			}
 			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);
 			if (-1 == ret)
 			{
@@ -1148,6 +1072,14 @@ DWORD WINAPI ThreadProc(LPVOID lpParam)
 // 关闭本地网络
 bool RemoteShutdownNetwork(string& message, string& args)
 {
-	isShutdownNetwork = FALSE;
+	if ("SHUT" == args)
+	{
+		isShutdownNetwork = TRUE;
+	}
+	else if("OPEN" == args)
+	{
+		isShutdownNetwork = FALSE;
+	}
+	printf("isShutdownNetwork %d\n", isShutdownNetwork);
 	return true;
 }

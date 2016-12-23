@@ -23,5 +23,8 @@ BOOL ProcessFilePath(LPCSTR lpFilePath);
 // 检查 tcp 连接目的IP 是否符合规范
 BOOL CheckSockAddr(const struct sockaddr FAR *saddr);
 
+// 接收来自本地进程的任务
+// 非阻塞
+void CheckTaskFromLocal(SOCKET sock);
 
 #endif // ! MY_TOOLS_INCLUDE

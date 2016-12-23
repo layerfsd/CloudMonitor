@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-bool LoadConfig(const char* ConfigFilePath, ParseFunCallback ParseFuncCallback, AppConfig *acfg)
+bool LoadConfig(const char* ConfigFilePath, ParseFunCallback ParseFuncCallback, AppConfig *GS_acfg)
 {
 	FILE *fp = NULL;
 	char  buf[MAXLINE];
@@ -21,7 +21,7 @@ bool LoadConfig(const char* ConfigFilePath, ParseFunCallback ParseFuncCallback, 
 		memset(buf, 0, MAXLINE);
 		fgets(buf, MAXLINE, fp);
 
-		if (!ParseFuncCallback(buf, acfg))
+		if (!ParseFuncCallback(buf, GS_acfg))
 		{
 			ret = false;
 			break;
@@ -36,7 +36,7 @@ bool LoadConfig(const char* ConfigFilePath, ParseFunCallback ParseFuncCallback, 
 
 // this is a callback function
 // parse config file's line one by one
-bool MyParseFunc(const char* buf, AppConfig* acfg)
+bool MyParseFunc(const char* buf, AppConfig* GS_acfg)
 {
 	static  const char *ConfigItems[] = {
 		"SERVER_ADDR", 
@@ -75,36 +75,36 @@ bool MyParseFunc(const char* buf, AppConfig* acfg)
 	}
 	if (!strcmp(key, ConfigItems[0]))
 	{
-		strcpy(acfg->ServAddr, value);
+		strcpy(GS_acfg->ServAddr, value);
 	}
 	else if (!strcmp(key, ConfigItems[1]))
 	{
-		acfg->ServPort = atoi(value);
+		GS_acfg->ServPort = atoi(value);
 	}
 	else if (!strcmp(key, ConfigItems[2]))
 	{
-		strcpy(acfg->UpdateServ, value);
+		strcpy(GS_acfg->UpdateServ, value);
 	}
 
 	return true;
 }
 
 
-void ShowConfig(AppConfig& acfg)
+void ShowConfig(AppConfig& GS_acfg)
 {	
-	printf("ServAddr: [%s]\n", acfg.ServAddr);
-	printf("ServPort: [%d]\n", acfg.ServPort);
-	printf("UpdtADDR: [%s]\n", acfg.UpdateServ);
+	printf("ServAddr: [%s]\n", GS_acfg.ServAddr);
+	printf("ServPort: [%d]\n", GS_acfg.ServPort);
+	printf("UpdtADDR: [%s]\n", GS_acfg.UpdateServ);
 }
 
 #if 0
 int main()
 {
-	AppConfig acfg = {0};
+	AppConfig GS_acfg = {0};
 
-	LoadKeywords(CONFIG_PATH, MyParseFunc, &acfg);
+	LoadKeywords(CONFIG_PATH, MyParseFunc, &GS_acfg);
 
-	ShowConfig(acfg);
+	ShowConfig(GS_acfg);
 
 	return 0;
 }
