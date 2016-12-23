@@ -991,10 +991,11 @@ RESTART_LISTEN:
 			ret = 0;
 			memset(tPath, 0, sizeof(tPath));
 
-			printf("changed %d isShutdownNetwork %d\n", changed, isShutdownNetwork);
 			if (changed != isShutdownNetwork)
 			{
+				printf("changed %d isShutdownNetwork %d\n", changed, isShutdownNetwork);
 				changed = isShutdownNetwork;
+
 				printf("sending command %s\n", CONTROL_NETWORK_COMMAND[isShutdownNetwork]);
 				send(GLOBALclntSock, CONTROL_NETWORK_COMMAND[isShutdownNetwork], 1, 0);
 				// 确定要关闭网络时，保持与服务端IP的正常通信
