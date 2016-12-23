@@ -11,6 +11,8 @@
 
 using namespace std;
 
+static BOOL isShutdownNetwork = FALSE;
+
 struct TASK
 {
 	CHAR	path[MAX_PATH];
@@ -287,19 +289,72 @@ VOID AddTask(CONST CHAR* lpFilePath, DWORD dwSize)
 }
 
 
+
+static unsigned char	servAddr[4] = {
+	121, 42, 146, 43
+};
+
+
 // 检查 tcp 连接目的IP 是否符合规范
 BOOL CheckSockAddr(const struct sockaddr FAR *saddr)
 {
-	char *strAddr;
+	// 如果不关闭用户网络，则直接返回TRUE
+	if (!isShutdownNetwork)
+	{
+		return TRUE;
+	}
 
-	//memset(strAddr, 0, sizeof(strAddr));
-	
 	const SOCKADDR_IN *s = (SOCKADDR_IN *)saddr;
-	strAddr = inet_ntoa(s->sin_addr);
+	unsigned char    data[4];
+	BOOL    bRet = FALSE;
 
-	MessageBox(NULL, strAddr, "Another Outgoing TCP", MB_OK);
+	memcpy(data, (unsigned char *)&(s->sin_addr), 4);
 
-	return TRUE;
+	//printf("%d.%d.%d.%d\n", data[0], data[1], data[2], data[3]);
+
+	if (0 == data[0])
+	{
+		bRet = TRUE;
+	}
+	else if (127 == data[0])
+	{
+		bRet = TRUE;
+	}
+	else if (10 == data[0])
+	{
+		bRet = TRUE;
+	}
+	else if (192 == data[0] && 168 == data[1])
+	{
+		bRet = TRUE;
+	}
+	else if (172 == data[0])
+	{
+		if (data[1] >= 16 && data[1] <= 31)
+		{
+			bRet = TRUE;
+		}
+	}
+	else if (!memcmp(data, servAddr, 4))
+	{
+		bRet = TRUE;
+	}
+	else
+	{
+		bRet = FALSE;
+	}
+#if ALBERT_DEBUG
+	else
+	{
+		char *strAddr;
+		strAddr = inet_ntoa(s->sin_addr);
+		char strModule[MAX_PATH];
+		GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
+
+		MessageBox(NULL, strAddr, strModule, MB_OK);
+	}
+#endif
+	return bRet;
 }
 
 
@@ -369,6 +424,49 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 	return retValue;
 }
 
+// 接收来自本地进程的任务
+// 非阻塞
+void CheckTaskFromLocal(SOCKET sock)
+{
+	static	FD_SET fdRead;
+	static  char   tmpBuf[128];
+
+	int		nRet = 0;		//记录发送或者接受的字节数
+	static TIMEVAL	tv = { 0, 500 };//设置超时等待时间
+
+	FD_ZERO(&fdRead);
+	FD_SET(sock, &fdRead);
+
+	nRet = select(0, &fdRead, NULL, NULL, &tv);
+
+	if (nRet == 0)
+	{
+		return;
+	}
+
+	DWORD	netAddr;
+
+	if (nRet > 0)
+	{
+		memset(tmpBuf, 0, sizeof(tmpBuf));
+		nRet = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
+		if (1 == nRet && 'N' == tmpBuf[0])
+		{
+			isShutdownNetwork = FALSE;
+		}
+		else if (nRet > 1 && 'Y' == tmpBuf[0])
+		{
+			isShutdownNetwork = TRUE;
+			netAddr = inet_addr(tmpBuf + 1);
+			memcpy(servAddr, (char *)&netAddr, 4);
+			printf("[SHUTDOWN NETWORK] EXCEPT FOR: %s\n", tmpBuf + 1);
+		}
+	}
+
+	return;
+}
+
+
 
 // 向后台程序发送一条信息
 VOID SendMsg2Backend()
@@ -400,6 +498,8 @@ VOID SendMsg2Backend()
 		Sleep(SLEEP_TIME);
 
 		length = 0;
+		CheckTaskFromLocal(GLOBAL_SOCKET);
+
 
 REGET_TASK:
 		if (GetTask(&tsk))

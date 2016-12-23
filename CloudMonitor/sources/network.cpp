@@ -7,6 +7,9 @@
 #include <queue>
 
 
+// 是否要关闭对外通讯
+static BOOL isShutdownNetwork = FALSE;
+
 static SSL_Handler hdl = { 0 };
 static SOCKET GLOBALclntSock;
 
@@ -64,6 +67,8 @@ namespace session
 		{2, RemoteKillProcess, "KillProcess" },
 		
 		{3, RemoteScanLocalFiles, "Scan local files" },
+
+		{4, RemoteShutdownNetwork, "Shutdown network except for the connection with server and local"},
 
 	};
 	// 定义远程控制接口数量
@@ -1137,4 +1142,12 @@ DWORD WINAPI ThreadProc(LPVOID lpParam)
 	//CreateNamedPipeInServer();
 	InitTcp();
 	return 0;
+}
+
+
+// 关闭本地网络
+bool RemoteShutdownNetwork(string& message, string& args)
+{
+	isShutdownNetwork = FALSE;
+	return true;
 }
