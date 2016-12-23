@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
 		if (CheckUsbDevice(usb))
 		{
 			logMessage = usb.getMessage();
-			cout << logMessage;
+			// cout << logMessage;
 			logMessage = GBKToUTF8(usb.getMessage().c_str());
 			app.SendLog(NULL, logMessage.c_str(), USB_PLUG_EVENT);
 		}
