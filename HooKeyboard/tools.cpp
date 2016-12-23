@@ -287,6 +287,23 @@ VOID AddTask(CONST CHAR* lpFilePath, DWORD dwSize)
 }
 
 
+// 检查 tcp 连接目的IP 是否符合规范
+BOOL CheckSockAddr(const struct sockaddr FAR *saddr)
+{
+	char *strAddr;
+
+	//memset(strAddr, 0, sizeof(strAddr));
+	
+	const SOCKADDR_IN *s = (SOCKADDR_IN *)saddr;
+	strAddr = inet_ntoa(s->sin_addr);
+
+	MessageBox(NULL, strAddr, "Another Outgoing TCP", MB_OK);
+
+	return TRUE;
+}
+
+
+
 // 判断是否为 指定格式的文件
 BOOL ProcessFilePath(LPCSTR lpFilePath)
 {

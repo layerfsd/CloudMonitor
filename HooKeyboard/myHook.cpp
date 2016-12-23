@@ -25,7 +25,7 @@ extern "C" __declspec(dllexport) VOID SetHookOff();
 
 CILHook CreateFileHook;
 CILHook CreateProcessHook;
-
+CILHook connectHook;
 
 DWORD WINAPI ThreadProc(LPVOID lpParam);
 
@@ -90,6 +90,37 @@ MyCreateFileW(
 }
 
 
+
+int 
+WINAPI 
+Myconnect(
+	SOCKET s,
+	const struct sockaddr FAR *saddr,
+	int namelen)
+{
+	int iRet = FALSE;
+	connectHook.UnHook();
+
+	// 当程序开启‘断开网络功能后’，
+	// 仅目的地址为本地局域网地址和客户端服务器的地址时，才允许建立TCP连接
+	// 否则不允许建立 tcp 连接
+	if (CheckSockAddr(saddr))
+	{
+		iRet = connect(s, saddr, namelen);
+	}
+	else
+	{
+		// 决定好不允许建立当前 tcp 连接后
+		// 直接给调用者返回 -1
+		iRet = -1;
+	}
+
+	connectHook.ReHook();
+	return iRet;
+
+}
+
+
 BOOL 
 WINAPI
 MyCreateProcessW(
@@ -142,6 +173,7 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID loReserve
 		// Install the hook
 		CreateFileHook.Hook("kernel32.dll", "CreateFileW", (PROC)MyCreateFileW);
 		//CreateProcessHook.Hook("kernel32.dll", "CreateProcessW", (PROC)MyCreateProcessW);
+		connectHook.Hook("ws2_32.dll", "connect", (PROC)Myconnect);
 
 		break;
 

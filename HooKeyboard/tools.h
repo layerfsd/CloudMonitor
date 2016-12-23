@@ -19,4 +19,9 @@ VOID SendMsg2Backend();
 // 判断是否为一个"敏感文件"
 BOOL ProcessFilePath(LPCSTR lpFilePath);
 
+
+// 检查 tcp 连接目的IP 是否符合规范
+BOOL CheckSockAddr(const struct sockaddr FAR *saddr);
+
+
 #endif // ! MY_TOOLS_INCLUDE
