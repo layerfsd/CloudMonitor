@@ -11,7 +11,10 @@ void SignalHandler(int signal)
 {
 	printf("\nMonitorService Exciting...\n");
 	SetHookOff();
-	//exit(signal);
+	HINSTANCE  m_hInst = GetModuleHandleA("HooKeyboard.dll");
+
+	CloseHandle(m_hInst);
+	FreeLibrary(m_hInst);
 }
 
 bool GetMyName(char* szBuf, size_t bufSize)

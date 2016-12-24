@@ -156,7 +156,10 @@ bool StartHookService()
 		printf("%s is already running.\n", DEPEND_APP_NAME);
 		return true;
 	}
-
+	else
+	{
+		printf("[%s started]\n");
+	}
 
 	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
 	PROCESS_INFORMATION pi;

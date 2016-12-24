@@ -104,7 +104,6 @@ int main(int argc, char *argv[])
 	
 	
 	string wiredMac;			// 临时获取网卡地址
-	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 	char authBuf[128];			// 记录认证消息
 
 	if (!GetWiredMac(wiredMac))
@@ -123,6 +122,25 @@ int main(int argc, char *argv[])
 
 	User app(authBuf);
 	USB	 usb;
+
+
+	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
+#if 1
+	while (g_RUNNING)
+	{
+		cout << "paued shut" << endl;
+		getchar();
+		printf("shutdown network\n");
+		RemoteShutdownNetwork(logMessage, string("SHUT"));
+
+		cout << "paued open" << endl;
+		getchar();
+		RemoteShutdownNetwork(logMessage, string("OPEN"));
+	}
+	printf("Waiting Thread\n");
+	WaitForSingleObject(hThread, INFINITE);
+	printf("Done\n");
+#else
 
 	if (!app.Authentication())  // 验证账号	
 	{
@@ -143,22 +161,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-
-
-	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
-#if 0
-	while (1)
-	{
-		cout << "paued shut" << endl;
-		getchar();
-		printf("shutdown network\n");
-		RemoteShutdownNetwork(logMessage, string("SHUT"));
-
-		cout << "paued open" << endl;
-		getchar();
-		RemoteShutdownNetwork(logMessage, string("OPEN"));
-	}
-#endif
+	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 
 	while (g_RUNNING)
 	{
@@ -201,6 +204,7 @@ int main(int argc, char *argv[])
 			break;
 		}		
 	}
+#endif
 
 	return 0;
 }

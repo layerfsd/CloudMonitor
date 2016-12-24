@@ -6,12 +6,15 @@
 
 #include <queue>
 
+#define STOP_SERVICE	"STOP SERVICE"
 
 static char *CONTROL_NETWORK_COMMAND[] = {
-	"N", "Y"
+	"OPEN NETWORK", "SHUTDOWN NETWORK"
 };
 // 是否要关闭对外通讯
 static BOOL isShutdownNetwork = FALSE;
+
+extern BOOL g_RUNNING;
 
 static AppConfig GS_acfg;
 
@@ -974,7 +977,7 @@ int InitTcp()
 	static BOOL changed = FALSE;
 
 RESTART_LISTEN:
-	while (1)
+	while (g_RUNNING)
 	{
 		//waiting for connecting
 		if ((GLOBALclntSock = accept(serversoc, (SOCKADDR *)&clientaddr, &len)) <= 0)
@@ -991,13 +994,21 @@ RESTART_LISTEN:
 			ret = 0;
 			memset(tPath, 0, sizeof(tPath));
 
+			// 通知IO过滤中心，停止服务
+			if (!g_RUNNING)
+			{
+				printf("tell IO Center to Stop [%s]\n", STOP_SERVICE);
+				send(GLOBALclntSock, STOP_SERVICE, strlen(STOP_SERVICE), 0);
+				break;
+			}
+
 			if (changed != isShutdownNetwork)
 			{
 				printf("changed %d isShutdownNetwork %d\n", changed, isShutdownNetwork);
 				changed = isShutdownNetwork;
 
 				printf("sending command %s\n", CONTROL_NETWORK_COMMAND[isShutdownNetwork]);
-				send(GLOBALclntSock, CONTROL_NETWORK_COMMAND[isShutdownNetwork], 1, 0);
+				send(GLOBALclntSock, CONTROL_NETWORK_COMMAND[isShutdownNetwork], strlen(CONTROL_NETWORK_COMMAND[isShutdownNetwork]), 0);
 				// 确定要关闭网络时，保持与服务端IP的正常通信
 				if (isShutdownNetwork)
 				{
@@ -1011,20 +1022,25 @@ RESTART_LISTEN:
 				continue;
 			}
 
-			printf("[CLNT-RECV:%d] %s\n", ret, tPath);
-
-			if (3 == ret && !memcmp("BYE", tPath, 3))
-			{
-				printf("Hook Service Quit.\n");
-				goto _END_RECV;
-			}
-
 			if (ret > 0)		//仅当成功接收,才把信息加入缓冲队列
 			{
-				int sent = send(GLOBALclntSock, tPath, ret, 0);
-				//cout << "sent: " << sent << "bytes" << endl;
-				string tmp = tPath;
-				LocalPathList.push(tPath);
+				if (!memcmp("BYE", tPath, 3))
+				{
+					printf("Hook Service Quit.\n");
+					goto _END_RECV;
+				}
+				else if (!memcmp("HBT", tPath, 3))
+				{
+					//printf("HOOK HBT\n");
+				}
+				else
+				{
+					printf("[CLNT-RECV:%d] %s\n", ret, tPath);
+					int sent = send(GLOBALclntSock, tPath, ret, 0);
+					//cout << "sent: " << sent << "bytes" << endl;
+					string tmp = tPath;
+					LocalPathList.push(tPath);
+				}
 			}
 			else
 			{

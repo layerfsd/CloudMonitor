@@ -1,5 +1,6 @@
 #include "tools.h"
 #include <stdio.h>
+#include <string.h>
 #include <map>
 #include <string>
 #include <time.h>
@@ -450,13 +451,17 @@ void CheckTaskFromLocal(SOCKET sock)
 	if (nRet > 0)
 	{
 		memset(tmpBuf, 0, sizeof(tmpBuf));
-		nRet = recv(GLOBAL_SOCKET, tmpBuf, 1, 0);
-		if ('N' == tmpBuf[0])
+		nRet = recv(GLOBAL_SOCKET, tmpBuf, 32, 0);
+		if (!strncmp("STOP SERVICE", tmpBuf, 32))
+		{
+			KEEP_RUNNING = FALSE;
+		}
+		if (!strncmp("OPEN NETWORK", tmpBuf, 32))
 		{
 			printf("[OPEN NETWORK]\n");
 			isShutdownNetwork = FALSE;
 		}
-		else if ('Y' == tmpBuf[0])
+		else if (!strncmp("SHUTDOWN NETWORK", tmpBuf, 32))
 		{
 			isShutdownNetwork = TRUE;
 
@@ -505,8 +510,14 @@ VOID SendMsg2Backend()
 
 		length = 0;
 		CheckTaskFromLocal(GLOBAL_SOCKET);
-
-
+		sent = send(GLOBAL_SOCKET, "HBT", 3, 0);
+		
+		if (sent <= 0)
+		{
+			printf("Connect to Local Failed\n");
+			isConnectionOK = FALSE;
+			InitTcpConnection();
+		}
 REGET_TASK:
 		if (GetTask(&tsk))
 		{
@@ -518,7 +529,7 @@ REGET_TASK:
 
 
 			int   MaxRetryTime = 0;
-			while ((tsk.status != TRUE) && (MaxRetryTime++ < MAX_RETRY_TIME))
+			while (KEEP_RUNNING && (tsk.status != TRUE) && (MaxRetryTime++ < MAX_RETRY_TIME))
 			{
 				//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
 				printf("[SEND:%d] %s\n", tsk.ltime, tsk.path);

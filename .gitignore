@@ -18,6 +18,8 @@
 *.userprefs
 
 test functions:
+
+EnumDrivers/
 CaptureMouse/
 Hook/
 MFCApplicat?/

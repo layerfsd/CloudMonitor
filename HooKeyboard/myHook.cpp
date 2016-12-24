@@ -10,14 +10,13 @@
 
 using namespace std;
 
-//#pragma data_seg("Shared")
-//queue<string> g_PathList;
-//#pragma data_seg()
-//#pragma comment (linker, "/section:Shared,RWS")
-
-HINSTANCE g_hInst;
+#pragma data_seg("Shared")
 HHOOK g_hHook = NULL;
 HWND  g_ExeHwnd = NULL;
+#pragma data_seg()
+#pragma comment (linker, "/section:Shared,RWS")
+
+HINSTANCE g_hInst;
 
 
 extern "C" __declspec(dllexport) VOID SetHookOn();
