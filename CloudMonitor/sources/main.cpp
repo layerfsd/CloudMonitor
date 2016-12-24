@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
 
 
 	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
-#if 1
+#if 0
 	while (g_RUNNING)
 	{
 		cout << "paued shut" << endl;

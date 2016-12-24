@@ -158,7 +158,7 @@ bool StartHookService()
 	}
 	else
 	{
-		printf("[%s started]\n");
+		printf("[%s started]\n", DEPEND_APP_NAME);
 	}
 
 	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
