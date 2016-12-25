@@ -3,13 +3,6 @@
 
 #include "stdafx.h"
 
-//  access URL get file list 
-//		list format: file_path md5
-//  if exists file md5 diff, update the specific file
-
-//  find CloudMonitor.exe pid
-//  send SIGINT to the pid and wait process exit
-//  replace the file and restart CloudMonitor.exe
 using namespace std;
 
 LPCSTR TargetProcessName = "CloudMonitor.exe";
