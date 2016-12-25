@@ -118,31 +118,6 @@ BOOL IsDirectory(const char *pDir)
 
 }
 
-BOOL DeleteDirectory(const char * DirName)
-{
-	//	CFileFind tempFind;		//声明一个CFileFind类变量，以用来搜索
-	char szCurPath[MAX_PATH];		//用于定义搜索格式
-	_snprintf(szCurPath, MAX_PATH, "%s//*.*", DirName);	//匹配格式为*.*,即该目录下的所有文件
-	WIN32_FIND_DATAA FindFileData;
-	ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATAA));
-	HANDLE hFile = FindFirstFileA(szCurPath, &FindFileData);
-	BOOL IsFinded = TRUE;
-	while (IsFinded)
-	{
-		IsFinded = FindNextFileA(hFile, &FindFileData);	//递归搜索其他的文件
-		if (strcmp(FindFileData.cFileName, ".") && strcmp(FindFileData.cFileName, "..")) //如果不是"." ".."目录
-		{
-			string strFileName = "";
-			strFileName = DirName;
-			strFileName += FindFileData.cFileName;
-			DeleteFileA(strFileName.c_str());
-		}
-	}
-	FindClose(hFile);
-
-	return TRUE;
-}
-
 
 bool StartHookService()
 {
@@ -262,16 +237,20 @@ void InitDir(bool hide)
 	RegisterProgram();
 
 	// 创建临时目录
-	if (-1 == _access(TMP_DIR, 0))
+	const char *dirs[] = {
+		"DATA", "LOG", "TMP",
+	};
+
+	for (int i = 0; i < ArraySize(dirs); i++)
 	{
-		cout << TMP_DIR << " not exists!!!" << endl;
-		cout << "mkdir: " << TMP_DIR << endl;
-		_mkdir(TMP_DIR);
+		if (-1 == _access(dirs[i], 0))
+		{
+			cout << TMP_DIR << " not exists!!!" << endl;
+			cout << "mkdir: " << TMP_DIR << endl;
+			_mkdir(dirs[i]);
+		}
 	}
-	else
-	{
-		DeleteDirectory(TMP_DIR);	// 程序每次启动时,清空所有临时文件
-	}
+	system("del /F /S /Q TMP"); 	// 程序每次启动时,清空临时目录
 
 	return;
 }
