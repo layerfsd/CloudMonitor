@@ -974,6 +974,7 @@ int InitTcp()
 	len = sizeof(SOCKADDR_IN);
 	char tPath[MAX_PATH];
 	int ret = 0;
+	int sent = 0;
 	static BOOL changed = FALSE;
 
 RESTART_LISTEN:
@@ -1016,11 +1017,9 @@ RESTART_LISTEN:
 					send(GLOBALclntSock, GS_acfg.ServAddr, strlen(GS_acfg.ServAddr), 0);
 				}
 			}
+
+			// recv 返回值说明: > 0 收到了数据， -1 没有数据， 0 连接中断
 			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);
-			if (-1 == ret)
-			{
-				continue;
-			}
 
 			if (ret > 0)		//仅当成功接收,才把信息加入缓冲队列
 			{
@@ -1035,15 +1034,15 @@ RESTART_LISTEN:
 				}
 				else
 				{
-					printf("[CLNT-RECV:%d] %s\n", ret, tPath);
-					int sent = send(GLOBALclntSock, tPath, ret, 0);
+					sent = send(GLOBALclntSock, tPath, ret, 0);
 					//cout << "sent: " << sent << "bytes" << endl;
 					string tmp = tPath;
 					LocalPathList.push(tPath);
 				}
 			}
-			else
+			else if(0 == ret)
 			{
+				printf("[RECV-RET %d]\n", ret);
 				Accept = false;
 				closesocket(GLOBALclntSock);
 				goto RESTART_LISTEN;

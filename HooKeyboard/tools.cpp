@@ -454,9 +454,10 @@ void CheckTaskFromLocal(SOCKET sock)
 		nRet = recv(GLOBAL_SOCKET, tmpBuf, 32, 0);
 		if (!strncmp("STOP SERVICE", tmpBuf, 32))
 		{
+			printf("[CMD] STOP SERVICE\n");
 			KEEP_RUNNING = FALSE;
 		}
-		if (!strncmp("OPEN NETWORK", tmpBuf, 32))
+		else if (!strncmp("OPEN NETWORK", tmpBuf, 32))
 		{
 			printf("[OPEN NETWORK]\n");
 			isShutdownNetwork = FALSE;
@@ -504,20 +505,31 @@ VOID SendMsg2Backend()
 	}
 
 	int sent = 0;
+	int loopCount = 0;
+
 	while (KEEP_RUNNING)
 	{
 		Sleep(SLEEP_TIME);
 
+		loopCount += 1;
+
 		length = 0;
 		CheckTaskFromLocal(GLOBAL_SOCKET);
-		sent = send(GLOBAL_SOCKET, "HBT", 3, 0);
-		
-		if (sent <= 0)
+
+		if (loopCount >= 300)
 		{
-			printf("Connect to Local Failed\n");
-			isConnectionOK = FALSE;
-			InitTcpConnection();
+			loopCount = 0;
+			sent = send(GLOBAL_SOCKET, "HBT", 3, 0);
+			if (sent <= 0)
+			{
+				printf("Connect to Local Failed\n");
+				isConnectionOK = FALSE;
+				InitTcpConnection();
+			}
+
+			continue;
 		}
+		
 REGET_TASK:
 		if (GetTask(&tsk))
 		{

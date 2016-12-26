@@ -204,6 +204,10 @@ int main(int argc, char *argv[])
 			break;
 		}		
 	}
+
+	// 等待线程执行结束
+	WaitForSingleObject(hThread, INFINITE);
+
 #endif
 
 	return 0;
