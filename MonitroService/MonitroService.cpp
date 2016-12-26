@@ -82,7 +82,7 @@ void SetWorkPath()
 	GetCurrentDirectoryA(sizeof(strModule), strModule);
 }
 
-int main()
+void EnableLog()
 {
 	// 生成日志文件名，取当天日期 YYYY-MM-DD.txt
 	char LogName[MAX_PATH];
@@ -106,7 +106,15 @@ int main()
 	snprintf(LogName, MAX_PATH, "LOG\\IO-%d-%d-%d %02d:%02d", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min);
 	printf("\n\n\n\n\n[Start Time] %s\n", LogName);
 
+}
 
+int main(int argc, char *argv[])
+{
+
+	if (2 == argc && !strncmp(argv[1], "backend", 7))
+	{
+		EnableLog();
+	}
 	if (!TryStartUp())
 	{
 		exit(3);

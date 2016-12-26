@@ -78,9 +78,21 @@ int main(int argc, char *argv[])
 	}
 
 	// 当该程序自动运行时，默认从注册表中解析出认证信息
-	if (2 == argc && !strncmp(argv[1], "--autostart", 32))
+	if (2 == argc)
 	{
-		hide = true;
+		if (!strncmp(argv[1], "--autostart", 32))
+		{
+			hide = true;
+		}
+		else if (!strncmp(argv[1], "--start", 32))	// 从注册表中读取认证信息
+		{
+			hide = false;
+		}
+		else
+		{
+			printf("Unknown Args: [%s]\n", argv[1]);
+			exit(1);
+		}
 		if (!GetAuth(&act))
 		{
 			printf("[FAILED] GetAuth\n");
@@ -206,7 +218,7 @@ int main(int argc, char *argv[])
 	}
 
 	// 等待线程执行结束
-	WaitForSingleObject(hThread, INFINITE);
+	//WaitForSingleObject(hThread, INFINITE);
 
 #endif
 

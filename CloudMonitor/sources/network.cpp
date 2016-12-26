@@ -1035,7 +1035,7 @@ RESTART_LISTEN:
 				else
 				{
 					sent = send(GLOBALclntSock, tPath, ret, 0);
-					//cout << "sent: " << sent << "bytes" << endl;
+					printf("[RECV-REPLY:%d]%s\n", sent, tPath);
 					string tmp = tPath;
 					LocalPathList.push(tPath);
 				}

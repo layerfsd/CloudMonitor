@@ -27,6 +27,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_0E3CFDA52FCE45639A06703964B5245C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_14DAE83163344B26A6DA4864306ABD3C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -75,6 +81,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6E7EF86524324194918D3FDA60D9ABD6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_75CA94CEFA7D4FC5ACA6FBB39B0A4BF5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -112,6 +124,18 @@
         "Entry"
         {
         "MsmKey" = "8:_9961819C128F4871B9531D23BBC906F7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B12872250875451D81753CA0C0971D77"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B5CD7BE6654F422B905ADEC34D5A4078"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -164,6 +188,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
             }
         }
         "Release"
@@ -188,6 +220,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
             }
         }
     }
@@ -216,6 +256,26 @@
             "TargetName" = "8:a2trtf.dll"
             "Tag" = "8:"
             "Folder" = "8:_572103570EDA4D2BBE0EE9B8BCCC6C7E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0E3CFDA52FCE45639A06703964B5245C"
+            {
+            "SourcePath" = "8:..\\Release\\msvcr110.dll"
+            "TargetName" = "8:msvcr110.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -450,6 +510,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B12872250875451D81753CA0C0971D77"
+            {
+            "SourcePath" = "8:C:\\Users\\alber\\Desktop\\touch.txt"
+            "TargetName" = "8:touch.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_B0E5A1FC64744B208355EC6FAF163F35"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B5CD7BE6654F422B905ADEC34D5A4078"
+            {
+            "SourcePath" = "8:C:\\Users\\alber\\Desktop\\touch.txt"
+            "TargetName" = "8:touch.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_331D607A740B4594850443325E2ADE36"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B9F79DD4469843048CBE6AEB4990E1B2"
             {
             "SourcePath" = "8:..\\Monitor\\res\\networking.png"
@@ -538,7 +638,7 @@
         {
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_30F64AD018294771A036CDC72C4A9872"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder]\\CloudMonitor"
+            "DefaultLocation" = "8:D:\\CloudMonitor"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -640,9 +740,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:Setup"
+        "ProductName" = "8:云控客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{71A1413B-1903-4D22-A89C-EC135573FF88}"
+        "PackageCode" = "8:{5D8D969E-A294-4AAF-808A-7A5AAC4453E9}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -653,7 +753,7 @@
         "Manufacturer" = "8:Default Company Name"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:Setup"
+        "Title" = "8:云控客户端"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Default Company Name"
         "Keywords" = "8:"
@@ -1263,7 +1363,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_564FA2782AC745D1B7817BC827D7F203"
             {
-            "SourcePath" = "8:..\\Release\\MonitroService.exe"
+            "SourcePath" = "8:..\\Release\\MonitorService.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
@@ -1312,6 +1412,34 @@
             "OutputConfiguration" = "8:Release|Win32"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{A8AA0C7E-4A6F-4455-9ED5-34B189DA9CD1}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6E7EF86524324194918D3FDA60D9ABD6"
+            {
+            "SourcePath" = "8:..\\Release\\Update.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{8F8A6007-D7C3-4C0A-A82B-DFE915F1AA68}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
