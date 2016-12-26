@@ -27,12 +27,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0E3CFDA52FCE45639A06703964B5245C"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_14DAE83163344B26A6DA4864306ABD3C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -40,6 +34,12 @@
         "Entry"
         {
         "MsmKey" = "8:_277CCC6869D94277A3EE119CD5FE17DE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_30E0461270A34344B83A3BDD2BD04C9A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -129,13 +129,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B12872250875451D81753CA0C0971D77"
+        "MsmKey" = "8:_AB3F461D1747491C9EEB593FF20ED2B3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_B5CD7BE6654F422B905ADEC34D5A4078"
+        "MsmKey" = "8:_ABCAC97521764FF8B52DDA02BEEE082B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -270,12 +270,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0E3CFDA52FCE45639A06703964B5245C"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_277CCC6869D94277A3EE119CD5FE17DE"
             {
-            "SourcePath" = "8:..\\Release\\msvcr110.dll"
-            "TargetName" = "8:msvcr110.dll"
+            "SourcePath" = "8:..\\Release\\ssl\\openssl.exe"
+            "TargetName" = "8:openssl.exe"
             "Tag" = "8:"
-            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Folder" = "8:_43E386BDA73D40E69F0469F46ACC5021"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -290,12 +290,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_277CCC6869D94277A3EE119CD5FE17DE"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_30E0461270A34344B83A3BDD2BD04C9A"
             {
-            "SourcePath" = "8:..\\Release\\ssl\\openssl.exe"
-            "TargetName" = "8:openssl.exe"
+            "SourcePath" = "8:..\\Release\\touch.txt"
+            "TargetName" = "8:touch.txt"
             "Tag" = "8:"
-            "Folder" = "8:_43E386BDA73D40E69F0469F46ACC5021"
+            "Folder" = "8:_B0E5A1FC64744B208355EC6FAF163F35"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -510,12 +510,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B12872250875451D81753CA0C0971D77"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AB3F461D1747491C9EEB593FF20ED2B3"
             {
-            "SourcePath" = "8:C:\\Users\\alber\\Desktop\\touch.txt"
+            "SourcePath" = "8:..\\Release\\touch.txt"
             "TargetName" = "8:touch.txt"
             "Tag" = "8:"
-            "Folder" = "8:_B0E5A1FC64744B208355EC6FAF163F35"
+            "Folder" = "8:_331D607A740B4594850443325E2ADE36"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -530,12 +530,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B5CD7BE6654F422B905ADEC34D5A4078"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ABCAC97521764FF8B52DDA02BEEE082B"
             {
-            "SourcePath" = "8:C:\\Users\\alber\\Desktop\\touch.txt"
-            "TargetName" = "8:touch.txt"
+            "SourcePath" = "8:..\\Release\\msvcr110.dll"
+            "TargetName" = "8:msvcr110.dll"
             "Tag" = "8:"
-            "Folder" = "8:_331D607A740B4594850443325E2ADE36"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -638,7 +638,7 @@
         {
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_30F64AD018294771A036CDC72C4A9872"
             {
-            "DefaultLocation" = "8:D:\\CloudMonitor"
+            "DefaultLocation" = "8:C:\\Program Files\\CloudMonitor"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -742,7 +742,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:云控客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{5D8D969E-A294-4AAF-808A-7A5AAC4453E9}"
+        "PackageCode" = "8:{1D58AEF3-65FE-46F2-8291-321842096515}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

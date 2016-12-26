@@ -1026,7 +1026,9 @@ RESTART_LISTEN:
 				if (!memcmp("BYE", tPath, 3))
 				{
 					printf("Hook Service Quit.\n");
-					goto _END_RECV;
+					Accept = false;
+					closesocket(GLOBALclntSock);
+					goto RESTART_LISTEN;
 				}
 				else if (!memcmp("HBT", tPath, 3))
 				{
@@ -1050,7 +1052,7 @@ RESTART_LISTEN:
 
 		}// inner while(Accept)
 	}// outter while(1)
-_END_RECV:
+
 	return 0;
 
 }

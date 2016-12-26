@@ -558,9 +558,9 @@ REGET_TASK:
 				}
 				else  // 发送成功
 				{
-					printf("[SENT-OK:]\n");
 					length = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
 					tsk.status = TRUE;		// 如果发送成功,标记发送状态为 真
+					printf("[SENT-OK:]\n");
 				}
 
 				if (!tsk.status)
