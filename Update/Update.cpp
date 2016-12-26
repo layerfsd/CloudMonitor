@@ -5,21 +5,88 @@
 
 using namespace std;
 
-LPCSTR TargetProcessName = "CloudMonitor.exe";
+LPCSTR TargetProcessName[]{ "CloudMonitor.exe", "MonitroService.exe" };
 
 
+BOOL SendSignal2Process(DWORD dwPid, DWORD dwSig);
 BOOL FindProcessPid(LPCSTR ProcessName, DWORD& dwPid);
 
-int main()
+VOID SendControlC(DWORD pid);
+
+void logLastError()
+{
+	LPTSTR errorText = NULL;
+
+	FormatMessage(
+		// use system message tables to retrieve error text
+		FORMAT_MESSAGE_FROM_SYSTEM
+		// allocate buffer on local heap for error text
+		| FORMAT_MESSAGE_ALLOCATE_BUFFER
+		// Important! will fail otherwise, since we're not 
+		// (and CANNOT) pass insertion parameters
+		| FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
+		GetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)&errorText,  // output 
+		0, // minimum size for output buffer
+		NULL);   // arguments - see note 
+
+	if (NULL != errorText)
+	{
+		printf("failure: %s", errorText);
+		LocalFree(errorText);
+		errorText = NULL;
+	}
+}
+
+
+static inline VOID StopMyService()
 {
 	DWORD	dwPid = 0;
 	BOOL	bRet = FALSE;
+	LPCSTR  pos{ nullptr };
 
-	bRet = FindProcessPid(TargetProcessName, dwPid);
 	
-	cout << dwPid << endl;
+	for (int i = 0; i < ArraySize(TargetProcessName); i++)
+	{
+		pos = TargetProcessName[i];
+		bRet = FindProcessPid(pos, dwPid);
 
+		// 仅当找到进程pid时，才尝试关闭
+		while (0 != bRet)
+		{
+			printf("Sending SIGINT to [%s] [%d]\n", pos, dwPid);
+			SendControlC(dwPid);
+			Sleep(2 * 1000);
+
+			cout << "After sent SIGINT" << endl;
+			bRet = FindProcessPid(pos, dwPid);
+		}
+	}
+
+	return;
+}
+
+
+int main()
+{
+	StopMyService();
     return 0;
+}
+
+VOID SendControlC(DWORD pid)
+{
+	printf("sending ctrl+c to pid %d", pid); 
+	FreeConsole(); 
+	if (AttachConsole(pid))
+	{
+		SetConsoleCtrlHandler(NULL, true);
+		GenerateConsoleCtrlEvent(CTRL_C_EVENT, 0); 
+	}
+	else {
+		logLastError();
+	}
 }
 
 BOOL FindProcessPid(LPCSTR ProcessName, DWORD& dwPid)
@@ -48,6 +115,7 @@ BOOL FindProcessPid(LPCSTR ProcessName, DWORD& dwPid)
 		if (!strncmp(ProcessName, pe32.szExeFile, MAX_PATH))
 		{
 			dwPid = pe32.th32ProcessID;
+			bRet = TRUE;
 			break;
 		}
 
