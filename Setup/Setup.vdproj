@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_03365CAB83384D82A89FEB8F6CF835E3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_05AFBF8346DF47ECA10562D23F0C9AD2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -118,12 +124,6 @@
         "Entry"
         {
         "MsmKey" = "8:_892203F6E1E14FD99FA3896036581ACC"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9961819C128F4871B9531D23BBC906F7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1305,6 +1305,34 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_03365CAB83384D82A89FEB8F6CF835E3"
+            {
+            "SourcePath" = "8:..\\Release\\Service.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{6C54A64D-B4FE-4486-8928-3872FB53A8C6}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_05AFBF8346DF47ECA10562D23F0C9AD2"
             {
             "SourcePath" = "8:..\\Release\\CloudMonitor.exe"
@@ -1363,7 +1391,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_564FA2782AC745D1B7817BC827D7F203"
             {
-            "SourcePath" = "8:..\\Release\\MonitorService.exe"
+            "SourcePath" = "8:..\\Release\\FilterCenter.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
@@ -1391,7 +1419,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6271F3B4CA6A452EA868AEAB519DAA19"
             {
-            "SourcePath" = "8:..\\Release\\Monitor.exe"
+            "SourcePath" = "8:..\\Release\\Login.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
@@ -1440,34 +1468,6 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{8F8A6007-D7C3-4C0A-A82B-DFE915F1AA68}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9961819C128F4871B9531D23BBC906F7"
-            {
-            "SourcePath" = "8:..\\Release\\Daemon.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{5459490B-9F87-401E-8225-709935F99F3F}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
