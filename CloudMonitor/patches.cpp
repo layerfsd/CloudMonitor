@@ -15,7 +15,7 @@
 
 
 #define THIS_APP_NAME		"CloudMonitor.exe"
-#define DEPEND_APP_NAME		"MonitroService.exe"
+#define DEPEND_APP_NAME		"MonitorService.exe"
 
 
 using namespace std;
@@ -151,7 +151,7 @@ bool StartHookService()
 	memset(cmd, 0, MAX_PATH);
 	GetCurrentDirectoryA(MAX_PATH, cmd);
 
-	strcat(cmd, "\\MonitroService.exe");
+	strcat(cmd, "\\MonitorService.exe");
 
 	if (CreateProcessA(NULL,
 		cmd,
@@ -201,7 +201,7 @@ void InitDir(bool hide)
 	time(&timep);
 	p = localtime(&timep);
 	memset(LogName, 0, sizeof(LogName));
-	snprintf(LogName, MAX_PATH, "LOG\\%d-%d-%d.txt", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday);
+	snprintf(LogName, MAX_PATH, "LOG\\%d-%d-%d[Client].txt", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday);
 
 
 	// Òş²Ø¿ØÖÆÌ¨´°¿Ú
@@ -216,7 +216,7 @@ void InitDir(bool hide)
 
 	memset(LogName, 0, sizeof(LogName));
 	snprintf(LogName, MAX_PATH, "LOG\\%d-%d-%d %02d:%02d", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min);
-	cout << "[Start Time] " << LogName << endl;
+	printf("\n\n\n\n\n[Start Time] %s\n", LogName);
 
 
 	GetMyName(sem_name, MAX_PATH);

@@ -1,9 +1,9 @@
-// MonitroService.cpp : 定义控制台应用程序的入口点。
+// MonitorService.cpp : 定义控制台应用程序的入口点。
 //
 
 #include "stdafx.h"
 #include <signal.h>
-
+#include <time.h>
 
 typedef void(*SignalHandlerPointer)(int);
 
@@ -84,6 +84,29 @@ void SetWorkPath()
 
 int main()
 {
+	// 生成日志文件名，取当天日期 YYYY-MM-DD.txt
+	char LogName[MAX_PATH];
+	FILE *stream;
+	time_t timep;
+	struct tm *p;
+
+
+	time(&timep);
+	p = localtime(&timep);
+	memset(LogName, 0, sizeof(LogName));
+	snprintf(LogName, MAX_PATH, "LOG\\%d-%d-%d[IO].txt", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday);
+
+
+	if ((stream = freopen(LogName, "a+", stdout)) == NULL)
+	{
+		exit(-1);
+	}
+
+	memset(LogName, 0, sizeof(LogName));
+	snprintf(LogName, MAX_PATH, "LOG\\IO-%d-%d-%d %02d:%02d", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min);
+	printf("\n\n\n\n\n[Start Time] %s\n", LogName);
+
+
 	if (!TryStartUp())
 	{
 		exit(3);
