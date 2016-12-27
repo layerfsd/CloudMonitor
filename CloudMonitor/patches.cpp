@@ -15,7 +15,7 @@
 
 
 #define THIS_APP_NAME		"CloudMonitor.exe"
-#define DEPEND_APP_NAME		"MonitorService.exe"
+#define DEPEND_APP_NAME		"FilterCenter.exe"
 
 
 using namespace std;
@@ -151,7 +151,7 @@ bool StartHookService()
 	memset(cmd, 0, MAX_PATH);
 	GetCurrentDirectoryA(MAX_PATH, cmd);
 
-	strcat(cmd, "\\MonitorService.exe");
+	strcat(cmd, "\\FilterCenter.exe");
 
 	if (CreateProcessA(NULL,
 		cmd,

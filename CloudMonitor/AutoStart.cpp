@@ -14,7 +14,7 @@ BOOL IsMyProgramRegisteredForStartup(char* pszAppName)
 	char szPathToExe[MAX_PATH] = {};
 	DWORD dwSize = sizeof(szPathToExe);
 
-	lResult = RegOpenKeyExA(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_READ, &hKey);
+	lResult = RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_READ, &hKey);
 
 	fSuccess = (lResult == 0);
 
@@ -58,7 +58,7 @@ BOOL RegisterMyProgramForStartup(PCSTR pszAppName, PCSTR pathToExe, PCSTR args)
 		strcat_s(szValue, count, args);
 	}
 
-	lResult = RegCreateKeyExA(HKEY_CURRENT_USER, STARTUP_PATH, 0, NULL, 0, (KEY_WRITE | KEY_READ), NULL, &hKey, NULL);
+	lResult = RegCreateKeyExA(HKEY_LOCAL_MACHINE, STARTUP_PATH, 0, NULL, 0, (KEY_WRITE | KEY_READ), NULL, &hKey, NULL);
 
 	fSuccess = (lResult == 0);
 
@@ -239,9 +239,11 @@ bool GetAuth(Account* act)
 	uchar data[64];
 
 	memset(data, 0, sizeof(data));
-	HKEY hKey = OpenKey(HKEY_CURRENT_USER, STORE_AUTH_PATH);
+	
+	HKEY hKey = OpenKey(HKEY_LOCAL_MACHINE, STORE_AUTH_PATH);
 	GetVal(hKey, AUTH_NAME, data, 64);
 	Xor(data, (uchar *)act, 64);
+	printf("REG AUTH: %s\n%s\n", act->username, act->password);
 	return true;
 }
 
@@ -251,10 +253,9 @@ bool SetAuth(Account* act)
 	uchar data[64];
 
 	memset(data, 0, sizeof(data));
-	HKEY hKey = OpenKey(HKEY_CURRENT_USER, STORE_AUTH_PATH);
+	HKEY hKey = OpenKey(HKEY_LOCAL_MACHINE, STORE_AUTH_PATH);
 	
 	// º”√‹’Àªß
 	Xor((uchar *)act, data, 64);
-	SetVal(hKey, AUTH_NAME, data, 64);
-	return true;
+	return SetVal(hKey, AUTH_NAME, data, 64);
 }
