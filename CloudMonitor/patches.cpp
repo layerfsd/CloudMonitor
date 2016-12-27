@@ -152,6 +152,7 @@ bool StartHookService()
 	GetCurrentDirectoryA(MAX_PATH, cmd);
 
 	strcat(cmd, "\\FilterCenter.exe");
+	strcat(cmd, " --backend");
 
 	if (CreateProcessA(NULL,
 		cmd,

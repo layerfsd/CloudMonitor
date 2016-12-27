@@ -111,7 +111,7 @@ void EnableLog()
 int main(int argc, char *argv[])
 {
 
-	if (2 == argc && !strncmp(argv[1], "backend", 7))
+	if (2 == argc && !strncmp(argv[1], "--backend", 7))
 	{
 		EnableLog();
 	}
