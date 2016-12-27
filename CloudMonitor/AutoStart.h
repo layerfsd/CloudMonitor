@@ -13,6 +13,10 @@
 #define STARTUP_PATH		 "Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 #define STARTUP_ARGS		"--autostart"
 
+
+#define RUNNING_FLAG		"isStarted"
+#define AUTHORIZED_FLAG		"isAuth"
+
 typedef unsigned char uchar;
 
 
@@ -32,5 +36,8 @@ bool SetAuth(Account* act);
 // 从注册表中 读取认证用户名与密码
 bool GetAuth(Account* act);
 
+BOOL GetRegFlag(LPCSTR regName, BOOL* data);
+
+BOOL SetRegFlag(LPCSTR regName, BOOL data);
 
 #endif

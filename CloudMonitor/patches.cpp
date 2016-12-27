@@ -55,7 +55,7 @@ bool TryStartUp(const char* sem_name)
 {
 	printf("sem_name: %s\n", sem_name);
 
-	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, sem_name);
+	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, THIS_APP_NAME);
 
 	// 打开成功，说明已经有实例在运行
 	if (NULL != semhd)
@@ -195,7 +195,6 @@ void InitDir(bool hide)
 	FILE *stream;
 	time_t timep;
 	struct tm *p;
-
 
 	memset(sem_name, 0, MAX_PATH);
 

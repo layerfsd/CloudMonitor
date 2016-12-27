@@ -76,6 +76,7 @@ int main(int argc, char *argv[])
 		printf("Need args\n");
 		return 1;
 	}
+	
 
 	// 当该程序自动运行时，默认从注册表中解析出认证信息
 	if (2 == argc)
@@ -93,6 +94,8 @@ int main(int argc, char *argv[])
 			printf("Unknown Args: [%s]\n", argv[1]);
 			exit(1);
 		}
+
+		// 从注册表中获取认证信息
 		if (!GetAuth(&act))
 		{
 			printf("[FAILED] GetAuth\n");
@@ -164,7 +167,10 @@ int main(int argc, char *argv[])
 	if (3 == argc)
 	{
 		SetAuth(&act);
+		SetRegFlag(AUTHORIZED_FLAG, TRUE);
 	}
+
+
 	// 每次启动，先更新关键字列表
 	app.GetFile(keywords);
 	if (!LoadKeywords(keywordPath, kw))

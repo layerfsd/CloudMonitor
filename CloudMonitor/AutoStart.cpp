@@ -209,6 +209,7 @@ HKEY OpenKey(HKEY hRootKey, char* strKey)
 	return hKey;
 }
 
+
 inline bool SetVal(HKEY hKey, LPCSTR lpValue, uchar* data, DWORD size)
 {
 	LONG nError = RegSetValueExA(hKey, lpValue, NULL, REG_BINARY, (LPBYTE)data, size);
@@ -236,6 +237,16 @@ inline bool GetVal(HKEY hKey, LPCSTR lpValue, uchar* data, DWORD size)
 
 bool GetAuth(Account* act)
 {
+	// 检查注册表中，“认证标志”是否为真
+	BOOL isAuth = 0;
+	if (!GetRegFlag(AUTHORIZED_FLAG, &isAuth) || TRUE != isAuth)
+	{
+		printf("[Not Authorezed]\n");
+		return false;
+	}
+
+
+
 	uchar data[64];
 
 	memset(data, 0, sizeof(data));
@@ -258,4 +269,35 @@ bool SetAuth(Account* act)
 	// 加密账户
 	Xor((uchar *)act, data, 64);
 	return SetVal(hKey, AUTH_NAME, data, 64);
+}
+
+
+BOOL GetRegFlag(LPCSTR regName, BOOL* data)
+{
+	HKEY hKey = OpenKey(HKEY_LOCAL_MACHINE, STORE_AUTH_PATH);
+
+	DWORD type = REG_DWORD;
+	DWORD size = sizeof(DWORD);
+
+	LONG nError = RegQueryValueExA(hKey, regName, NULL, &type, (LPBYTE)data, &size);
+
+	if (nError)
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+BOOL SetRegFlag(LPCSTR regName, BOOL data)
+{
+	HKEY hKey = OpenKey(HKEY_LOCAL_MACHINE, STORE_AUTH_PATH);
+
+	LONG nError = RegSetValueExA(hKey, regName, NULL, REG_DWORD, (LPBYTE)&data, sizeof(DWORD));
+
+	if (nError)
+	{
+		return FALSE;
+	}
+	return TRUE;
 }

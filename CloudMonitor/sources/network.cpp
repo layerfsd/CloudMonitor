@@ -1020,6 +1020,7 @@ RESTART_LISTEN:
 
 			// recv 返回值说明: > 0 收到了数据， -1 没有数据， 0 连接中断
 			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);
+			printf("[RECV-HOOK:%d]%s\n", ret, tPath);
 
 			if (ret > 0)		//仅当成功接收,才把信息加入缓冲队列
 			{
