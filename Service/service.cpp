@@ -1,6 +1,9 @@
  // filename: service.cpp
 #include "service.h"
+#include <time.h>
 #include <string.h>
+#include <Windows.h>
+#include <tlhelp32.h>	//CreateToolhelp32Snapshot
 
 bool GetInstalledPath(char* InstallPath, size_t BufSize)
 {
@@ -11,10 +14,61 @@ bool GetInstalledPath(char* InstallPath, size_t BufSize)
 }
 
 
+BOOL FindProcessPid(LPCSTR ProcessName, DWORD& dwPid)
+{
+	HANDLE hProcessSnap;
+	PROCESSENTRY32 pe32;
+
+	// Take a snapshot of all processes in the system.
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (hProcessSnap == INVALID_HANDLE_VALUE)
+	{
+		return(FALSE);
+	}
+
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+
+	if (!Process32First(hProcessSnap, &pe32))
+	{
+		CloseHandle(hProcessSnap);          // clean the snapshot object
+		return(FALSE);
+	}
+
+	BOOL	bRet = FALSE;
+	do
+	{
+		// 忽略大小写
+		if (!_stricmp(ProcessName, pe32.szExeFile))
+		{
+			dwPid = pe32.th32ProcessID;
+			bRet = TRUE;
+			break;
+		}
+
+	} while (Process32Next(hProcessSnap, &pe32));
+
+	CloseHandle(hProcessSnap);
+	return bRet;
+}
+
+
 int WriteToLog(char* str)
 {
 	static char LogFile[MAX_PATH];
+	static char timeBuf[MAX_PATH];
+
 	GetInstalledPath(LogFile, sizeof(LogFile));
+
+	time_t timep;
+	struct tm *p;
+
+
+	time(&timep);
+	p = localtime(&timep);
+	memset(timeBuf, 0, sizeof(timeBuf));
+	snprintf(timeBuf, MAX_PATH, "[%d-%02d-%02d %02d:%02d:%02d] ", \
+				1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec);
+
 
 	FILE* log;
 	fopen_s(&log, LogFile, "a+");
@@ -22,7 +76,7 @@ int WriteToLog(char* str)
 	if (log == NULL)
 		return -1;
 	
-	fprintf(log, "%s\n", str);
+	fprintf(log, "%s%s\n", timeBuf, str);
 	fclose(log);
 	return 0;
 }
@@ -76,17 +130,25 @@ void ServiceMain(int argc, char** argv)
 	SetServiceStatus(hStatus, &ServiceStatus);
 
 
+	DWORD dwPid = 0;
 	// The worker loop of a service
 	while (ServiceStatus.dwCurrentState == SERVICE_RUNNING)
 	{
-		char *buffer[] {
-			"[Filed] Start CloudMonitor",
-			"[Success] Start CloudMonitor"
+		Sleep(1000 * SLEEP_TIME);
+		// 如果找到该进程则跳过以下代码
+		if (FindProcessPid(MASTER_APP_NAME, dwPid))
+		{
+			WriteToLog(MASTER_APP_NAME "RUNNING WELL");
+			continue;
+		}
+
+		char *buffer {
+			"Start CloudMonitor in service."
 		};
 
-		bool bRet = StartMyService();
+		StartMyService();
 		
-		int result = WriteToLog(buffer[bRet]);
+		int result = WriteToLog(buffer);
 		if (result)
 		{
 			ServiceStatus.dwCurrentState = SERVICE_STOPPED;
@@ -94,7 +156,6 @@ void ServiceMain(int argc, char** argv)
 			SetServiceStatus(hStatus, &ServiceStatus);
 			return;
 		}
-		Sleep(1000 * SLEEP_TIME);
 	}
 	return;
 }
@@ -105,7 +166,10 @@ int InitService()
 	SetWorkPath();
 	
 	int result;
+	
 	result = WriteToLog("Monitoring started.");
+	StartMyService();
+
 	return(result);
 }
 
@@ -142,17 +206,6 @@ void ControlHandler(DWORD request)
 
 bool StartMyService()
 {
-
-	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, MASTER_APP_NAME);
-
-	// 打开成功，说明已经有实例在运行
-	if (NULL != semhd)
-	{
-		CloseHandle(semhd);
-		return true;
-	}
-
-
 	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
 	PROCESS_INFORMATION pi;
 
