@@ -16,7 +16,7 @@ using namespace std;
 struct TASK
 {
 	CHAR	path[MAX_PATH];
-	size_t  ltime;
+	time_t  ltime;
 	DWORD	len;
 	BOOL    status;
 };
@@ -125,46 +125,7 @@ BOOL InitTcpConnection()
 }
 
 
-// CreateFile过滤模块采用 TCP 本地通信模式
-// 当通信另外一端未启动或者网络错误时,宿主程序会卡在 CreateFile() 系统调用中
-// 因此在本地服务中创建一个·命名管道·以缓存需要通知的事件
-// 其工作原理是: 接收到 Hook 通知后,将·路径·记录到队列中立刻返回
-// 由一个专有线程负责从队列中读取数据通知另外一个程序
-VOID TellBackend(const char* lPath, int length)
-{
-	static CHAR  lastPath[MAX_PATH] = { 0 };
-	CHAR  tmpBuf[MAX_PATH];
-
-	// 防止连续发送相同的文件名
-	if (0 == strcmp(lPath, lastPath))
-	{
-		return;
-	}
-	else
-	{
-		memcpy(lastPath, lPath, length);
-	}
-
-	if (!InitTcpConnection())
-	{
-		isConnectionOK = FALSE;
-		return;
-	}
-	//MessageBox(NULL, lPath, "Tell Backend", MB_OK);
-	//MessageBox(NULL, lastPath, "lastPath", MB_OK);
-	if (send(GLOBAL_SOCKET, lPath, length, 0) <= 0)
-	{
-		return;
-	}
-	else
-	{
-		recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
-		//MessageBox(NULL, lPath, "Tell Backend", MB_OK);
-	}
-	return;
-}
-
-static 	map<string,size_t> LastTask;
+static 	map<string, time_t> LastTask;
 
 BOOL GetTask(TASK* tsk)
 {
@@ -479,8 +440,9 @@ void CheckTaskFromLocal(SOCKET sock)
 }
 
 
-
-// 向后台程序发送一条信息
+// CreateFile过滤模块采用 TCP 本地通信模式
+// 其工作原理是: 接收到 Hook 通知后,将·路径·记录到队列中立刻返回
+// 由一个专有线程负责从队列中读取数据通知另外一个程序
 VOID SendMsg2Backend()
 {
 	static  TASK tsk = { 0 };
@@ -506,6 +468,8 @@ VOID SendMsg2Backend()
 
 	int sent = 0;
 	int loopCount = 0;
+	struct tm *p;
+	static char timeBuf[32]{};
 
 	while (KEEP_RUNNING)
 	{
@@ -539,12 +503,16 @@ REGET_TASK:
 				goto REGET_TASK;
 			}
 
+			memset(timeBuf, 0, sizeof(timeBuf));
+
+			p = localtime(&tsk.ltime);
+			snprintf(timeBuf, sizeof(timeBuf), "%d:%d:%d", p->tm_hour, p->tm_min, p->tm_sec);
 
 			int   MaxRetryTime = 0;
 			while (KEEP_RUNNING && (tsk.status != TRUE) && (MaxRetryTime++ < MAX_RETRY_TIME))
 			{
 				//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
-				printf("[SEND:%d] %s\n", tsk.ltime, tsk.path);
+				printf("[SEND:%s] %s\n", timeBuf, tsk.path);
 				sent = send(GLOBAL_SOCKET, tsk.path, tsk.len, 0);
 
 				if (sent <= 0)
