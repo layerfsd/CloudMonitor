@@ -1020,7 +1020,7 @@ RESTART_LISTEN:
 
 			// recv 返回值说明: > 0 收到了数据， -1 没有数据， 0 连接中断
 			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);
-			printf("[RECV-HOOK:%d]%s\n", ret, tPath);
+
 
 			if (ret > 0)		//仅当成功接收,才把信息加入缓冲队列
 			{
@@ -1037,8 +1037,12 @@ RESTART_LISTEN:
 				}
 				else
 				{
+					// 仅当接受到信息时才打印
+					if (ret)
+						printf("[RECV-HOOK:%d]%s\n", ret, tPath);
+
 					sent = send(GLOBALclntSock, tPath, ret, 0);
-					printf("[RECV-REPLY:%d]%s\n", sent, tPath);
+					printf("[RPLY-HOOK:%d]%s\n", sent, tPath);
 					string tmp = tPath;
 					LocalPathList.push(tPath);
 				}
