@@ -6,5 +6,6 @@
 #define ArraySize(ptr)	(sizeof(ptr) / sizeof(ptr[0]))
 
 void InitDir(bool hide);
+bool StartHookService();
 
 #endif // ! _PATCHES_ALBERT__

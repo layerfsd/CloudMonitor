@@ -166,9 +166,14 @@ int InitService()
 	SetWorkPath();
 	
 	int result;
-	
+	DWORD dwPid;
+
 	result = WriteToLog("Monitoring started.");
-	StartMyService();
+	if (!FindProcessPid(MASTER_APP_NAME, dwPid))
+	{
+		WriteToLog("STARTING " MASTER_APP_NAME);
+		StartMyService();
+	}
 
 	return(result);
 }

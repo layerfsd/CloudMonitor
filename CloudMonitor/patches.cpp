@@ -85,7 +85,28 @@ bool GetMyName(char* szBuf, size_t bufSize)
 	return true;
 }
 
+bool TryStartUp(const char* sem_name)
+{
+	printf("sem_name: %s\n", sem_name);
 
+	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, sem_name);
+
+	// 打开成功，说明已经有实例在运行
+	if (NULL != semhd)
+	{
+		printf("%s is already running.\n", sem_name);
+		return false;
+	}
+	// 打开失败，则说明本程序初次启动
+	// 创建信号量
+	if (NULL == CreateSemaphoreA(NULL, 1, 1, sem_name))
+	{
+		printf("Create [%s] failed.\n", sem_name);
+		return false;
+	}
+
+	return true;
+}
 
 void SignalHandler(int signal)
 {
@@ -209,7 +230,6 @@ void InitDir(bool hide)
 	memset(LogName, 0, sizeof(LogName));
 	snprintf(LogName, MAX_PATH, "LOG\\%d-%d-%d[Client].txt", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday);
 
-
 	// 隐藏控制台窗口
 	if (hide)
 	{
@@ -219,6 +239,15 @@ void InitDir(bool hide)
 			exit(-1);
 		}
 	}
+
+	GetMyName(sem_name, MAX_PATH);
+
+	if (!TryStartUp(sem_name))
+	{
+		InformUser(ALREADY_LOGIN);
+		exit(3);
+	}
+
 
 	memset(LogName, 0, sizeof(LogName));
 	snprintf(LogName, MAX_PATH, "LOG\\%d-%d-%d %02d:%02d", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min);
@@ -230,7 +259,7 @@ void InitDir(bool hide)
 
 
 	SetWorkPath();
-	StartHookService();
+	//StartHookService();
 
 	// 检查本程序是否已经加入到开机自启动项目
 	// RegisterProgram();

@@ -138,8 +138,15 @@ int main(int argc, char *argv[])
 	User app(authBuf);
 	USB	 usb;
 
+	if (!app.Authentication())  // 验证账号	
+	{
+		cout << "Auth Failed!" << endl;
+		return -1;
+	}
 
+	// 认证成功后，继续开启依赖工作进程
 	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
+	StartHookService();
 #if 0
 	while (g_RUNNING)
 	{
@@ -156,12 +163,6 @@ int main(int argc, char *argv[])
 	WaitForSingleObject(hThread, INFINITE);
 	printf("Done\n");
 #else
-
-	if (!app.Authentication())  // 验证账号	
-	{
-		cout << "Auth Failed!" << endl;
-		return -1;
-	}
 
 	// 用户手动运行该程序并且登录成功，则刷新认证信息到注册表
 	if (3 == argc)

@@ -79,20 +79,6 @@ bool GetMyName(char* szBuf, size_t bufSize)
 }
 
 
-#define DEPEND_APP_NAME		"FilterCenter.exe"
-
-bool TryStartUp()
-{
-	DWORD dwPid;
-	if (FindProcessPid(DEPEND_APP_NAME, dwPid))
-	{
-		printf("[%s] [%d]\n", DEPEND_APP_NAME, dwPid);
-		return false;
-	}
-	return true;
-}
-
-
 void SetWorkPath()
 {
 	char strModule[MAX_PATH];
@@ -130,12 +116,46 @@ void EnableLog()
 
 
 
+bool TryStartUp()
+{
+	char	sem_name[MAX_PATH];
+
+	memset(sem_name, 0, MAX_PATH);
+	if (!GetMyName(sem_name, MAX_PATH))
+	{
+		return false;
+	}
+	printf("sem_name: %s\n", sem_name);
+
+	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, sem_name);
+
+	// 打开成功，说明已经有实例在运行
+	if (NULL != semhd)
+	{
+		printf("%s is already running.\n", sem_name);
+		return false;
+	}
+	// 打开失败，则说明本程序初次启动
+	// 创建信号量
+	if (NULL == CreateSemaphoreA(NULL, 1, 1, sem_name))
+	{
+		printf("Create [%s] failed.\n", sem_name);
+		return false;
+	}
+
+	return true;
+}
+
 int main(int argc, char *argv[])
 {
 
 	if (2 == argc && !strncmp(argv[1], "--backend", 7))
 	{
 		EnableLog();
+	}
+	if (!TryStartUp())
+	{
+		exit(3);
 	}
 
 	printf("try start up\n");
@@ -146,7 +166,9 @@ int main(int argc, char *argv[])
 	SignalHandlerPointer previousHandler;
 	previousHandler = signal(SIGINT, SignalHandler);
 	signal(SIGABRT, SignalHandler);
+
 	SetHookOn();
+	SetHookOff();
 
 	//SendMsg2Backend();
 	//while (1)
