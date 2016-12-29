@@ -5,12 +5,19 @@
 #include "process.h"  // 远程控制接口函数声明
 
 #include <queue>
+#include <map>
 
-#define STOP_SERVICE	"STOP SERVICE"
 
-static char *CONTROL_NETWORK_COMMAND[] = {
-	"OPEN NETWORK", "SHUTDOWN NETWORK"
+static map<string, string> LOCAL_CONTROL{
+	{ "CMD_GOT", "100"},
+	{ "STOP_SERVICE", "101" },
+	{ "OPEN_NETWORK", "102" },
+	{ "SHUT_NETWORK", "103" },
+
 };
+static const int LocalControlNumLen = 3;
+
+
 // 是否要关闭对外通讯
 static BOOL isShutdownNetwork = FALSE;
 
@@ -998,8 +1005,8 @@ RESTART_LISTEN:
 			// 通知IO过滤中心，停止服务
 			if (!g_RUNNING)
 			{
-				printf("tell IO Center to Stop [%s]\n", STOP_SERVICE);
-				send(GLOBALclntSock, STOP_SERVICE, strlen(STOP_SERVICE), 0);
+				printf("tell IO Center to Stop [%s]\n", "STOP_SERVICE");
+				send(GLOBALclntSock, LOCAL_CONTROL["STOP_SERVICE"].c_str(), LocalControlNumLen, 0);
 				break;
 			}
 
@@ -1008,13 +1015,21 @@ RESTART_LISTEN:
 				printf("changed %d isShutdownNetwork %d\n", changed, isShutdownNetwork);
 				changed = isShutdownNetwork;
 
-				printf("sending command %s\n", CONTROL_NETWORK_COMMAND[isShutdownNetwork]);
-				send(GLOBALclntSock, CONTROL_NETWORK_COMMAND[isShutdownNetwork], strlen(CONTROL_NETWORK_COMMAND[isShutdownNetwork]), 0);
 				// 确定要关闭网络时，保持与服务端IP的正常通信
 				if (isShutdownNetwork)
 				{
 					printf("Except for [%s]", GS_acfg.ServAddr);
+
+					// 发送‘关闭网络’指令
+					send(GLOBALclntSock, LOCAL_CONTROL["SHUT_NETWORK"].c_str(), LocalControlNumLen, 0);
+					// 发送需要额外处理的公网IP
 					send(GLOBALclntSock, GS_acfg.ServAddr, strlen(GS_acfg.ServAddr), 0);
+				}
+				else
+				{	
+					// 发送‘开启用户网络’指令
+					printf("sending command %s\n", "OPEN_NETWORK");
+					send(GLOBALclntSock, LOCAL_CONTROL["OPEN_NETWORK"].c_str(), LocalControlNumLen, 0);
 				}
 			}
 
