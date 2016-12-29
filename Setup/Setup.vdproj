@@ -664,7 +664,7 @@
         {
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_30F64AD018294771A036CDC72C4A9872"
             {
-            "DefaultLocation" = "8:C:\\Program Files\\CloudMonitor"
+            "DefaultLocation" = "8:[HOMEPATH]\\CloudMonitor"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -768,7 +768,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:云控客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{478B42A8-ECE4-4415-8289-B609DBEF16E0}"
+        "PackageCode" = "8:{3ACC3D1F-9E31-4280-B0A3-F27F4B4AE24C}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

@@ -209,8 +209,10 @@ BOOL GetTask(TASK* tsk)
 
 		//printf("head: %d next: %d tail: %d len:%d\n", gll_head, nxtPos, gll_tail, cur.len);
 		// this == last
-		printf("[Checking:%d]%s\n", gll_head, cur.path);
-		if ( (cur.len == nxt.len) && !memcmp(cur.path, nxt.path, cur.len) )
+		//printf("[Checking:%d]%s\n", gll_head, cur.path);
+
+		// 如果当前路径与下一个路径相等，则跳过当前路径
+		if (0  == memcmp(cur.path, nxt.path, cur.len) )
 		{
 			continue;
 		}
@@ -226,16 +228,23 @@ BOOL GetTask(TASK* tsk)
 	{
 		// 在一定时间内,不允许重复发送.
 		// 检测是否与上一个任务一致
-		if (cur.ltime - LastTask[cur.path] < MIN_SENT_INTERVAL)
+
+		// 检查该路径是否在 MIN_SENT_INTERVAL 秒内重复发送过
+		for (auto it = LastTask.begin(); it != LastTask.end(); ++it)
 		{
-			bRet = FALSE;
+			if ((!memcmp(cur.path, it->first.c_str(), cur.len)) && (cur.ltime - it->second < MIN_SENT_INTERVAL))
+			{
+				bRet = FALSE;
+				printf("[REPEAT-IGNORED:%d] %s\n", gll_head, it->first.c_str());
+				break;
+			}
 		}
-		else
+
+		if (bRet)
 		{
 			memset(tsk, 0, sizeof(TASK));
 			*tsk = cur;
 			LastTask[cur.path] = cur.ltime;
-			gll_head -= 1;
 		}
 		//MessageBox(NULL, lpFilePath, "Release SEM", MB_OK);
 	}
@@ -285,7 +294,6 @@ VOID AddTask(CONST CHAR* lpFilePath, DWORD dwSize)
 	
 	ReleaseSemaphore(semhd, 1, NULL);
 	//MessageBox(NULL, lpFilePath, "Tell Backend", MB_OK);
-
 	// release lock: gll_tail
 	return;
 }
