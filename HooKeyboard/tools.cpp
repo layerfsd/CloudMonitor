@@ -353,8 +353,8 @@ BOOL CheckSockAddr(const struct sockaddr FAR *saddr)
 	{
 		bRet = FALSE;
 	}
-#if ALBERT_DEBUG
-	else
+	// 如果开启了‘网络控制’，当有进程要访问外网时，弹出对话框
+	if (FALSE == bRet)
 	{
 		char *strAddr;
 		strAddr = inet_ntoa(s->sin_addr);
@@ -363,7 +363,7 @@ BOOL CheckSockAddr(const struct sockaddr FAR *saddr)
 
 		MessageBox(NULL, strAddr, strModule, MB_OK);
 	}
-#endif
+
 	return bRet;
 }
 
@@ -434,6 +434,18 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 	return retValue;
 }
 
+// 与本地进程 CloudMonitor.exe 协商执行远程的控制指令
+// 从 100 开始，可以有900 （1000-100=900）个控制指令
+// 若从默认‘0’开始智能有 10（0-9）个控制指令，不方便扩展
+enum {
+	CMD_GOT = 100,	// 确认信息
+	STOP_SERVICE,
+	OPEN_NETWORK,
+	SHUT_NETWORK
+}LOCAL_CONTROL;
+
+static const int LocalControlNumLen = 3;
+
 // 接收来自 CloudMonitor.exe 的指令
 void CheckTaskFromLocal(SOCKET sock)
 {
@@ -443,6 +455,7 @@ void CheckTaskFromLocal(SOCKET sock)
 
 	int		nRet = 0;		//记录发送或者接受的字节数
 	static TIMEVAL	tv = { 0, 500 };//设置超时等待时间
+	static int	CMD = 0;
 
 	FD_ZERO(&fdRead);
 	FD_SET(sock, &fdRead);
@@ -458,28 +471,36 @@ void CheckTaskFromLocal(SOCKET sock)
 
 	if (nRet > 0)
 	{
+		CMD = 0;
+
 		memset(tmpBuf, 0, sizeof(tmpBuf));
-		nRet = recv(GLOBAL_SOCKET, tmpBuf, 32, 0);
-		if (!strncmp("STOP SERVICE", tmpBuf, 32))
+		nRet = recv(GLOBAL_SOCKET, tmpBuf, LocalControlNumLen, 0);
+
+		// 把字符串形式的数字转换为数字
+		tmpBuf[LocalControlNumLen] = 0;
+		CMD = atoi(tmpBuf);
+	
+		if (STOP_SERVICE == CMD)			// 关闭当前程序
 		{
 			printf("[CMD] STOP SERVICE\n");
 			KEEP_RUNNING = FALSE;
 		}
-		else if (!strncmp("OPEN NETWORK", tmpBuf, 32))
+		else if (OPEN_NETWORK == CMD)		// 开启客户端与 Internet 的网络通道
 		{
 			printf("[OPEN NETWORK]\n");
 			isShutdownNetwork = FALSE;
 		}
-		else if (!strncmp("SHUTDOWN NETWORK", tmpBuf, 32))
+		else if (SHUT_NETWORK == CMD)	// 关闭客户端与 Internet 的网络通道,保留与 ‘远程服务器’的连接
 		{
 			isShutdownNetwork = TRUE;
 
-			tmpBuf[0] = 0;
+			memset(tmpBuf, 0, sizeof(tmpBuf));
 			nRet = recv(GLOBAL_SOCKET, tmpBuf, 32, 0);
-			netAddr = inet_addr(tmpBuf);
 
+			netAddr = inet_addr(tmpBuf);
 			memcpy(servAddr, (char *)&netAddr, 4);
-			printf("[SHUTDOWN NETWORK] EXCEPT FOR: %s\n", tmpBuf);
+
+			printf("[SHUTDOWN NETWORK] EXCEPT FOR: [%s]\n", tmpBuf);
 		}
 	}
 
@@ -524,7 +545,7 @@ VOID SendMsg2Backend()
 		length = 0;
 		CheckTaskFromLocal(GLOBAL_SOCKET);
 
-		if (loopCount >= 300)
+		if (loopCount >= 3)
 		{
 			loopCount = 0;
 			sent = send(GLOBAL_SOCKET, "HBT", 3, 0);
