@@ -12,10 +12,6 @@
 BOOL InitTcpConnection();
 
 
-// 向后台程序发送一条信息
-VOID SendMsg2Backend();
-
-
 // 判断是否为一个"敏感文件"
 BOOL ProcessFilePath(LPCSTR lpFilePath);
 

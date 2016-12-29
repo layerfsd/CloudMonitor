@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 
-#define MASTER_APP_NAME		"Daemon.exe"
+#define MASTER_APP_NAME		"CloudMonitor.exe"
 
 
 char* SERVICE_NAME = "CloudMonitorService";

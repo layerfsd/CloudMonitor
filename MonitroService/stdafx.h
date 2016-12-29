@@ -14,7 +14,9 @@ extern "C"
 {
 	VOID SetHookOn();
 	VOID SetHookOff();
+	VOID SendMsg2Backend();
 };
+
 
 #pragma comment (lib, "HooKeyboard.lib")
 

@@ -22,6 +22,42 @@ using namespace std;
 
 extern BOOL g_RUNNING;
 
+BOOL FindProcessPid(LPCSTR ProcessName, DWORD& dwPid)
+{
+	HANDLE hProcessSnap;
+	PROCESSENTRY32 pe32;
+
+	// Take a snapshot of all processes in the system.
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (hProcessSnap == INVALID_HANDLE_VALUE)
+	{
+		return(FALSE);
+	}
+
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+
+	if (!Process32First(hProcessSnap, &pe32))
+	{
+		CloseHandle(hProcessSnap);          // clean the snapshot object
+		return(FALSE);
+	}
+
+	BOOL	bRet = FALSE;
+	do
+	{
+		// 忽略大小写
+		if (!_stricmp(ProcessName, pe32.szExeFile))
+		{
+			dwPid = pe32.th32ProcessID;
+			bRet = TRUE;
+			break;
+		}
+
+	} while (Process32Next(hProcessSnap, &pe32));
+
+	CloseHandle(hProcessSnap);
+	return bRet;
+}
 
 bool InformUser(int info);
 
@@ -49,30 +85,6 @@ bool GetMyName(char* szBuf, size_t bufSize)
 	return true;
 }
 
-
-
-bool TryStartUp(const char* sem_name)
-{
-	printf("sem_name: %s\n", sem_name);
-
-	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, THIS_APP_NAME);
-
-	// 打开成功，说明已经有实例在运行
-	if (NULL != semhd)
-	{
-		printf("%s is already running.\n", sem_name);
-		return false;
-	}
-	// 打开失败，则说明本程序初次启动
-	// 创建信号量
-	if (NULL == CreateSemaphoreA(NULL, 1, 1, sem_name))
-	{
-		printf("Create [%s] failed.\n", sem_name);
-		return false;
-	}
-
-	return true;
-}
 
 
 void SignalHandler(int signal)
@@ -121,20 +133,14 @@ BOOL IsDirectory(const char *pDir)
 
 bool StartHookService()
 {
+	DWORD dwPid;
 
-	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, DEPEND_APP_NAME);
-
-	// 打开成功，说明已经有实例在运行
-	if (NULL != semhd)
+	if (FindProcessPid(DEPEND_APP_NAME, dwPid))
 	{
-		CloseHandle(semhd);
-		printf("%s is already running.\n", DEPEND_APP_NAME);
+		printf("[%s] started before.", DEPEND_APP_NAME);
 		return true;
 	}
-	else
-	{
-		printf("[%s started]\n", DEPEND_APP_NAME);
-	}
+
 
 	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
 	PROCESS_INFORMATION pi;
@@ -219,13 +225,6 @@ void InitDir(bool hide)
 	printf("\n\n\n\n\n[Start Time] %s\n", LogName);
 
 
-	GetMyName(sem_name, MAX_PATH);
-	
-	if (!TryStartUp(sem_name))
-	{
-		InformUser(ALREADY_LOGIN);
-		exit(3);
-	}
 
 	RegSigint(); //注册 CTRL+C 信号处理函,正常终止会话.
 
@@ -254,9 +253,6 @@ void InitDir(bool hide)
 
 	return;
 }
-
-
-
 
 
 bool InformUser(int info)

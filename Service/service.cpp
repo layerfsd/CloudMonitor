@@ -138,7 +138,7 @@ void ServiceMain(int argc, char** argv)
 		// 如果找到该进程则跳过以下代码
 		if (FindProcessPid(MASTER_APP_NAME, dwPid))
 		{
-			WriteToLog(MASTER_APP_NAME "RUNNING WELL");
+			WriteToLog(MASTER_APP_NAME " RUNNING WELL");
 			continue;
 		}
 

@@ -12,6 +12,8 @@
 
 using namespace std;
 
+extern "C" __declspec(dllexport) VOID SendMsg2Backend();
+
 
 struct TASK
 {

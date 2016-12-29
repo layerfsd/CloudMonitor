@@ -2,10 +2,47 @@
 //
 
 #include "stdafx.h"
+#include <tlhelp32.h>
 #include <signal.h>
 #include <time.h>
 
 typedef void(*SignalHandlerPointer)(int);
+BOOL FindProcessPid(LPCSTR ProcessName, DWORD& dwPid)
+{
+	HANDLE hProcessSnap;
+	PROCESSENTRY32 pe32;
+
+	// Take a snapshot of all processes in the system.
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (hProcessSnap == INVALID_HANDLE_VALUE)
+	{
+		return(FALSE);
+	}
+
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+
+	if (!Process32First(hProcessSnap, &pe32))
+	{
+		CloseHandle(hProcessSnap);          // clean the snapshot object
+		return(FALSE);
+	}
+
+	BOOL	bRet = FALSE;
+	do
+	{
+		// 忽略大小写
+		if (!_stricmp(ProcessName, pe32.szExeFile))
+		{
+			dwPid = pe32.th32ProcessID;
+			bRet = TRUE;
+			break;
+		}
+
+	} while (Process32Next(hProcessSnap, &pe32));
+
+	CloseHandle(hProcessSnap);
+	return bRet;
+}
 
 void SignalHandler(int signal)
 {
@@ -42,36 +79,19 @@ bool GetMyName(char* szBuf, size_t bufSize)
 }
 
 
+#define DEPEND_APP_NAME		"FilterCenter.exe"
 
 bool TryStartUp()
 {
-	char	sem_name[MAX_PATH];
-
-	memset(sem_name, 0, MAX_PATH);
-	if (!GetMyName(sem_name, MAX_PATH))
+	DWORD dwPid;
+	if (FindProcessPid(DEPEND_APP_NAME, dwPid))
 	{
+		printf("[%s] [%d]\n", DEPEND_APP_NAME, dwPid);
 		return false;
 	}
-	printf("sem_name: %s\n", sem_name);
-
-	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, sem_name);
-
-	// 打开成功，说明已经有实例在运行
-	if (NULL != semhd)
-	{
-		printf("%s is already running.\n", sem_name);
-		return false;
-	}
-	// 打开失败，则说明本程序初次启动
-	// 创建信号量
-	if (NULL == CreateSemaphoreA(NULL, 1, 1, sem_name))
-	{
-		printf("Create [%s] failed.\n", sem_name);
-		return false;
-	}
-
 	return true;
 }
+
 
 void SetWorkPath()
 {
@@ -108,6 +128,8 @@ void EnableLog()
 
 }
 
+
+
 int main(int argc, char *argv[])
 {
 
@@ -115,17 +137,23 @@ int main(int argc, char *argv[])
 	{
 		EnableLog();
 	}
-	if (!TryStartUp())
-	{
-		exit(3);
-	}
+
+	printf("try start up\n");
+
 
 	SetWorkPath();
 
 	SignalHandlerPointer previousHandler;
 	previousHandler = signal(SIGINT, SignalHandler);
 	signal(SIGABRT, SignalHandler);
-	SetHookOn();	
+	SetHookOn();
+
+	//SendMsg2Backend();
+	//while (1)
+	//{
+	//	Sleep(30 * 1000);
+	//	printf("helo\n");
+	//}
 	printf("main-end\n");
 	return 0;
 }
