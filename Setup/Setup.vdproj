@@ -39,12 +39,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_30E0461270A34344B83A3BDD2BD04C9A"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_3EE281B9E58C43F6BA752D7C36B124BB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -76,6 +70,12 @@
         "Entry"
         {
         "MsmKey" = "8:_6271F3B4CA6A452EA868AEAB519DAA19"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_679A1376158F49CC9A85C961F72DC27B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -123,13 +123,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9961819C128F4871B9531D23BBC906F7"
+        "MsmKey" = "8:_951173F616634840BD6C43F4A0794BD0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_AB3F461D1747491C9EEB593FF20ED2B3"
+        "MsmKey" = "8:_9961819C128F4871B9531D23BBC906F7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -148,6 +148,12 @@
         "Entry"
         {
         "MsmKey" = "8:_D25CADD3459248C2AA425A9476523033"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E36C400B705048FBB43527EB6ED9F6CF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -290,26 +296,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_30E0461270A34344B83A3BDD2BD04C9A"
-            {
-            "SourcePath" = "8:..\\Release\\touch.txt"
-            "TargetName" = "8:touch.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_B0E5A1FC64744B208355EC6FAF163F35"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3EE281B9E58C43F6BA752D7C36B124BB"
             {
             "SourcePath" = "8:..\\Release\\ssl\\libcrypto-1_1.dll"
@@ -376,6 +362,26 @@
             "TargetName" = "8:a2t.id"
             "Tag" = "8:"
             "Folder" = "8:_572103570EDA4D2BBE0EE9B8BCCC6C7E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_679A1376158F49CC9A85C961F72DC27B"
+            {
+            "SourcePath" = "8:..\\Release\\更新说明.txt"
+            "TargetName" = "8:更新说明.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -510,9 +516,9 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AB3F461D1747491C9EEB593FF20ED2B3"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_951173F616634840BD6C43F4A0794BD0"
             {
-            "SourcePath" = "8:..\\Release\\touch.txt"
+            "SourcePath" = "8:..\\touch.txt"
             "TargetName" = "8:touch.txt"
             "Tag" = "8:"
             "Folder" = "8:_331D607A740B4594850443325E2ADE36"
@@ -576,6 +582,26 @@
             "TargetName" = "8:config.ini"
             "Tag" = "8:"
             "Folder" = "8:_F69287E259F841CCB902FC90AE423ADE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E36C400B705048FBB43527EB6ED9F6CF"
+            {
+            "SourcePath" = "8:..\\touch.txt"
+            "TargetName" = "8:touch.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_B0E5A1FC64744B208355EC6FAF163F35"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -742,7 +768,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:云控客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{1D58AEF3-65FE-46F2-8291-321842096515}"
+        "PackageCode" = "8:{478B42A8-ECE4-4415-8289-B609DBEF16E0}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -878,20 +904,6 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_1F56687CE9C541D29EAA4A1D9E4355AA"
-            {
-            "Name" = "8:云控客户端"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_6271F3B4CA6A452EA868AEAB519DAA19"
-            "Folder" = "8:_C296916F3428470AB40F87799B4E833E"
-            "WorkingFolder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Icon" = "8:"
-            "Feature" = "8:"
-            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B9DAA98A15B0428781260C9505A2B6C6"
             {
             "Name" = "8:云控客户端-登录"
