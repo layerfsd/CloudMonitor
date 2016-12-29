@@ -209,6 +209,7 @@ BOOL GetTask(TASK* tsk)
 
 		//printf("head: %d next: %d tail: %d len:%d\n", gll_head, nxtPos, gll_tail, cur.len);
 		// this == last
+		printf("[Checking:%d]%s\n", gll_head, cur.path);
 		if ( (cur.len == nxt.len) && !memcmp(cur.path, nxt.path, cur.len) )
 		{
 			continue;
@@ -234,7 +235,7 @@ BOOL GetTask(TASK* tsk)
 			memset(tsk, 0, sizeof(TASK));
 			*tsk = cur;
 			LastTask[cur.path] = cur.ltime;
-			gll_head = nxtPos;
+			gll_head -= 1;
 		}
 		//MessageBox(NULL, lpFilePath, "Release SEM", MB_OK);
 	}
@@ -425,8 +426,7 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 	return retValue;
 }
 
-// 接收来自本地进程的任务
-// 非阻塞
+// 接收来自 CloudMonitor.exe 的指令
 void CheckTaskFromLocal(SOCKET sock)
 {
 	static	FD_SET fdRead;
