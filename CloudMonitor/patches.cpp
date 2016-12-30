@@ -119,42 +119,25 @@ BOOL IsDirectory(const char *pDir)
 }
 
 
-bool StartHookService()
+
+bool MyCreateProcess(LPCSTR appName, LPSTR appArgs=NULL)
 {
-
-	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, DEPEND_APP_NAME);
-
-	// 打开成功，说明已经有实例在运行
-	if (NULL != semhd)
-	{
-		CloseHandle(semhd);
-		printf("%s is already running.\n", DEPEND_APP_NAME);
-		return true;
-	}
-	else
-	{
-		printf("[%s started]\n", DEPEND_APP_NAME);
-	}
-
 	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
 	PROCESS_INFORMATION pi;
+
+	if (NULL == appName)
+	{
+		ErrorMsg("appName is NULL");
+		return false;
+	}
 
 	ZeroMemory(&pi, sizeof(pi));
 	ZeroMemory(&StartupInfo, sizeof(StartupInfo));
 
 	StartupInfo.cb = sizeof(StartupInfo);
 
-	// Start the child process
-
-
-	char cmd[MAX_PATH];
-	memset(cmd, 0, MAX_PATH);
-	GetCurrentDirectoryA(MAX_PATH, cmd);
-
-	strcat(cmd, "\\MonitorService.exe");
-
-	if (CreateProcessA(NULL,
-		cmd,
+	if (CreateProcessA(appName,
+		appArgs,
 		NULL,
 		NULL,
 		FALSE,
@@ -171,10 +154,35 @@ bool StartHookService()
 	}
 	else
 	{
-		printf("[ERROR] CreateProcess: %s\n", cmd);
+		printf("[ERROR] CreateProcess: %s\n", appName);
 		return false;
 	}
 	return true;
+
+}
+
+bool StartHookService()
+{
+
+	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, DEPEND_APP_NAME);
+	bool    bRet = false;
+
+	// 打开成功，说明已经有实例在运行
+	if (NULL != semhd)
+	{
+		bRet = true;
+		CloseHandle(semhd);
+		printf("%s is already running.\n", DEPEND_APP_NAME);
+	}
+
+
+	if (false == bRet && MyCreateProcess(DEPEND_APP_NAME))
+	{
+		bRet = true;
+		printf("[%s started]\n", DEPEND_APP_NAME);
+	}
+	
+	return bRet;
 }
 
 void SetWorkPath()
@@ -183,7 +191,6 @@ void SetWorkPath()
 	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
 	strcat(strModule, "\\..\\");     //设置为当前工作路径为当时的上一级
 	SetCurrentDirectory(strModule);
-	GetCurrentDirectory(sizeof(strModule), strModule);
 }
 
 void InitDir(bool hide)
