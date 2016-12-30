@@ -234,28 +234,6 @@ int SSLIsWorking()
 }
 
 
-
-//int SendFile(char *fileName)
-//{
-//	char    buf[MAXBUF];
-//	int     ret = 0;
-//	size_t     fsize = 0;
-//	FILE*   fp = NULL;
-//
-//	GetFileSize(fileName, &fsize);
-//	while (fsize) {
-//		printf("resume %d bytes\n", fsize);
-//		ret = fread(buf, 1, MAXBUF, fp);
-//		fsize -= ret;
-//		SSLSend(buf, ret);
-//	}
-//	printf("resume %d bytes\n", fsize);
-//	printf("transform %s done.\n", fileName);
-//
-//	return 0;
-//}
-
-
 int IsCnt2Internet()
 {
 	WORD wVersionRequested;
@@ -950,20 +928,9 @@ int InitTcp()
 		return -1;
 	}
 
-	//	int iResult;
-	//	u_long iMode = 0;
-	//	iResult = ioctlsocket(serversoc, FIONBIO, &iMode);
-	//	if (iResult != NO_ERROR)
-	//	{
-	//		printf("ioctlsocket failed with error: %d\n", iResult);
-	//	}
-
-
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_port = htons(LOCAL_TCP_PORT);
 	inet_pton(AF_INET, "127.0.0.1", &serveraddr.sin_addr);
-
-	//serveraddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
 
 	if (bind(serversoc, (SOCKADDR *)&serveraddr, sizeof(serveraddr)) != 0)
 	{

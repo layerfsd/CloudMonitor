@@ -37,7 +37,7 @@ static BOOL isShutdownNetwork = FALSE;
 #define SEM_NAME	"ALBERT_SYNC"
 #define SERV_ADDR  "127.0.0.1"
 #define SERV_PORT	50006
-#define SLEEP_TIME	500
+#define ONE_SECOND	1000
 #define MIN_SENT_INTERVAL 30  // 最短发送间隔时间(秒)
 
 BOOL		KEEP_RUNNING = TRUE;
@@ -130,39 +130,6 @@ BOOL InitTcpConnection()
 // 因此在本地服务中创建一个·命名管道·以缓存需要通知的事件
 // 其工作原理是: 接收到 Hook 通知后,将·路径·记录到队列中立刻返回
 // 由一个专有线程负责从队列中读取数据通知另外一个程序
-VOID TellBackend(const char* lPath, int length)
-{
-	static CHAR  lastPath[MAX_PATH] = { 0 };
-	CHAR  tmpBuf[MAX_PATH];
-
-	// 防止连续发送相同的文件名
-	if (0 == strcmp(lPath, lastPath))
-	{
-		return;
-	}
-	else
-	{
-		memcpy(lastPath, lPath, length);
-	}
-
-	if (!InitTcpConnection())
-	{
-		isConnectionOK = FALSE;
-		return;
-	}
-	//MessageBox(NULL, lPath, "Tell Backend", MB_OK);
-	//MessageBox(NULL, lastPath, "lastPath", MB_OK);
-	if (send(GLOBAL_SOCKET, lPath, length, 0) <= 0)
-	{
-		return;
-	}
-	else
-	{
-		recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
-		//MessageBox(NULL, lPath, "Tell Backend", MB_OK);
-	}
-	return;
-}
 
 static 	map<string,size_t> LastTask;
 
@@ -540,14 +507,14 @@ VOID SendMsg2Backend()
 
 	while (KEEP_RUNNING)
 	{
-		Sleep(SLEEP_TIME);
+		Sleep(ONE_SECOND);
 
 		loopCount += 1;
 
 		length = 0;
 		CheckTaskFromLocal(GLOBAL_SOCKET);
 
-		if (loopCount >= 3)
+		if (loopCount >= 10)	// 此处是一个本地心跳，保证与CloudMonitor的正常通信。间隔‘10’秒发送一次
 		{
 			loopCount = 0;
 			sent = send(GLOBAL_SOCKET, "HBT", 3, 0);
