@@ -17,6 +17,8 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "云控客户端Setup", "Set
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Update", "Update\Update.vcxproj", "{8F8A6007-D7C3-4C0A-A82B-DFE915F1AA68}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HooKeyboard-64", "HooKeyboard-64\HooKeyboard-64.vcxproj", "{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,20 @@ Global
 		{8F8A6007-D7C3-4C0A-A82B-DFE915F1AA68}.Release|x64.Build.0 = Release|x64
 		{8F8A6007-D7C3-4C0A-A82B-DFE915F1AA68}.Release|x86.ActiveCfg = Release|Win32
 		{8F8A6007-D7C3-4C0A-A82B-DFE915F1AA68}.Release|x86.Build.0 = Release|Win32
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Debug|ARM.ActiveCfg = Debug|Win32
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Debug|x64.ActiveCfg = Debug|x64
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Debug|x64.Build.0 = Debug|x64
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Debug|x86.ActiveCfg = Debug|Win32
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Debug|x86.Build.0 = Debug|Win32
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Release|Any CPU.ActiveCfg = Release|Win32
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Release|ARM.ActiveCfg = Release|Win32
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Release|ARM64.ActiveCfg = Release|Win32
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Release|x64.ActiveCfg = Release|x64
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Release|x64.Build.0 = Release|x64
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Release|x86.ActiveCfg = Release|x64
+		{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
