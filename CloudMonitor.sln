@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CloudMonitor", "CloudMonito
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HooKeyboard", "HooKeyboard\HooKeyboard.vcxproj", "{693C280D-5B78-4C36-86C0-9A49218B47A4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MonitroService", "MonitroService\MonitroService.vcxproj", "{590FF3AC-508C-4506-BE1C-2888FEB464C6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MonitorService", "MonitroService\MonitroService.vcxproj", "{590FF3AC-508C-4506-BE1C-2888FEB464C6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Monitor", "Monitor\Monitor.vcxproj", "{A8AA0C7E-4A6F-4455-9ED5-34B189DA9CD1}"
 EndProject
