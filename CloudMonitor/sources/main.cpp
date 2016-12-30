@@ -108,13 +108,7 @@ int main(int argc, char *argv[])
 		strcpy_s(act.password, 32, argv[2]);
 	}
 
-	InitDir(hide);
-
-
-	// 先留下接口,后期优化时加上此功能---"记录本地敏感文件的哈希缓存" 以提高文件检索速度
-	//LoadHashList(hashPath, hashList);
-	
-	
+	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,与IO过滤中心通信
 	string wiredMac;			// 临时获取网卡地址
 	char authBuf[128];			// 记录认证消息
 
@@ -130,17 +124,19 @@ int main(int argc, char *argv[])
 	sprintf(authBuf, "%s\n%s\n%s", act.username, act.password, wiredMac.c_str());
 
 	string keywords = "keywords.txt";
-	
+
 
 	User app(authBuf);
 	USB	 usb;
 
-
-	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,接收敏感事件
-
+	if (!app.Authentication())  // 验证账号	
+	{
+		cout << "Auth Failed!" << endl;
+		return -1;
+	}
 
 	// [本地测试] 控制当前主机与 Internet 的连接、关闭
-#if 0
+#if 1
 	while (g_RUNNING)
 	{
 		cout << "paued shut" << endl;
@@ -156,12 +152,12 @@ int main(int argc, char *argv[])
 	WaitForSingleObject(hThread, INFINITE);
 	printf("Done\n");
 #else
+	InitDir(hide);
 
-	if (!app.Authentication())  // 验证账号	
-	{
-		cout << "Auth Failed!" << endl;
-		return -1;
-	}
+
+	// 先留下接口,后期优化时加上此功能---"记录本地敏感文件的哈希缓存" 以提高文件检索速度
+	//LoadHashList(hashPath, hashList);
+
 
 	// 用户手动运行该程序并且登录成功，则刷新认证信息到注册表
 	if (3 == argc)

@@ -23,7 +23,7 @@ static BOOL isShutdownNetwork = FALSE;
 
 extern BOOL g_RUNNING;
 
-static AppConfig GS_acfg;
+static AppConfig GS_acfg{};
 
 static SSL_Handler hdl = { 0 };
 static SOCKET GLOBALclntSock;
