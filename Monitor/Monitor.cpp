@@ -18,13 +18,22 @@ BEGIN_MESSAGE_MAP(CMonitorApp, CWinApp)
 END_MESSAGE_MAP()
 
 
+static void SetWorkPath()
+{
+	char strModule[MAX_PATH];
+	GetModuleFileNameA(NULL, strModule, MAX_PATH); //得到当前模块路径
+	strcat(strModule, "\\..\\");     //设置为当前工作路径为当时的上一级
+	SetCurrentDirectoryA(strModule);
+}
+
+
 // CMonitorApp 构造
 
 CMonitorApp::CMonitorApp()
 {
 	// 支持重新启动管理器
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
-
+	SetWorkPath();
 	// TODO: 在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
 }

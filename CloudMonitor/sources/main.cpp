@@ -125,6 +125,7 @@ int main(int argc, char *argv[])
 
 	string keywords = "keywords.txt";
 
+	InitDir(hide);
 
 	User app(authBuf);
 	USB	 usb;
@@ -136,7 +137,7 @@ int main(int argc, char *argv[])
 	}
 
 	// [本地测试] 控制当前主机与 Internet 的连接、关闭
-#if 1
+#if 0
 	while (g_RUNNING)
 	{
 		cout << "paued shut" << endl;
@@ -152,8 +153,6 @@ int main(int argc, char *argv[])
 	WaitForSingleObject(hThread, INFINITE);
 	printf("Done\n");
 #else
-	InitDir(hide);
-
 
 	// 先留下接口,后期优化时加上此功能---"记录本地敏感文件的哈希缓存" 以提高文件检索速度
 	//LoadHashList(hashPath, hashList);

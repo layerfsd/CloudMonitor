@@ -5,7 +5,7 @@
 
 using namespace std;
 
-LPCSTR TargetProcessName[]{ "CloudMonitor.exe", "MonitorService.exe" };
+LPCSTR TargetProcessName[]{ "CloudMonitor.exe", "MonitorService.exe", "MonitorService-64.exe" };
 
 
 BOOL SendSignal2Process(DWORD dwPid, DWORD dwSig);

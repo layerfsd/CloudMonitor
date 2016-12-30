@@ -182,6 +182,7 @@ DWORD WINAPI Func(void* pArg)
 	return 0;
 }
 
+
 void CMonitorDlg::OnBnClickedOk()
 {
 	
@@ -250,8 +251,7 @@ void CMonitorDlg::OnBnClickedOk()
 
 	StartupInfo.cb = sizeof(StartupInfo);
 
-	// Start the child process
-
+	// 在后台开启 CloudMonitor.exe 进程
 	if (CreateProcessA(NULL,
 		cmd,
 		NULL, 
