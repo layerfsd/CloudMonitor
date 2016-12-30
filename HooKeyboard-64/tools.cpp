@@ -504,6 +504,7 @@ VOID SendMsg2Backend()
 
 	int sent = 0;
 	int loopCount = 0;
+	int reConnectTime = 0;
 
 	while (KEEP_RUNNING)
 	{
@@ -516,15 +517,26 @@ VOID SendMsg2Backend()
 
 		if (loopCount >= 10)	// 此处是一个本地心跳，保证与CloudMonitor的正常通信。间隔‘10’秒发送一次
 		{
+			if (reConnectTime >= MAX_RETRY_TIME)
+			{
+				KEEP_RUNNING = FALSE;
+				break;
+			}
 			loopCount = 0;
 			sent = send(GLOBAL_SOCKET, "HBT", 3, 0);
 			if (sent <= 0)
 			{
 				printf("Connect to Local Failed\n");
 				isConnectionOK = FALSE;
+				reConnectTime += 1;
+				printf("ReConnect [%d] time\n", reConnectTime);
 				InitTcpConnection();
 			}
-
+			else
+			{
+				reConnectTime = 0;
+			}
+			// 发送本地‘心跳包’后，无论成功与否，都跳过下面的代码
 			continue;
 		}
 		
