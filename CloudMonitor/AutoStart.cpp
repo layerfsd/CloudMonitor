@@ -108,10 +108,11 @@ static bool GetNameFromPath(char* src, char* dst)
 	}
 
 	pre++;
+
 	memset((void *)pre, 0, 50);
 	strcpy(pre, "Daemon.exe");
 
-	while (pre != tail)
+	while (*pre != '.' && pre != tail)
 	{
 		*dst++ = *pre++;
 	}
@@ -122,8 +123,8 @@ static bool GetNameFromPath(char* src, char* dst)
 
 BOOL RegisterProgram()
 {
-	char szPathToExe[MAX_PATH] = { 0 };
-	char szAppName[MAX_PATH] = { 0 };
+	char szPathToExe[MAX_PATH] {};
+	char szAppName[MAX_PATH] {};
 
 	GetModuleFileNameA(NULL, szPathToExe, MAX_PATH);
 
