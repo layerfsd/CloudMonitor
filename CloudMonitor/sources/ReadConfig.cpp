@@ -42,6 +42,7 @@ bool MyParseFunc(const char* buf, AppConfig* GS_acfg)
 		"SERVER_ADDR", 
 		"SERVER_PORT",
 		"UPDATE_ADDR",
+		"LOCAL_PORT",
 	};
 
 
@@ -85,6 +86,10 @@ bool MyParseFunc(const char* buf, AppConfig* GS_acfg)
 	{
 		strcpy(GS_acfg->UpdateServ, value);
 	}
+	else if (!strcmp(key, ConfigItems[3]))
+	{
+		GS_acfg->LocalPort = atoi(value);
+	}
 
 	return true;
 }
@@ -95,6 +100,7 @@ void ShowConfig(AppConfig& GS_acfg)
 	printf("ServAddr: [%s]\n", GS_acfg.ServAddr);
 	printf("ServPort: [%d]\n", GS_acfg.ServPort);
 	printf("UpdtADDR: [%s]\n", GS_acfg.UpdateServ);
+	printf("LocalPort: [%d]\n", GS_acfg.LocalPort);
 }
 
 #if 0
@@ -102,9 +108,10 @@ int main()
 {
 	AppConfig GS_acfg = {0};
 
-	LoadKeywords(CONFIG_PATH, MyParseFunc, &GS_acfg);
-
-	ShowConfig(GS_acfg);
+	if (LoadConfig(CONFIG_PATH, MyParseFunc, &GS_acfg))
+	{
+		ShowConfig(GS_acfg);
+	}
 
 	return 0;
 }

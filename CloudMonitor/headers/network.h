@@ -26,6 +26,7 @@
 #define MAXBUF				1280
 #define SERV_PORT			50005
 
+#define LOCAL_TCP_PORT		50006
 
 #define CONFIG_PATH "DATA\\config.ini"
 

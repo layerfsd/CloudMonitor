@@ -933,7 +933,8 @@ bool User::HeartBeat()
 }
 
 
-
+// 在本地开启一个端口，用来与‘IO监控’模块通信：
+// 获取‘文件打开事件’，下发‘网络控制指令’
 int InitTcp()
 {
 	SOCKET serversoc;
@@ -959,7 +960,7 @@ int InitTcp()
 
 
 	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_port = htons(50006);
+	serveraddr.sin_port = htons(LOCAL_TCP_PORT);
 	inet_pton(AF_INET, "127.0.0.1", &serveraddr.sin_addr);
 
 	//serveraddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
