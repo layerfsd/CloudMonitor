@@ -1,7 +1,9 @@
-// MonitorService.cpp : 定义控制台应用程序的入口点。
+// MonitorService-64.cpp : 定义控制台应用程序的入口点。
 //
 
 #include "stdafx.h"
+#include <signal.h>
+#include <time.h>
 
 typedef void(*SignalHandlerPointer)(int);
 
@@ -123,7 +125,7 @@ int main(int argc, char *argv[])
 	SignalHandlerPointer previousHandler;
 	previousHandler = signal(SIGINT, SignalHandler);
 	signal(SIGABRT, SignalHandler);
-	SetHookOn();	
+	SetHookOn();
 	printf("main-end\n");
 	return 0;
 }
