@@ -155,8 +155,8 @@ Global
 		{337A3B8F-E760-4FC3-A113-335E8AE98D80}.Release|ARM64.ActiveCfg = Release|Win32
 		{337A3B8F-E760-4FC3-A113-335E8AE98D80}.Release|x64.ActiveCfg = Release|x64
 		{337A3B8F-E760-4FC3-A113-335E8AE98D80}.Release|x64.Build.0 = Release|x64
-		{337A3B8F-E760-4FC3-A113-335E8AE98D80}.Release|x86.ActiveCfg = Release|Win32
-		{337A3B8F-E760-4FC3-A113-335E8AE98D80}.Release|x86.Build.0 = Release|Win32
+		{337A3B8F-E760-4FC3-A113-335E8AE98D80}.Release|x86.ActiveCfg = Release|x64
+		{337A3B8F-E760-4FC3-A113-335E8AE98D80}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
