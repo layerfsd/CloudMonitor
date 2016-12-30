@@ -235,7 +235,7 @@ BOOL GetTask(TASK* tsk)
 			if ((!memcmp(cur.path, it->first.c_str(), cur.len)) && (cur.ltime - it->second < MIN_SENT_INTERVAL))
 			{
 				bRet = FALSE;
-				printf("[REPEAT-IGNORED:%llu] %s\n", gll_head, it->first.c_str());
+				printf("[REPEAT-IGNORED:] %s\n", it->first.c_str());
 				break;
 			}
 		}
@@ -373,6 +373,8 @@ BOOL CheckSockAddr(const struct sockaddr FAR *saddr)
 BOOL ProcessFilePath(LPCSTR lpFilePath)
 {
 	static LPCSTR matchList[] = {
+		".txt",
+
 		".rtf",
 
 		".xls",

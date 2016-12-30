@@ -143,22 +143,22 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ProjectReference Include="..\HooKeyboard\HooKeyboard.vcxproj">
+      <Project>{693c280d-5b78-4c36-86c0-9a49218b47a4}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MonitroService.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClInclude Include="..\MonitorService-64\stdafx.h" />
+    <ClInclude Include="..\MonitorService-64\targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\MonitorService-64\MonitorService-64.cpp" />
+    <ClCompile Include="..\MonitorService-64\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\HooKeyboard\HooKeyboard.vcxproj">
-      <Project>{693c280d-5b78-4c36-86c0-9a49218b47a4}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

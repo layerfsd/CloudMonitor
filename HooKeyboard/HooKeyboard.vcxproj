@@ -18,6 +18,15 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\HooKeyboard-64\ILHook.cpp" />
+    <ClCompile Include="..\HooKeyboard-64\myHook.cpp" />
+    <ClCompile Include="..\HooKeyboard-64\tools.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\HooKeyboard-64\ILHook.h" />
+    <ClInclude Include="..\HooKeyboard-64\tools.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{693C280D-5B78-4C36-86C0-9A49218B47A4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -142,15 +151,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="ILHook.h" />
-    <ClInclude Include="tools.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="ILHook.cpp" />
-    <ClCompile Include="myHook.cpp" />
-    <ClCompile Include="tools.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

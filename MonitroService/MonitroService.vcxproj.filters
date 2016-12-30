@@ -18,18 +18,18 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="..\MonitorService-64\targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="..\MonitorService-64\stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="..\MonitorService-64\stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="MonitroService.cpp">
+    <ClCompile Include="..\MonitorService-64\MonitorService-64.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

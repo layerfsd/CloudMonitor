@@ -20,6 +20,12 @@ extern "C"
 	VOID SetHookOff();
 };
 
+
+#if _WIN64
 #pragma comment (lib, "HooKeyboard-64.lib")
 
+#else 
+#pragma comment (lib, "HooKeyboard.lib")
+
+#endif
 // TODO:  在此处引用程序需要的其他头文件

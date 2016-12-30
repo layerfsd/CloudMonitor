@@ -15,22 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="tools.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ILHook.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
+    <ClCompile Include="..\HooKeyboard-64\ILHook.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HooKeyboard-64\myHook.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HooKeyboard-64\tools.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="myHook.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="tools.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ILHook.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <ClInclude Include="..\HooKeyboard-64\ILHook.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\HooKeyboard-64\tools.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
