@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 	{
 		if (!strncmp(argv[1], "--autostart", 32))
 		{
-			hide = true;
+			hide = false;
 		}
 		else if (!strncmp(argv[1], "--start", 32))	// 从注册表中读取认证信息
 		{
@@ -108,7 +108,6 @@ int main(int argc, char *argv[])
 		strcpy_s(act.password, 32, argv[2]);
 	}
 
-	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,与IO过滤中心通信
 	string wiredMac;			// 临时获取网卡地址
 	char authBuf[128];			// 记录认证消息
 
@@ -135,6 +134,11 @@ int main(int argc, char *argv[])
 		cout << "Auth Failed!" << endl;
 		return -1;
 	}
+	
+	// 必须是认证成功后才启动本地监听服务, IO监控服务
+	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,与IO过滤中心通信
+	StartHookService();
+
 
 	// [本地测试] 控制当前主机与 Internet 的连接、关闭
 #if 0

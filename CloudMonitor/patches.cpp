@@ -231,7 +231,7 @@ void InitDir(bool hide)
 
 
 	SetWorkPath();
-	StartHookService();
+	//StartHookService();
 
 	// 检查本程序是否已经加入到开机自启动项目
 	RegisterProgram();
