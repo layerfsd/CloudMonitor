@@ -511,6 +511,10 @@ bool User::SendInfo(const char *cmdType, const char* text)
 	pktSize = HEAD_SIZE + textLen;
 	int ret = SSL_write(hdl.ssl, tmpBuf, pktSize);
 
+	if (ret < 0)
+	{
+		this->statu = STATUE_DISCONNECTED;
+	}
 	cout << "***************>CLIENT BEGIN<********************" << endl;
 	cout << "[CMD] " << cmdType << endl;
 	cout << "[TXT] " << text << " [textLen] " << textLen << endl;

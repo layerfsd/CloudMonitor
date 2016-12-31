@@ -45,6 +45,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_42D1D5B195B04BA8ABE307AE87265B2F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_564FA2782AC745D1B7817BC827D7F203"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -130,12 +136,6 @@
         "Entry"
         {
         "MsmKey" = "8:_ABCAC97521764FF8B52DDA02BEEE082B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B9F79DD4469843048CBE6AEB4990E1B2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -306,6 +306,26 @@
             {
             "SourcePath" = "8:..\\Release\\ssl\\libcrypto-1_1.dll"
             "TargetName" = "8:libcrypto-1_1.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_42D1D5B195B04BA8ABE307AE87265B2F"
+            {
+            "SourcePath" = "8:..\\更新说明.txt"
+            "TargetName" = "8:更新说明.txt"
             "Tag" = "8:"
             "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
             "Condition" = "8:"
@@ -542,26 +562,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B9F79DD4469843048CBE6AEB4990E1B2"
-            {
-            "SourcePath" = "8:..\\Monitor\\res\\networking.png"
-            "TargetName" = "8:networking.png"
-            "Tag" = "8:"
-            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D25CADD3459248C2AA425A9476523033"
             {
             "SourcePath" = "8:..\\Release\\DATA\\config.ini"
@@ -754,7 +754,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:云控客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{C20A2A48-F35E-4342-B11C-55306F200B42}"
+        "PackageCode" = "8:{D89CC3AD-FDE4-497C-9AEC-9810C397A09F}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -890,18 +890,18 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B9DAA98A15B0428781260C9505A2B6C6"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_EFF94A55B124401880E64EBCA8CCAB90"
             {
             "Name" = "8:云控客户端-登录"
             "Arguments" = "8:"
-            "Description" = "8:登录程序，一次登录成功，以后则联网自动登录"
+            "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
             "Target" = "8:_6271F3B4CA6A452EA868AEAB519DAA19"
             "Folder" = "8:_B90426F76DDD4BE4B3AC19311CC1F381"
             "WorkingFolder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Icon" = "8:_E3E0394883D34B3D83F94E6411BF8568"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
         }
