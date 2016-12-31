@@ -75,12 +75,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_679A1376158F49CC9A85C961F72DC27B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_6E7EF86524324194918D3FDA60D9ABD6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -147,7 +141,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_BB3E129FA72141CFB8662CC895187A96"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D25CADD3459248C2AA425A9476523033"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D5DC8F18080B4B70910D1A0E4F4E9090"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -362,26 +368,6 @@
             "TargetName" = "8:a2t.id"
             "Tag" = "8:"
             "Folder" = "8:_572103570EDA4D2BBE0EE9B8BCCC6C7E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_679A1376158F49CC9A85C961F72DC27B"
-            {
-            "SourcePath" = "8:..\\Release\\更新说明.txt"
-            "TargetName" = "8:更新说明.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -664,7 +650,7 @@
         {
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_30F64AD018294771A036CDC72C4A9872"
             {
-            "DefaultLocation" = "8:[HOMEPATH]\\CloudMonitor"
+            "DefaultLocation" = "8:C:\\Users\\Public\\CloudMonitor"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -768,7 +754,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:云控客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{3ACC3D1F-9E31-4280-B0A3-F27F4B4AE24C}"
+        "PackageCode" = "8:{C20A2A48-F35E-4342-B11C-55306F200B42}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -1480,6 +1466,62 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{5459490B-9F87-401E-8225-709935F99F3F}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_BB3E129FA72141CFB8662CC895187A96"
+            {
+            "SourcePath" = "8:..\\x64\\Release\\MonitorService-64.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{337A3B8F-E760-4FC3-A113-335E8AE98D80}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D5DC8F18080B4B70910D1A0E4F4E9090"
+            {
+            "SourcePath" = "8:..\\x64\\Release\\HooKeyboard-64.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{4DE1E0F6-3135-49C5-B9F0-BA542842EC52}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

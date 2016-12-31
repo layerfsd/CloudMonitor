@@ -340,7 +340,7 @@ BOOL CheckSockAddr(const struct sockaddr FAR *saddr)
 BOOL ProcessFilePath(LPCSTR lpFilePath)
 {
 	static LPCSTR matchList[] = {
-		".txt",
+		//".txt",
 
 		".rtf",
 

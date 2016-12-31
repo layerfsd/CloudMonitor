@@ -159,7 +159,6 @@ int InitSSL(char *ip, int port)
 			cnt += 1;
 			printf("Connect Failed\n");
 			ret = CONNECT_TIMEOUT * cnt;
-			printf("sleeping %d seconds\n", ret / 1000);
 			Sleep(ret);
 			printf("reconnect to %s:%d %d/%d times...\n", ip, port, cnt, MAX_RETRY_TINE);
 		}
@@ -176,6 +175,7 @@ int InitSSL(char *ip, int port)
 		printf("ssl channel established successfully!\n");
 	}
 	/* TCP connection established */
+
 
 	/* start establish a SSL channel upon the previous TCP connection */
 	hdl.ssl = SSL_new(hdl.ctx);
@@ -215,23 +215,13 @@ int SSLIsWorking()
 }
 
 
-int IsCnt2Internet()
+int IsCnt2Internet(LPCSTR lpsIP, DWORD dwPort)
 {
 	WORD wVersionRequested;
 	WSADATA wsaData;
 	SOCKADDR_IN addrSrv;
 	int err;
-	struct addrinfo hints;
-	struct addrinfo *res, *cur;
 	int ret;
-	struct sockaddr_in *addr;
-	char m_ipaddr[16];
-	char *domainList[] = {
-		"www.baidu.com",
-		"www.qq.com",
-		"www.sina.com"
-	};
-	int cnt = sizeof(domainList) / sizeof(domainList[0]);
 
 	wVersionRequested = MAKEWORD(1, 1);
 
@@ -247,32 +237,18 @@ int IsCnt2Internet()
 	}
 	SOCKET sockClient = socket(AF_INET, SOCK_STREAM, 0);
 
+	unsigned long NonBlock = 1;
 
-	memset(&hints, 0, sizeof(struct addrinfo));
+	int ReceiveTimeout = 1500;
+	setsockopt(sockClient, SOL_SOCKET, SO_RCVTIMEO, (char*)&ReceiveTimeout, sizeof(int));
+
 	addrSrv.sin_family = AF_INET;
-	addrSrv.sin_port = htons(80);
+	addrSrv.sin_port = htons((short)dwPort);
 
-	ret = getaddrinfo("www.baidu.com", NULL, &hints, &res);
-	if (ret == -1) {
-		//perror("getaddrinfo");
-		return -1;
-	}
+	inet_pton(AF_INET, lpsIP, &addrSrv.sin_addr);
+	ret = connect(sockClient, (SOCKADDR*)&addrSrv, sizeof(SOCKADDR));
 
-	ret = -1;
-	for (cur = res; cur != NULL && 0 != ret; cur = cur->ai_next) {
-		addr = (struct sockaddr_in *)cur->ai_addr;
-		sprintf(m_ipaddr, "%d.%d.%d.%d",
-			(*addr).sin_addr.S_un.S_un_b.s_b1,
-			(*addr).sin_addr.S_un.S_un_b.s_b2,
-			(*addr).sin_addr.S_un.S_un_b.s_b3,
-			(*addr).sin_addr.S_un.S_un_b.s_b4);
-		printf("%s\n", m_ipaddr);
-		addrSrv.sin_addr.S_un.S_addr = inet_addr(m_ipaddr);
-		ret = connect(sockClient, (SOCKADDR*)&addrSrv, sizeof(SOCKADDR));
-		//std::cout << "ret: " << ret << std::endl;
-	}
-	
-	freeaddrinfo(res);
+
 	closesocket(sockClient);
 	WSACleanup();
 	return ret;
@@ -308,7 +284,6 @@ void User::KeepAlive()
 
 bool User::GetFromServer()
 {
-
 	static	FD_SET fdRead;
 	int		nRet = 0;//记录发送或者接受的字节数
 	static TIMEVAL	tv = { 0, 500 };//设置超时等待时间

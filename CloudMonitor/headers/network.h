@@ -20,6 +20,8 @@
 #define RUN_IN_COMPANY		1	// 定义服务端IP为具体的工作地址
 
 
+#define CONNECT_STRS		"ALBERTOFWB"
+
 #define TEST_FILENAME		"test.docx"
 #define MAX_PACKET_SIZE		1024
 #define READ_BNR_SIZE		1024*1024
@@ -235,18 +237,13 @@ private:
 };
 
 
-// 进程间通信,一开始打算用UDP,实际测试后发现不稳定
-// 放弃使用 UDP 通信方式,改为以下 "有名管道"通信.
-//int InitUdp(SOCKET& sockSrv);
-//void FreeUdp(SOCKET& sockSrv);
-int InitTcp();
-void FreeTcp();
-bool GetInformMessage(char *buf, size_t bufSize);
 
 int InitSSL(char *ip, int port);
 int EndSSL();
 int IsCnt2Internet();
 
+// 检查能否连接到网络
+int IsCnt2Internet(LPCSTR lpsIP, DWORD dwPort);
 
 //创建命名管道
 bool CreateNamedPipeInServer();

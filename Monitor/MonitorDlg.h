@@ -16,6 +16,7 @@ enum ALB_SOCK_RET
 	NOT_SPECIFIC_MAC,
 };
 
+#define SERV_PORT 50005
 
 // CMonitorDlg 对话框
 class CMonitorDlg : public CDialogEx
@@ -24,10 +25,8 @@ class CMonitorDlg : public CDialogEx
 public:
 	CMonitorDlg(CWnd* pParent = NULL);	// 标准构造函数
 
-	void ThreadWork();
 	void DoEvent();
-
-
+	
 
 
 // 对话框数据

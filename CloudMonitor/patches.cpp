@@ -269,8 +269,6 @@ void InitDir(bool hide)
 
 	RegSigint(); //注册 CTRL+C 信号处理函,正常终止会话.
 
-
-	SetWorkPath();
 	//StartHookService();
 
 	// 检查本程序是否已经加入到开机自启动项目

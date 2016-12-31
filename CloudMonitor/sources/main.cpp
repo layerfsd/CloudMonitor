@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
 	// 通过判断启动参数识别出程序当前处于的状态:(调试|正式运行)
 	bool hide = false;
 
+	SetWorkPath();
 
 	// 如果什么参数也没有，则退出本程序
 	if (1 == argc)
@@ -116,7 +117,7 @@ int main(int argc, char *argv[])
 
 	if (!GetWiredMac(wiredMac))
 	{
-		//cout << "GetWiredMac Error" << endl;
+		cout << "GetWiredMac Error" << endl;
 		return 1;
 	}
 
@@ -144,7 +145,7 @@ int main(int argc, char *argv[])
 
 
 	// [本地测试] 控制当前主机与 Internet 的连接、关闭
-#if 1
+#if 0
 	char c;
 	while (g_RUNNING)
 	{

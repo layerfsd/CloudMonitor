@@ -182,6 +182,47 @@ DWORD WINAPI Func(void* pArg)
 	return 0;
 }
 
+static int IsCnt2Internet()
+{
+	WORD wVersionRequested;
+	WSADATA wsaData;
+	SOCKADDR_IN addrSrv;
+	int err;
+	int ret;
+	char m_ipaddr[16] = "121.42.146.43";
+
+
+	wVersionRequested = MAKEWORD(1, 1);
+
+	err = WSAStartup(wVersionRequested, &wsaData);
+	if (err != 0) {
+		return -1;
+	}
+
+	if (LOBYTE(wsaData.wVersion) != 1 ||
+		HIBYTE(wsaData.wVersion) != 1) {
+		WSACleanup();
+		return -1;
+	}
+	SOCKET sockClient = socket(AF_INET, SOCK_STREAM, 0);
+
+	unsigned long NonBlock = 1;
+
+	int ReceiveTimeout = 1500;
+	setsockopt(sockClient, SOL_SOCKET, SO_RCVTIMEO, (char*)&ReceiveTimeout, sizeof(int));
+
+	addrSrv.sin_family = AF_INET;
+	addrSrv.sin_port = htons(SERV_PORT);
+
+	inet_pton(AF_INET, m_ipaddr, &addrSrv.sin_addr);
+	ret = connect(sockClient, (SOCKADDR*)&addrSrv, sizeof(SOCKADDR));
+
+
+	closesocket(sockClient);
+	WSACleanup();
+	return ret;
+}
+
 
 void CMonitorDlg::OnBnClickedOk()
 {
@@ -193,8 +234,6 @@ void CMonitorDlg::OnBnClickedOk()
 	CString			s_name, s_pass;
 	//ALB_SOCK_RET	ret;
 	CString			inform;
-	//char			Buf[1024];
-
 	UpdateData(TRUE);
 
 	username.GetWindowText(s_name);
@@ -213,7 +252,6 @@ void CMonitorDlg::OnBnClickedOk()
 		SetDlgItemText(IDC_STATUS, inform);
 		return;
 	}
-
 	char cWinDir[MAX_PATH];
 	char cmd[MAX_PATH];
 	const char *cname;
@@ -234,6 +272,14 @@ void CMonitorDlg::OnBnClickedOk()
 		return;
 	}
 
+	//if (0 != IsCnt2Internet())
+	//{
+	//	inform = "您的网络状况异常 ...";
+	//	SetDlgItemText(IDC_STATUS, inform);
+	//	return;
+	//}
+
+
 	memset(cmd, 0, MAX_PATH);
 	GetCurrentDirectoryA(MAX_PATH, cWinDir);
 
@@ -251,14 +297,15 @@ void CMonitorDlg::OnBnClickedOk()
 
 	StartupInfo.cb = sizeof(StartupInfo);
 
+
 	// 在后台开启 CloudMonitor.exe 进程
 	if (CreateProcessA(NULL,
 		cmd,
 		NULL, 
 		NULL, 
 		FALSE, 
-		//0,
-		CREATE_NO_WINDOW,
+		0,
+		//CREATE_NO_WINDOW,
 		NULL,
 		NULL, 
 		&StartupInfo,
@@ -288,9 +335,8 @@ void CMonitorDlg::OnBnClickedOk()
 		inform = "正在打开远程端口 ...";
 		SetDlgItemText(IDC_STATUS, inform);
 
-		//CWinThread* pThread = NULL;
 	     HANDLE hThread = CreateThread(NULL, 0, Func, 0, NULL, NULL);//创建下载线程
-	//	pThread = AfxBeginThread(StartThread, (LPVOID)NULL);  //起线程  
+
 		 bool proceccFlag = false;
 		do
 		{
@@ -310,7 +356,7 @@ void CMonitorDlg::OnBnClickedOk()
 			{
 				inform = "连接服务器失败";
 				SetDlgItemText(IDC_STATUS, inform);
-				//GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
+				AfxMessageBox(inform);
 				break;
 			}
 			if (NOT_SPECIFIC_MAC == albSockRet)
@@ -342,9 +388,8 @@ void CMonitorDlg::OnBnClickedOk()
 	}
 	else
 	{
-		inform = "登陆失败.";
+		inform = "创建本地tcp通道失败.";
 		SetDlgItemText(IDC_STATUS, inform);
-		CDialogEx::OnOK();
 	}
 
 	if (ALREADY_LOGIN == albSockRet)

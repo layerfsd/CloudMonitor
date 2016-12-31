@@ -13,3 +13,5 @@ DWORD WINAPI ThreadProc(LPVOID lpParam);
 
 // 远程控制--->关闭本地网络
 bool RemoteShutdownNetwork(string& message, string& args);
+
+bool GetInformMessage(char *buf, size_t bufSize);
