@@ -248,27 +248,10 @@ int EndSSL();
 int IsCnt2Internet();
 
 
-
-static const char*  pPipeName = "\\\\.\\pipe\\CloudMonitor";
-
 //创建命名管道
 bool CreateNamedPipeInServer();
 
 // 异步获取管道消息
 bool GetNamedPipeMessage(char* pReadBuf);
-
-
-DWORD WINAPI ThreadProc(LPVOID lpParam);
-
-// 关闭本地网络
-bool RemoteShutdownNetwork(string& message, string& args);
-
-
-//int SSLSend(char *buf, int len);
-//int SSLRecv(char *buf, int len);
-//int SendFile(char *fileName);
-//char *HashFile(char *fileName);
-//int argsParse(char ac, char **av, Args *con);
-//bool GetReplyInfo(HeadPacket &pkt);
 
 #endif // _HEADER_H__

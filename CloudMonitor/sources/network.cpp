@@ -3,34 +3,15 @@
 #include "../PickFiles.h"
 #include "FileMon.h"
 #include "process.h"  // 远程控制接口函数声明
+#include "../LocalTCPServer.h"
 
 #include <queue>
 #include <map>
 
 
-static map<string, string> LOCAL_CONTROL{
-	{ "CMD_GOT", "100"},
-	{ "STOP_SERVICE", "101" },
-	{ "OPEN_NETWORK", "102" },
-	{ "SHUT_NETWORK", "103" },
-
-};
-static const int LocalControlNumLen = 3;
-
-
-// 是否要关闭对外通讯
-static BOOL isShutdownNetwork = FALSE;
-
-extern BOOL g_RUNNING;
-
-static AppConfig GS_acfg{};
+AppConfig GS_acfg{};
 
 static SSL_Handler hdl = { 0 };
-static SOCKET GLOBALclntSock;
-static bool    Accept = false;
-
-//  创建一个队列,用来缓存 路径列表
-static queue<string> LocalPathList;
 
 // 根据心跳间隔时间和每次休眠时间
 // 计算出客户端发送一次`心跳` 的循环次数
@@ -417,13 +398,7 @@ User::User(const char *userName)
 
 	LoadConfig(CONFIG_PATH, MyParseFunc, &GS_acfg);
 
-
-	if (GetCurrentDirectory(MAX_PATH, tmpBuf))  //得到当前工作路径
-	{// failed get current dir
-		this->workDir = tmpBuf;
-		this->workDir += '\\';
-	}
-	this->workDir += FILE_KEEP_DIR;
+	this->workDir = FILE_KEEP_DIR;
 
 	// if not exists workDir
 	// try to mkdir
@@ -907,180 +882,5 @@ bool User::HeartBeat()
 	count += 1;
 	Sleep(LOOP_SLEEP_TIME);
 
-	return true;
-}
-
-
-// 在本地开启一个端口，用来与‘IO监控’模块通信：
-// 获取‘文件打开事件’，下发‘网络控制指令’
-int InitTcp()
-{
-	SOCKET serversoc;
-	SOCKADDR_IN serveraddr;
-	SOCKADDR_IN clientaddr;
-	int len;
-
-	WSADATA wsa;
-	WSAStartup(MAKEWORD(1, 1), &wsa);	//initial Ws2_32.dll by a process
-	if ((serversoc = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) <= 0)	//create a tcp socket
-	{
-		printf("Create socket fail!\n");
-		return -1;
-	}
-
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_port = htons(LOCAL_TCP_PORT);
-	inet_pton(AF_INET, "127.0.0.1", &serveraddr.sin_addr);
-
-	if (bind(serversoc, (SOCKADDR *)&serveraddr, sizeof(serveraddr)) != 0)
-	{
-		printf("Bind fail!\n");
-		return -1;
-	}
-
-	//start listen, maximum length of the queue of pending connections is 1
-	printf("Start listen...\n");
-	if (listen(serversoc, 1) != 0)
-	{
-		printf("Listen fail!\n");
-		return -1;
-	}
-
-	len = sizeof(SOCKADDR_IN);
-	char tPath[MAX_PATH];
-	int ret = 0;
-	int sent = 0;
-	static BOOL changed = FALSE;
-
-RESTART_LISTEN:
-	while (g_RUNNING)
-	{
-		//waiting for connecting
-		if ((GLOBALclntSock = accept(serversoc, (SOCKADDR *)&clientaddr, &len)) <= 0)
-		{
-			printf("Accept fail!\n");
-			goto RESTART_LISTEN;
-		}
-
-		printf("Get Hook Connected\n");
-		Accept = true;
-		while (Accept)
-		{
-			Sleep(1000);
-			ret = 0;
-			memset(tPath, 0, sizeof(tPath));
-
-			// 通知IO过滤中心，停止服务
-			if (!g_RUNNING)
-			{
-				printf("tell IO Center to Stop [%s]\n", "STOP_SERVICE");
-				send(GLOBALclntSock, LOCAL_CONTROL["STOP_SERVICE"].c_str(), LocalControlNumLen, 0);
-				break;
-			}
-
-			if (changed != isShutdownNetwork)
-			{
-				printf("changed %d isShutdownNetwork %d\n", changed, isShutdownNetwork);
-				changed = isShutdownNetwork;
-
-				// 确定要关闭网络时，保持与服务端IP的正常通信
-				if (isShutdownNetwork)
-				{
-					printf("Except for [%s]", GS_acfg.ServAddr);
-
-					// 发送‘关闭网络’指令
-					send(GLOBALclntSock, LOCAL_CONTROL["SHUT_NETWORK"].c_str(), LocalControlNumLen, 0);
-					// 发送需要额外处理的公网IP
-					send(GLOBALclntSock, GS_acfg.ServAddr, strlen(GS_acfg.ServAddr), 0);
-				}
-				else
-				{	
-					// 发送‘开启用户网络’指令
-					printf("sending command %s\n", "OPEN_NETWORK");
-					send(GLOBALclntSock, LOCAL_CONTROL["OPEN_NETWORK"].c_str(), LocalControlNumLen, 0);
-				}
-			}
-
-			// recv 返回值说明: > 0 收到了数据， -1 没有数据， 0 连接中断
-			ret = recv(GLOBALclntSock, tPath, MAXBUF, 0);
-
-			if (ret > 0)		//仅当成功接收,才把信息加入缓冲队列
-			{
-				if (!memcmp("BYE", tPath, 3))
-				{
-					printf("Hook Service Quit.\n");
-					Accept = false;
-					closesocket(GLOBALclntSock);
-					goto RESTART_LISTEN;
-				}
-				else if (!memcmp("HBT", tPath, 3))
-				{
-					//printf("HOOK HBT\n");
-				}
-				else
-				{
-					sent = send(GLOBALclntSock, tPath, ret, 0);
-					printf("[RECV-REPLY:%d]%s\n", sent, tPath);
-					string tmp = tPath;
-					LocalPathList.push(tPath);
-				}
-			}
-			else if(0 == ret)
-			{
-				printf("[RECV-RET %d]\n", ret);
-				Accept = false;
-				closesocket(GLOBALclntSock);
-				goto RESTART_LISTEN;
-			}
-
-		}// inner while(Accept)
-	}// outter while(1)
-
-	return 0;
-
-}
-
-void FreeTcp()
-{
-	return;
-}
-
-
-bool GetInformMessage(char *buf, size_t bufSize)
-{
-	if (LocalPathList.size() > 0)
-	{
-		strncpy(buf, LocalPathList.front().c_str(), bufSize);
-		LocalPathList.pop();
-		return true;
-	}
-
-	return false;
-}
-
-
-
-
-DWORD WINAPI ThreadProc(LPVOID lpParam)
-{
-	//cout << "sub thread started\n" << endl;
-	//CreateNamedPipeInServer();
-	InitTcp();
-	return 0;
-}
-
-
-// 关闭本地网络
-bool RemoteShutdownNetwork(string& message, string& args)
-{
-	if ("SHUT" == args)
-	{
-		isShutdownNetwork = TRUE;
-	}
-	else if("OPEN" == args)
-	{
-		isShutdownNetwork = FALSE;
-	}
-	printf("isShutdownNetwork %d\n", isShutdownNetwork);
 	return true;
 }

@@ -175,6 +175,7 @@
     <ClCompile Include="AutoStart.cpp" />
     <ClCompile Include="CheckUSB.cpp" />
     <ClCompile Include="hardinfo.cpp" />
+    <ClCompile Include="LocalTcp.cpp" />
     <ClCompile Include="patches.cpp" />
     <ClCompile Include="PickFiles.cpp" />
     <ClCompile Include="sources\doc2txt.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="headers\network.h" />
     <ClInclude Include="headers\parsedoc.h" />
     <ClInclude Include="headers\ReadConfig.h" />
+    <ClInclude Include="LocalTCPServer.h" />
     <ClInclude Include="patches.h" />
     <ClInclude Include="PickFiles.h" />
     <ClInclude Include="sources\process.h" />

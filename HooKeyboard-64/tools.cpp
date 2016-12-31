@@ -38,7 +38,7 @@ static BOOL isShutdownNetwork = FALSE;
 #define SERV_ADDR  "127.0.0.1"
 #define SERV_PORT	50006
 #define ONE_SECOND	1000
-#define MIN_SENT_INTERVAL 30  // 最短发送间隔时间(秒)
+#define MIN_SENT_INTERVAL 5 * 60  // 最短发送间隔时间(MIN * MIN_SEC = MINUTES)
 
 BOOL		KEEP_RUNNING = TRUE;
 BOOL		isConnectionOK = FALSE;
@@ -524,7 +524,9 @@ VOID SendMsg2Backend()
 			}
 			loopCount = 0;
 			sent = send(GLOBAL_SOCKET, "HBT", 3, 0);
-			if (sent <= 0)
+			length = recv(GLOBAL_SOCKET, tmpBuf, 3, 0);
+
+			if (sent <= 0 || length <= 0)
 			{
 				printf("Connect to Local Failed\n");
 				isConnectionOK = FALSE;

@@ -14,8 +14,9 @@
 #include <tlhelp32.h>
 
 
-#define THIS_APP_NAME		"CloudMonitor.exe"
-#define DEPEND_APP_NAME		"MonitorService.exe"
+#define THIS_APP_NAME			"CloudMonitor.exe"
+#define DEPEND_APP_NAME			"MonitorService.exe"
+#define DEPEND_APP_NAME_64		"MonitorService-64.exe"
 
 
 using namespace std;
@@ -161,6 +162,33 @@ bool MyCreateProcess(LPCSTR appName, LPSTR appArgs=NULL)
 
 }
 
+
+typedef BOOL(WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
+
+LPFN_ISWOW64PROCESS fnIsWow64Process;
+
+BOOL IsWow64()
+{
+	BOOL bIsWow64 = FALSE;
+
+	//IsWow64Process is not available on all supported versions of Windows.
+	//Use GetModuleHandle to get a handle to the DLL that contains the function
+	//and GetProcAddress to get a pointer to the function if available.
+
+	fnIsWow64Process = (LPFN_ISWOW64PROCESS)GetProcAddress(
+		GetModuleHandle(TEXT("kernel32")), "IsWow64Process");
+
+	if (NULL != fnIsWow64Process)
+	{
+		if (!fnIsWow64Process(GetCurrentProcess(), &bIsWow64))
+		{
+			//handle error
+		}
+	}
+	return bIsWow64;
+}
+
+
 bool StartHookService()
 {
 
@@ -182,6 +210,11 @@ bool StartHookService()
 		printf("[%s started]\n", DEPEND_APP_NAME);
 	}
 	
+	// 检测系统是否支持64位程序运行
+	if (bRet && IsWow64() && MyCreateProcess(DEPEND_APP_NAME_64))
+	{
+		printf("[%s started]\n", DEPEND_APP_NAME_64);
+	}
 	return bRet;
 }
 

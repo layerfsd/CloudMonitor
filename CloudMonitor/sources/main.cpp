@@ -8,6 +8,8 @@
 #include "parsedoc.h"
 #include "FileMon.h"
 #include "process.h"
+
+#include "../LocalTCPServer.h"
 #include "../AutoStart.h"
 #include "../patches.h"
 #include "../PickFiles.h"
@@ -69,6 +71,7 @@ int main(int argc, char *argv[])
 	// 设置终端的隐藏属性:调试不隐藏，正式运行时则隐藏
 	// 通过判断启动参数识别出程序当前处于的状态:(调试|正式运行)
 	bool hide = false;
+
 
 	// 如果什么参数也没有，则退出本程序
 	if (1 == argc)
@@ -141,17 +144,28 @@ int main(int argc, char *argv[])
 
 
 	// [本地测试] 控制当前主机与 Internet 的连接、关闭
-#if 0
+#if 1
+	char c;
 	while (g_RUNNING)
 	{
 		cout << "paued shut" << endl;
-		getchar();
+		c = getchar();
+		if (c == 'q')
+		{
+			g_RUNNING = FALSE;
+		}
+
 		printf("shutdown network\n");
 		RemoteShutdownNetwork(logMessage, string("SHUT"));
 
 		cout << "paued open" << endl;
-		getchar();
+		c = getchar();
+		if (c == 'q')
+		{
+			g_RUNNING = FALSE;
+		}
 		RemoteShutdownNetwork(logMessage, string("OPEN"));
+
 	}
 	printf("Waiting Thread\n");
 	WaitForSingleObject(hThread, INFINITE);
@@ -219,10 +233,9 @@ int main(int argc, char *argv[])
 		}		
 	}
 
-	// 等待线程执行结束
-	//WaitForSingleObject(hThread, INFINITE);
-
 #endif
+	// 等待线程执行结束
+	WaitForSingleObject(hThread, INFINITE);
 
 	return 0;
 }
