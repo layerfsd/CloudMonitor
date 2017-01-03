@@ -212,7 +212,7 @@ static int IsCnt2Internet()
 	setsockopt(sockClient, SOL_SOCKET, SO_RCVTIMEO, (char*)&ReceiveTimeout, sizeof(int));
 
 	addrSrv.sin_family = AF_INET;
-	addrSrv.sin_port = htons(SERV_PORT);
+	addrSrv.sin_port = htons(80);
 
 	inet_pton(AF_INET, m_ipaddr, &addrSrv.sin_addr);
 	ret = connect(sockClient, (SOCKADDR*)&addrSrv, sizeof(SOCKADDR));
@@ -272,12 +272,12 @@ void CMonitorDlg::OnBnClickedOk()
 		return;
 	}
 
-	//if (0 != IsCnt2Internet())
-	//{
-	//	inform = "您的网络状况异常 ...";
-	//	SetDlgItemText(IDC_STATUS, inform);
-	//	return;
-	//}
+	if (0 != IsCnt2Internet())
+	{
+		inform = "您的网络状况异常 ...";
+		SetDlgItemText(IDC_STATUS, inform);
+		return;
+	}
 
 
 	memset(cmd, 0, MAX_PATH);
@@ -361,7 +361,8 @@ void CMonitorDlg::OnBnClickedOk()
 			}
 			if (NOT_SPECIFIC_MAC == albSockRet)
 			{
-				inform = "当前用户名不允许在您的计算机上登录";
+				//inform = "当前用户名不允许在您的计算机上登录";
+				inform = "当前登录所使用的用户名已经与其它电脑绑定，如果需要重新绑定当前电脑，请点击 '重新绑定'按钮";
 				SetDlgItemText(IDC_STATUS, inform);
 				AfxMessageBox(inform);
 				break;
@@ -377,7 +378,7 @@ void CMonitorDlg::OnBnClickedOk()
 			if (ALREADY_LOGIN == albSockRet)
 			{
 				//inform = "您已登录过了,不需要重复登录.";
-				inform = "一台电脑只允许登录一个用户";
+				inform = "您已登录过了,不需要重复登录（一台电脑只允许登录一个用户）";
 				SetDlgItemText(IDC_STATUS, inform);
 				AfxMessageBox(inform);
 				break;
