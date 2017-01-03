@@ -1,5 +1,5 @@
 #include "FileMon.h"
-#include "../headers/Encrypt.h"
+#include "Encrypt.h"
 #include "parsedoc.h"
 
 #include <windows.h>

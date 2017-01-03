@@ -1,9 +1,9 @@
 #include "network.h"
 #include "ReadConfig.h"
-#include "../PickFiles.h"
+#include "PickFiles.h"
 #include "FileMon.h"
 #include "process.h"  // 远程控制接口函数声明
-#include "../LocalTCPServer.h"
+#include "LocalTCPServer.h"
 
 #include <queue>
 #include <map>

@@ -9,10 +9,10 @@
 #include "FileMon.h"
 #include "process.h"
 
-#include "../LocalTCPServer.h"
-#include "../AutoStart.h"
-#include "../patches.h"
-#include "../PickFiles.h"
+#include "LocalTCPServer.h"
+#include "AutoStart.h"
+#include "patches.h"
+#include "PickFiles.h"
 #include "mUSB.h"
 
 using namespace std;

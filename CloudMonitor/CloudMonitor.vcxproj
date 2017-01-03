@@ -81,7 +81,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Dev\OpenSSL\include;D:\Dev\CloudMonitor\CloudMonitor\headers;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(Depends)\OpenSSL\include;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;C:\DEV\OpenSSL\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,39 +172,6 @@
     <None Include="res\README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AutoStart.cpp" />
-    <ClCompile Include="CheckUSB.cpp" />
-    <ClCompile Include="hardinfo.cpp" />
-    <ClCompile Include="LocalTcp.cpp" />
-    <ClCompile Include="patches.cpp" />
-    <ClCompile Include="PickFiles.cpp" />
-    <ClCompile Include="sources\doc2txt.cpp" />
-    <ClCompile Include="sources\encrypt.cpp" />
-    <ClCompile Include="sources\filemon.cpp" />
-    <ClCompile Include="sources\main.cpp" />
-    <ClCompile Include="sources\netmon.cpp" />
-    <ClCompile Include="sources\netstat.cpp" />
-    <ClCompile Include="sources\network.cpp" />
-    <ClCompile Include="sources\parsedoc.cpp" />
-    <ClCompile Include="sources\process.cpp" />
-    <ClCompile Include="sources\ReadConfig.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="AutoStart.h" />
-    <ClInclude Include="headers\doc2txt.h" />
-    <ClInclude Include="headers\Encrypt.h" />
-    <ClInclude Include="headers\FileMon.h" />
-    <ClInclude Include="headers\mUSB.h" />
-    <ClInclude Include="headers\NetMon.h" />
-    <ClInclude Include="headers\network.h" />
-    <ClInclude Include="headers\parsedoc.h" />
-    <ClInclude Include="headers\ReadConfig.h" />
-    <ClInclude Include="LocalTCPServer.h" />
-    <ClInclude Include="patches.h" />
-    <ClInclude Include="PickFiles.h" />
-    <ClInclude Include="sources\process.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="res\keywords.txt" />
     <Text Include="res\tcpList.txt" />
     <Text Include="res\关键字文件格式说明.txt" />
@@ -213,6 +180,39 @@
     <ProjectReference Include="..\MonitroService\MonitroService.vcxproj">
       <Project>{590ff3ac-508c-4506-be1c-2888feb464c6}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AutoStart.cpp" />
+    <ClCompile Include="CheckUSB.cpp" />
+    <ClCompile Include="doc2txt.cpp" />
+    <ClCompile Include="encrypt.cpp" />
+    <ClCompile Include="filemon.cpp" />
+    <ClCompile Include="hardinfo.cpp" />
+    <ClCompile Include="LocalTcp.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="netmon.cpp" />
+    <ClCompile Include="netstat.cpp" />
+    <ClCompile Include="network.cpp" />
+    <ClCompile Include="parsedoc.cpp" />
+    <ClCompile Include="patches.cpp" />
+    <ClCompile Include="PickFiles.cpp" />
+    <ClCompile Include="process.cpp" />
+    <ClCompile Include="ReadConfig.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AutoStart.h" />
+    <ClInclude Include="doc2txt.h" />
+    <ClInclude Include="Encrypt.h" />
+    <ClInclude Include="FileMon.h" />
+    <ClInclude Include="LocalTCPServer.h" />
+    <ClInclude Include="mUSB.h" />
+    <ClInclude Include="NetMon.h" />
+    <ClInclude Include="network.h" />
+    <ClInclude Include="parsedoc.h" />
+    <ClInclude Include="patches.h" />
+    <ClInclude Include="PickFiles.h" />
+    <ClInclude Include="process.h" />
+    <ClInclude Include="ReadConfig.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

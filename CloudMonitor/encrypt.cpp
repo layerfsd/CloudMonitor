@@ -1,4 +1,4 @@
-#include "../headers/Encrypt.h"
+#include "Encrypt.h"
 #include <Windows.h>
 
 void testFile()
