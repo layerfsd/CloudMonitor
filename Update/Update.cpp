@@ -4,12 +4,44 @@
 
 #include "stdafx.h"
 
+
+static void SetWorkPath()
+{
+	char strModule[MAX_PATH];
+	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
+	strcat(strModule, "\\..\\");     //设置为当前工作路径为当时的上一级
+	SetCurrentDirectory(strModule);
+}
+
 int main()
 {
+	// 设定程序工作目录
+	SetWorkPath();
 	//StopMyService();
-	bool bRet = GetFilesList("output.txt");
+	//bool bRet = GetFilesList("output.txt");
 	
-	printf("bRet: %d\n", bRet);
 
-    return 0;
+	CloudVersion ver;
+
+	// 获取当前程序的版本号
+	cout << ver.GetCurVersion() << endl;
+
+	// 获取服务端保存的最新版本号
+	ver.GetLatestVersion();
+
+	if (!ver.WhetherUpdate())
+	{
+		printf("Already Latest Version.\n");
+		return 0;
+	}
+
+	if (!ver.RequestHashList())
+	{
+		printf("Request Latest HashList failed.\n");
+		return 1;
+	}
+	// 更新本地版本号文件
+	// ver.SetLatestVersion2File();
+	
+	return 0;
 }

@@ -7,21 +7,28 @@
 
 #include "targetver.h"
 
-#include <string.h>
-#include <stdio.h>
-#include <tchar.h>
-
-#include <iostream>
-
 #include <Windows.h>
 #include <tlhelp32.h>
 
 
+#include <string.h>
+#include <stdio.h>
+#include <tchar.h>
+
+#include <curl/curl.h>
+
+
+#include <iostream>
+#include <vector>
+
+
+
+using namespace std;
+
 #define ArraySize(ptr)	(sizeof(ptr) / sizeof(ptr[0]))
 
-// TODO:  在此处引用程序需要的其他头文件
 
-#include "curl/curl.h"
 #include "manage.h"
+#include "CloudVersion.h"
 
 #pragma comment(lib, "libcurl_a.lib")

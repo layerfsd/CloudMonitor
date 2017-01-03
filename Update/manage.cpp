@@ -120,7 +120,7 @@ static size_t GetFilesList_response(void *ptr, size_t size, size_t nmemb, void *
 	return fwrite(ptr, size, nmemb, writehere);
 }
 
-bool GetFilesList(char* tempFile)
+bool GetFilesList(const char* url, char* tempFile)
 {
 	CURL *curl;
 	CURLcode res;
@@ -132,8 +132,8 @@ bool GetFilesList(char* tempFile)
 	curl = curl_easy_init();
 	if (curl)
 	{
-		curl_easy_setopt(curl, CURLOPT_URL, "ftp://192.168.207.132/CloudMonitor/");
-		curl_easy_setopt(curl, CURLOPT_USERPWD, "ftp:ftp");
+		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_USERPWD, FTP_AUTH);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, ftpfile);
 		curl_easy_setopt(curl, CURLOPT_DIRLISTONLY, 1);
 
@@ -142,7 +142,7 @@ bool GetFilesList(char* tempFile)
 		curl_easy_cleanup(curl);
 	}
 
-	fclose(ftpfile); //
+	fclose(ftpfile);
 
 
 	if (CURLE_OK != res)
@@ -150,3 +150,61 @@ bool GetFilesList(char* tempFile)
 
 	return true;
 }
+
+
+
+
+//start: http://blog.csdn.net/exlsunshine/article/details/29177025
+static size_t FetchFiles(void *buffer, size_t size, size_t nmemb, void *stream)
+{
+	struct FtpFile *out = (struct FtpFile *)stream;
+	if (out && !out->stream)
+	{
+		// open file for writing   
+		out->stream = fopen(out->filename, "wb");
+		if (!out->stream)
+			return -1; // failure, can't open file to write  
+	}
+	return fwrite(buffer, size, nmemb, out->stream);
+}
+
+int DownloadFtpFile(const char* url, FtpFile &ftpfile)
+{
+	CURL *curl;
+	CURLcode res;
+
+	curl_global_init(CURL_GLOBAL_DEFAULT);
+	curl = curl_easy_init();
+
+	if (curl)
+	{
+		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_USERPWD, FTP_AUTH);
+		// Define our callback to get called when there's data to be written //  
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, FetchFiles);
+		// Set a pointer to our struct to pass to the callback //  
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &ftpfile);
+
+		// Switch on full protocol/debug output //  
+		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+
+		res = curl_easy_perform(curl);
+
+		// always cleanup   
+		curl_easy_cleanup(curl);
+
+		if (CURLE_OK != res)
+		{
+			//we failed   
+			fprintf(stderr, "curl told us %d\n", res);
+		}
+	}
+
+	if (ftpfile.stream)
+		fclose(ftpfile.stream); // close the local file   
+
+	curl_global_cleanup();
+
+	return 0;
+}
+//end: http://blog.csdn.net/exlsunshine/article/details/29177025
