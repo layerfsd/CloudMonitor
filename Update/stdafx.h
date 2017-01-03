@@ -20,3 +20,8 @@
 #define ArraySize(ptr)	(sizeof(ptr) / sizeof(ptr[0]))
 
 // TODO:  在此处引用程序需要的其他头文件
+
+#include "curl/curl.h"
+#include "manage.h"
+
+#pragma comment(lib, "libcurl_a.lib")

@@ -129,12 +129,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9961819C128F4871B9531D23BBC906F7"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_ABCAC97521764FF8B52DDA02BEEE082B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -754,7 +748,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:云控客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{D89CC3AD-FDE4-497C-9AEC-9810C397A09F}"
+        "PackageCode" = "8:{103612A8-2E99-4DA2-AC00-1CDBB68FCE28}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -890,9 +884,9 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_EFF94A55B124401880E64EBCA8CCAB90"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B734FD98069443C58EBD3C20EA40C17F"
             {
-            "Name" = "8:云控客户端-登录"
+            "Name" = "8:云控客户端"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -901,7 +895,7 @@
             "Target" = "8:_6271F3B4CA6A452EA868AEAB519DAA19"
             "Folder" = "8:_B90426F76DDD4BE4B3AC19311CC1F381"
             "WorkingFolder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Icon" = "8:"
+            "Icon" = "8:_E3E0394883D34B3D83F94E6411BF8568"
             "Feature" = "8:"
             }
         }
@@ -1438,34 +1432,6 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{8F8A6007-D7C3-4C0A-A82B-DFE915F1AA68}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9961819C128F4871B9531D23BBC906F7"
-            {
-            "SourcePath" = "8:..\\Release\\Daemon.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{5459490B-9F87-401E-8225-709935F99F3F}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
