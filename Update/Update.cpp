@@ -5,18 +5,8 @@
 #include "stdafx.h"
 
 
-static void SetWorkPath()
-{
-	char strModule[MAX_PATH];
-	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
-	strcat(strModule, "\\..\\");     //设置为当前工作路径为当时的上一级
-	SetCurrentDirectory(strModule);
-}
-
 int main()
 {
-	// 设定程序工作目录
-	SetWorkPath();
 	//StopMyService();
 	//bool bRet = GetFilesList("output.txt");
 	
@@ -35,12 +25,23 @@ int main()
 		return 0;
 	}
 
+	// 获取最新版本的文件哈希列表
 	if (!ver.RequestHashList())
 	{
 		printf("Request Latest HashList failed.\n");
 		return 1;
 	}
-	// 更新本地版本号文件
+
+	// 根据文件哈希不同，获取所有‘更新’的文件
+	ver.DownloadLatestFiles(TMPDOWN_DIR);
+
+	// 用临时目录中的文件替换安装根目录的文件
+	ver.ReplaceFiles(TMPDOWN_DIR);
+
+	// 替换本地哈希文件
+	//ReplaceFile();
+
+	// 把最新版本号写入到本地文件
 	// ver.SetLatestVersion2File();
 	
 	return 0;

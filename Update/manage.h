@@ -11,7 +11,14 @@
 
 #define TMP_HASHLIST	"hashlistfile_albertofwb"
 #define TMPFILE_NAME	"tmp_file_albertofwb"
+#define TMPDOWN_DIR		"tmpdir_albertofwb"	
 
+
+struct HashItem
+{
+	char fileName[MAX_PATH];
+	char md5[33];
+};
 
 //start: http://blog.csdn.net/exlsunshine/article/details/29177025
 struct FtpFile
@@ -31,3 +38,6 @@ VOID SendControlC(DWORD pid);
 bool GetFilesList(const char* url, char* tempFile);
 
 BOOL CheckCurVersion(DOUBLE &version);
+
+bool LoadHashList(const char *FileName, map<string, string>& hashList);
+void SetWorkPath(char *workPath);

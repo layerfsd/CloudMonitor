@@ -1,12 +1,9 @@
 #pragma once
 
+#include "manage.h"
+
 #define INVALID_VERSION 0
 
-struct HashItem
-{
-	char fileName[MAX_PATH];
-	char md5[33];
-};
 
 class CloudVersion
 {
@@ -29,12 +26,21 @@ public:
 	// 请求获取服务器最新版本的‘哈希列表’文件
 	bool RequestHashList();
 
+
+	// 根据文件哈希不同，获取所有‘更新’的文件
+	bool DownloadLatestFiles(const char* keepDir);
+
+
+	bool ReplaceFiles(const char* keepDir);
+
 private:
 	double CurVersion;
 	double LatestVersion;
 	string LatestVersionStr;
+	char   workPath[MAX_PATH];
 
-	vector<HashItem> localHashList;
-	vector<HashItem> remotHashList;
+	map<string, string> localHashList;
+	map<string, string> remotHashList;
+	set<string>      downloadSet;
 };
 

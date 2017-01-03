@@ -208,3 +208,40 @@ int DownloadFtpFile(const char* url, FtpFile &ftpfile)
 	return 0;
 }
 //end: http://blog.csdn.net/exlsunshine/article/details/29177025
+
+bool LoadHashList(const char *FileName, map<string, string>& hashList)
+{
+	FILE *fp = NULL;
+	char *FileBuf = NULL;
+
+	if ((fp = fopen(FileName, "r")) == NULL)
+	{
+		perror(FileName);
+		return false;
+	}
+
+	HashItem	tp;
+
+	while (!feof(fp))
+	{
+		memset(&tp, 0, sizeof(tp));
+		fscanf(fp, "%s  %s", tp.fileName, tp.md5);
+		if (strnlen(tp.fileName, sizeof(tp.fileName)) > 0 && strnlen(tp.md5, 32) > 0)
+		{
+			hashList[tp.fileName] = tp.md5;
+		}
+	}
+
+	fclose(fp);
+	return true;
+}
+
+// 设定程序工作目录
+void SetWorkPath(char *workPath)
+{
+	char strModule[MAX_PATH];
+	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
+	strcat(strModule, "\\..\\");     //设置为当前工作路径为当时的上一级
+	SetCurrentDirectory(strModule);
+	GetModuleFileName(NULL, workPath, MAX_PATH); //得到当前模块路径
+}

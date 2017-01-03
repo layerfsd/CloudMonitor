@@ -15,13 +15,17 @@
 #include <stdio.h>
 #include <tchar.h>
 
-#include <curl/curl.h>
+#include <io.h>			// _access()
+#include <direct.h>		// _mkdir()
+
+#include <curl/curl.h>	// libcurl
 
 
 #include <iostream>
+#include <string>
 #include <vector>
-
-
+#include <map>
+#include <set>
 
 using namespace std;
 
