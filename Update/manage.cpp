@@ -257,3 +257,32 @@ void SetWorkPath(char *workPath)
 	SetCurrentDirectory(strModule);
 	GetModuleFileName(NULL, workPath, MAX_PATH); //得到当前模块路径
 }
+
+void DeleteFiles(vector<string>& pathList)
+{
+	struct stat s;
+	string cmd;
+	const char *CurPath;
+
+	for (auto i : pathList)
+	{
+		CurPath = i.c_str();
+
+		if (stat(CurPath, &s) == 0)
+		{
+			if (s.st_mode & S_IFDIR)
+			{
+				cmd = DELETE_DIRS_CMD;
+				cmd += CurPath;
+			}
+			else if (s.st_mode & S_IFREG)
+			{
+				cmd = DELETE_FILE_CMD;
+				cmd += CurPath;
+			}
+			cout << "removing " << CurPath << endl;
+			system(cmd.c_str());
+		}
+	}
+	return;
+}

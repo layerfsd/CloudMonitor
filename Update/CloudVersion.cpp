@@ -247,25 +247,13 @@ bool CloudVersion::ReplaceFiles(const char * keepDir)
 }
 CloudVersion::~CloudVersion()
 {
+	vector<string> pathList{
+		TMPFILE_NAME,
+		TMP_HASHLIST,
+		TMPDOWN_DIR,
+	};
+
 	// É¾³ýÁÙÊ±ÎÄ¼þ
 	printf("\n\nCleanning Temporary Files...\n");
-	system(DELETE_FILE_CMD TMPFILE_NAME);
-	system(DELETE_FILE_CMD TMP_HASHLIST);
-	system(DELETE_DIRS_CMD TMPDOWN_DIR);
-}
-
-void IsFileExists(map<string,string>& fileList)
-{
-	if (fileList.size() <= 0)
-	{
-		return;
-	}
-
-	for (auto i = fileList.begin(); i != fileList.end(); i++)
-	{
-		if (-1 == _access(TMPDOWN_DIR, 0))
-		{
-			_mkdir(TMPDOWN_DIR);
-		}
-	}
+	DeleteFiles(pathList);
 }

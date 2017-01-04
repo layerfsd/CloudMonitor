@@ -47,3 +47,5 @@ bool LoadHashList(const char *FileName, map<string, string>& hashList);
 void SetWorkPath(char *workPath);
 
 void IsFileExists(vector<string>& fileList);
+
+void DeleteFiles(vector<string>& pathList);

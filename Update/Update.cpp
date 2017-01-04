@@ -9,7 +9,6 @@ int main()
 {
 	//StopMyService();
 	//bool bRet = GetFilesList("output.txt");
-	
 
 	CloudVersion ver;
 
