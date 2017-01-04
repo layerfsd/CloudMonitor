@@ -29,8 +29,10 @@
 
 using namespace std;
 
-#define ArraySize(ptr)	(sizeof(ptr) / sizeof(ptr[0]))
+bool s;
 
+#define ArraySize(ptr)		(sizeof(ptr) / sizeof(ptr[0]))
+#define B2b(returnValue)		(returnValue) == TRUE ? true : false
 
 #include "manage.h"
 #include "CloudVersion.h"

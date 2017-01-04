@@ -37,16 +37,18 @@ int main()
 	}
 
 	// 根据文件哈希不同，获取所有‘更新’的文件
-	ver.DownloadLatestFiles(TMPDOWN_DIR);
+	if (!ver.DownloadLatestFiles(TMPDOWN_DIR))
+	{
+		printf("Download Latest Files failed.\n");
+		return 1;
+	}
 
 	// 用临时目录中的文件替换安装根目录的文件
-	ver.ReplaceFiles(TMPDOWN_DIR);
-
-	// 替换本地哈希文件
-	//ReplaceFile();
-
-	// 把最新版本号写入到本地文件
-	// ver.SetLatestVersion2File();
+	if (!ver.ReplaceFiles(TMPDOWN_DIR))
+	{
+		printf("Replace Files failed.\n");
+		return 1;
+	}
 	
 	return 0;
 }

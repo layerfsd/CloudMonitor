@@ -5,6 +5,8 @@
 #define VERSION_FILE	"DATA\\VERSION"
 #define LOCAL_HASHLIST	"DATA\\hashlist.txt"
 
+#define DELETE_FILE_CMD		"DEL /Q /F "
+#define DELETE_DIRS_CMD		"RD /Q /S " 
 
 #define UPDATE_URL		"ftp://192.168.207.132/CloudMonitor/"
 #define FTP_AUTH		"ftp:ftp"
@@ -26,7 +28,9 @@ struct FtpFile
 	const char *filename;
 	FILE *stream;
 };
-int DownloadFtpFile(const char* url, FtpFile &ftpfile);
+
+// 下载一个文件
+bool DownloadFtpFile(const char* url, FtpFile &ftpfile);
 //end: http://blog.csdn.net/exlsunshine/article/details/29177025
 
 VOID StopMyService();

@@ -168,13 +168,14 @@ static size_t FetchFiles(void *buffer, size_t size, size_t nmemb, void *stream)
 	return fwrite(buffer, size, nmemb, out->stream);
 }
 
-int DownloadFtpFile(const char* url, FtpFile &ftpfile)
+bool DownloadFtpFile(const char* url, FtpFile &ftpfile)
 {
 	CURL *curl;
 	CURLcode res;
 
 	curl_global_init(CURL_GLOBAL_DEFAULT);
 	curl = curl_easy_init();
+	bool bRet = true;
 
 	if (curl)
 	{
@@ -197,6 +198,7 @@ int DownloadFtpFile(const char* url, FtpFile &ftpfile)
 		{
 			//we failed   
 			fprintf(stderr, "curl told us %d\n", res);
+			bRet = false;
 		}
 	}
 
@@ -205,7 +207,7 @@ int DownloadFtpFile(const char* url, FtpFile &ftpfile)
 
 	curl_global_cleanup();
 
-	return 0;
+	return bRet;
 }
 //end: http://blog.csdn.net/exlsunshine/article/details/29177025
 
@@ -238,7 +240,7 @@ bool LoadHashList(const char *FileName, map<string, string>& hashList)
 				tpName = tp.fileName;
 			}
 			hashList[tpName] = tp.md5;
-			printf("%s  %s\n", tp.md5, tpName.c_str());
+			//printf("%s  %s\n", tp.md5, tpName.c_str());
 		}
 	}
 

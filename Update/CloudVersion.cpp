@@ -2,6 +2,8 @@
 #include "CloudVersion.h"
 #include "manage.h"
 
+#define MAX_RETRY_TIME	3
+
 const char* result[]{
 	"[FAILED]", "[OK]"
 };
@@ -32,6 +34,8 @@ double CloudVersion::GetCurVersion()
 		return INVALID_VERSION;
 	}
 
+	// skip 'v'
+	fseek(fp, 1, SEEK_CUR);
 	fscanf(fp, "%lf", &this->CurVersion);
 
 	fclose(fp);
@@ -51,6 +55,8 @@ bool CloudVersion::SetLatestVersion2File()
 	fprintf(fp, "%s", this->LatestVersionStr.c_str());
 
 	fclose(fp);
+
+	printf("Set Latest Versio [%s] to [%s] Done\n", this->LatestVersionStr.c_str(), VERSION_FILE);
 	return true;
 }
 
@@ -90,6 +96,7 @@ bool CloudVersion::GetLatestVersion()
 		}
 		else
 		{
+			// skip 'v'
 			sscanf(verBuf + 1, "%lf", &tmpVer);
 			//printf("parsing %s ---> %lf\n", verBuf, tmpVer);
 		}
@@ -113,6 +120,7 @@ bool CloudVersion::GetLatestVersion()
 
 bool CloudVersion::WhetherUpdate()
 {
+	printf("LatestVersion: [%lf] CurrentVersion [%lf]\n", this->LatestVersion, this->CurVersion);
 	return this->LatestVersion > this->CurVersion;
 }
 
@@ -131,7 +139,7 @@ bool CloudVersion::RequestHashList()
 	};
 	printf("RequestHashList: \n");
 	printf("[%s] [%s]\n", url.c_str(), ftpfile.filename);
-	if (0 != DownloadFtpFile(url.c_str(), ftpfile))
+	if (!DownloadFtpFile(url.c_str(), ftpfile))
 	{
 		return false;
 	}
@@ -181,6 +189,9 @@ bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 	basePath += "/";
 
 	string curUrl, curPath, tpName;
+	bool  downloadStatus = false;
+	DWORD dwMaxRetryTime = 0;
+
 	for (auto i = this->downloadSet.begin(); i != this->downloadSet.end(); i++)
 	{
 		tpName = (*i);
@@ -191,10 +202,20 @@ bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 		//printf("[%s] --> [%s]\n", curUrl.c_str(), curPath.c_str());
 		CheckPathExists(curPath);
 		printf("[%s] [%s]\n", curUrl.c_str(), curPath.c_str());
-		DownloadFtpFile(curUrl.c_str(), tfile);
+		
+		downloadStatus = DownloadFtpFile(curUrl.c_str(), tfile);
+		dwMaxRetryTime = 0;
+
+		// 如果下载文件失败，则最多可以尝试三次
+		while ((dwMaxRetryTime < MAX_RETRY_TIME) && (downloadStatus != TRUE))
+		{
+			dwMaxRetryTime += 1;
+			printf("[%d] download [%s] failed\n", dwMaxRetryTime, tfile.filename);
+			downloadStatus = DownloadFtpFile(curUrl.c_str(), tfile);
+		}
 	}
 
-	return false;
+	return downloadStatus;
 }
 
 bool CloudVersion::ReplaceFiles(const char * keepDir)
@@ -211,18 +232,26 @@ bool CloudVersion::ReplaceFiles(const char * keepDir)
 		tpName = (*i);
 		srcName = baseDir + tpName;
 		printf("MoveFile [%s] to [%s]\n", srcName.c_str(), tpName.c_str());
-		bRet = MoveFileA(srcName.c_str(), tpName.c_str());
+		bRet = MoveFileEx(srcName.c_str(), tpName.c_str(), MOVEFILE_REPLACE_EXISTING);
 		printf("%s\n", result[bRet]);
 	}
 
-	return false;
+	// 把最新版本号写入到本地文件
+	if (!this->SetLatestVersion2File())
+	{
+		printf("Set Latest Version To File failed.\n");
+		bRet = FALSE;
+	}
+
+	return B2b(bRet);
 }
 CloudVersion::~CloudVersion()
 {
 	// 删除临时文件
-	system("DEL /f " TMPFILE_NAME);
-	system("DEL /f " TMP_HASHLIST);
-	system("RD /q /s " TMPDOWN_DIR);
+	printf("\n\nCleanning Temporary Files...\n");
+	system(DELETE_FILE_CMD TMPFILE_NAME);
+	system(DELETE_FILE_CMD TMP_HASHLIST);
+	system(DELETE_DIRS_CMD TMPDOWN_DIR);
 }
 
 void IsFileExists(map<string,string>& fileList)
