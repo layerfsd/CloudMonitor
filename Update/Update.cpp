@@ -14,10 +14,14 @@ int main()
 	CloudVersion ver;
 
 	// 获取当前程序的版本号
-	cout << ver.GetCurVersion() << endl;
+	cout << "Current Version: " << ver.GetCurVersion() << endl;
 
 	// 获取服务端保存的最新版本号
-	ver.GetLatestVersion();
+	if (!ver.GetLatestVersion())
+	{
+		printf("GetLatestVersion() FAILED\n");
+		return 1;
+	}
 
 	if (!ver.WhetherUpdate())
 	{

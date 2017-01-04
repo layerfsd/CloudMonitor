@@ -221,14 +221,24 @@ bool LoadHashList(const char *FileName, map<string, string>& hashList)
 	}
 
 	HashItem	tp;
+	string		tpName;
 
 	while (!feof(fp))
 	{
 		memset(&tp, 0, sizeof(tp));
-		fscanf(fp, "%s  %s", tp.fileName, tp.md5);
+		fscanf(fp, "%s  %s", tp.md5, tp.fileName);
 		if (strnlen(tp.fileName, sizeof(tp.fileName)) > 0 && strnlen(tp.md5, 32) > 0)
 		{
-			hashList[tp.fileName] = tp.md5;
+			if ('.' == tp.fileName[0] && '/' == tp.fileName[1])
+			{
+				tpName = tp.fileName + 2;
+			}
+			else
+			{
+				tpName = tp.fileName;
+			}
+			hashList[tpName] = tp.md5;
+			printf("%s  %s\n", tp.md5, tpName.c_str());
 		}
 	}
 
