@@ -5,9 +5,11 @@ windows客户端技术说明
 		 Visutl Studio 2015 comminity 开发。
 
 	依赖环境为：
-		OpenSSL		-->		安全信道的建立、文件加密、文件MD5哈希计算
-		7z		--> 	        zip、docx 文件解析
+		Depends\OpenSSL		-->		安全信道的建立、文件MD5哈希计算
+		Depends\curl-7.52.1 -->     自更新程序中，用于访问远程ftp服务器的最新版本文件所依赖
 
+		Release\all2txt     -->     将其它常见格式的文件转换为txt（utf-8）这种程序可以直接识别的纯文本格式
+		Release\ssl\openssl -->  	文件加密(加密方式为：aes-256-cbc）运行时依赖
 
 	编程语言主要为：
 		C、C++
