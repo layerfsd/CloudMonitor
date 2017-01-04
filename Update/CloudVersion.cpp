@@ -2,6 +2,11 @@
 #include "CloudVersion.h"
 #include "manage.h"
 
+const char* result[]{
+	"[FAILED]", "[OK]"
+};
+
+
 CloudVersion::CloudVersion()
 {
 	memset(this->workPath, 0, sizeof(this->workPath));
@@ -128,7 +133,6 @@ bool CloudVersion::RequestHashList()
 	printf("[%s] [%s]\n", url.c_str(), ftpfile.filename);
 	if (0 != DownloadFtpFile(url.c_str(), ftpfile))
 	{
-		printf("RequestHashList [FAILED]\n");
 		return false;
 	}
 
@@ -197,17 +201,18 @@ bool CloudVersion::ReplaceFiles(const char * keepDir)
 {	
 	// TODO
 	// 校验下载文件的完整性
-	
+
 	string baseDir = TMPDOWN_DIR;
 	baseDir += "/";
-	
 	string tpName, srcName;
+	BOOL   bRet = FALSE;
 	for (auto i = this->downloadSet.begin(); i != this->downloadSet.end(); i++)
 	{
 		tpName = (*i);
 		srcName = baseDir + tpName;
 		printf("MoveFile [%s] to [%s]\n", srcName.c_str(), tpName.c_str());
-		//MoveFileA(srcName.c_str(), tpName.c_str());
+		bRet = MoveFileA(srcName.c_str(), tpName.c_str());
+		printf("%s\n", result[bRet]);
 	}
 
 	return false;
@@ -218,4 +223,20 @@ CloudVersion::~CloudVersion()
 	system("DEL /f " TMPFILE_NAME);
 	system("DEL /f " TMP_HASHLIST);
 	system("RD /q /s " TMPDOWN_DIR);
+}
+
+void IsFileExists(map<string,string>& fileList)
+{
+	if (fileList.size() <= 0)
+	{
+		return;
+	}
+
+	for (auto i = fileList.begin(); i != fileList.end(); i++)
+	{
+		if (-1 == _access(TMPDOWN_DIR, 0))
+		{
+			_mkdir(TMPDOWN_DIR);
+		}
+	}
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Windows.h>	// for VOID declaration
+#include "manage.h"
 
 #define VERSION_FILE	"DATA\\VERSION"
 #define LOCAL_HASHLIST	"DATA\\hashlist.txt"
@@ -41,3 +41,5 @@ BOOL CheckCurVersion(DOUBLE &version);
 
 bool LoadHashList(const char *FileName, map<string, string>& hashList);
 void SetWorkPath(char *workPath);
+
+void IsFileExists(vector<string>& fileList);
