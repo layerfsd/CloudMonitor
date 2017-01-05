@@ -240,7 +240,7 @@ void CMonitorDlg::OnBnClickedOk()
 
 	if (s_name.GetLength() <= 0)
 	{
-		inform = "用户名不允许为空";
+		inform = "用户名不能为空";
 		//SetDlgItemText(IDC_STATUS, inform);
 		AfxMessageBox(inform);
 		return;
@@ -268,7 +268,7 @@ void CMonitorDlg::OnBnClickedOk()
 	if (strchr(cpass, ' '))
 	{
 
-		inform = "密码中不允许存在空格 ...";
+		inform = "密码中不允许存在空格";
 		//SetDlgItemText(IDC_STATUS, inform);
 		AfxMessageBox(inform);
 		return;
@@ -276,7 +276,7 @@ void CMonitorDlg::OnBnClickedOk()
 
 	if (0 != IsCnt2Internet())
 	{
-		inform = "您的网络状况异常 ...";
+		inform = "您的网络状况异常";
 		//SetDlgItemText(IDC_STATUS, inform);
 		AfxMessageBox(inform);
 		return;
@@ -324,7 +324,7 @@ void CMonitorDlg::OnBnClickedOk()
 	else
 	{
 		inform = sAppPath;
-		inform += " 登陆失败";
+		inform += "登陆失败";
 		AfxMessageBox(inform);
 		CDialogEx::OnOK();
 
@@ -350,7 +350,7 @@ void CMonitorDlg::OnBnClickedOk()
 			if (proceccFlag != true && NONSENSE == albSockRet)
 			{
 				proceccFlag = true;
-				inform = "正在认证用户名和密码";
+				inform = "正在认证用户名和密码 ...";
 				SetDlgItemText(IDC_STATUS, inform);
 				//GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
 			}
@@ -372,7 +372,7 @@ void CMonitorDlg::OnBnClickedOk()
 			}
 			if (INVALID_PASSWD == albSockRet)
 			{
-				inform = "用户名或密码错误！";
+				inform = "用户名或密码错误";
 				//SetDlgItemText(IDC_STATUS, inform);
 				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
 				AfxMessageBox(inform);
@@ -392,7 +392,7 @@ void CMonitorDlg::OnBnClickedOk()
 	}
 	else
 	{
-		inform = "创建本地tcp通道失败.";
+		inform = "创建本地tcp通道失败";
 		//SetDlgItemText(IDC_STATUS, inform);
 		AfxMessageBox(inform);
 	}
