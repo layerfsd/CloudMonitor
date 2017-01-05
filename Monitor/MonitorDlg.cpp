@@ -155,7 +155,6 @@ bool CreateTCPServer()
 	sockaddr_in sin;
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(159);
-
 	inet_pton(AF_INET, "127.0.0.1", &sin.sin_addr);
 	//sin.sin_addr.S_un.S_addr = INADDR_ANY;
 	if (bind(slisten, (LPSOCKADDR)&sin, sizeof(sin)) == SOCKET_ERROR)
@@ -241,15 +240,17 @@ void CMonitorDlg::OnBnClickedOk()
 
 	if (s_name.GetLength() <= 0)
 	{
-		inform = "用户名不允许为空";
-		SetDlgItemText(IDC_STATUS, inform);
+		inform = "用户名不能为空";
+		//SetDlgItemText(IDC_STATUS, inform);
+		AfxMessageBox(inform);
 		return;
 	}
 
 	if (s_pass.GetLength() <= 0)
 	{
 		inform = "密码不能为空";
-		SetDlgItemText(IDC_STATUS, inform);
+		//SetDlgItemText(IDC_STATUS, inform);
+		AfxMessageBox(inform);
 		return;
 	}
 	char cWinDir[MAX_PATH];
@@ -267,15 +268,17 @@ void CMonitorDlg::OnBnClickedOk()
 	if (strchr(cpass, ' '))
 	{
 
-		inform = "密码中不允许存在空格 ...";
-		SetDlgItemText(IDC_STATUS, inform);
+		inform = "密码中不允许存在空格";
+		//SetDlgItemText(IDC_STATUS, inform);
+		AfxMessageBox(inform);
 		return;
 	}
 
 	if (0 != IsCnt2Internet())
 	{
-		inform = "您的网络状况异常 ...";
-		SetDlgItemText(IDC_STATUS, inform);
+		inform = "您的网络状况异常";
+		//SetDlgItemText(IDC_STATUS, inform);
+		AfxMessageBox(inform);
 		return;
 	}
 
@@ -321,7 +324,7 @@ void CMonitorDlg::OnBnClickedOk()
 	else
 	{
 		inform = sAppPath;
-		inform += " 登陆失败";
+		inform += "登陆失败";
 		AfxMessageBox(inform);
 		CDialogEx::OnOK();
 
@@ -347,7 +350,7 @@ void CMonitorDlg::OnBnClickedOk()
 			if (proceccFlag != true && NONSENSE == albSockRet)
 			{
 				proceccFlag = true;
-				inform = "正在认证用户名和密码";
+				inform = "正在认证用户名和密码 ...";
 				SetDlgItemText(IDC_STATUS, inform);
 				//GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
 			}
@@ -355,7 +358,7 @@ void CMonitorDlg::OnBnClickedOk()
 			if (CONNECT_FAILED == albSockRet)
 			{
 				inform = "连接服务器失败";
-				SetDlgItemText(IDC_STATUS, inform);
+				//SetDlgItemText(IDC_STATUS, inform);
 				AfxMessageBox(inform);
 				break;
 			}
@@ -363,14 +366,14 @@ void CMonitorDlg::OnBnClickedOk()
 			{
 				//inform = "当前用户名不允许在您的计算机上登录";
 				inform = "当前登录所使用的用户名已经与其它电脑绑定，如果需要重新绑定当前电脑，请点击 '重新绑定'按钮";
-				SetDlgItemText(IDC_STATUS, inform);
+				//SetDlgItemText(IDC_STATUS, inform);
 				AfxMessageBox(inform);
 				break;
 			}
 			if (INVALID_PASSWD == albSockRet)
 			{
-				inform = "用户名或密码错误！";
-				SetDlgItemText(IDC_STATUS, inform);
+				inform = "用户名或密码错误";
+				//SetDlgItemText(IDC_STATUS, inform);
 				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
 				AfxMessageBox(inform);
 				break;
@@ -379,7 +382,7 @@ void CMonitorDlg::OnBnClickedOk()
 			{
 				//inform = "您已登录过了,不需要重复登录.";
 				inform = "您已登录过了,不需要重复登录（一台电脑只允许登录一个用户）";
-				SetDlgItemText(IDC_STATUS, inform);
+				//SetDlgItemText(IDC_STATUS, inform);
 				AfxMessageBox(inform);
 				break;
 			}
@@ -389,8 +392,9 @@ void CMonitorDlg::OnBnClickedOk()
 	}
 	else
 	{
-		inform = "创建本地tcp通道失败.";
-		SetDlgItemText(IDC_STATUS, inform);
+		inform = "创建本地tcp通道失败";
+		//SetDlgItemText(IDC_STATUS, inform);
+		AfxMessageBox(inform);
 	}
 
 	if (ALREADY_LOGIN == albSockRet)
@@ -400,7 +404,7 @@ void CMonitorDlg::OnBnClickedOk()
 	if (CONNECT_SUCCESS == albSockRet)
 	{
 		inform = "登录成功";
-		SetDlgItemText(IDC_STATUS, inform);
+		//SetDlgItemText(IDC_STATUS, inform);
 		AfxMessageBox(inform);
 		CDialogEx::OnOK();
 	}
