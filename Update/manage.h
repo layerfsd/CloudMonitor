@@ -11,6 +11,7 @@
 #define UPDATE_URL		"ftp://192.168.207.132/CloudMonitor/"
 #define FTP_AUTH		"ftp:ftp"
 
+#define TMP_BACKUPDIR	"bakdir_albertofwb"
 #define TMP_HASHLIST	"hashlistfile_albertofwb"
 #define TMPFILE_NAME	"tmp_file_albertofwb"
 #define TMPDOWN_DIR		"tmpdir_albertofwb"	
@@ -53,3 +54,7 @@ void DeleteFiles(vector<string>& pathList);
 bool GetFileMd5(string& Path, string& fileMd5);
 
 bool IsFileHashEqual(string& path, string& hash);
+
+
+// 确保要存储的路径中包含依赖的‘目录结构’
+void CheckPathExists(const string& curPath);

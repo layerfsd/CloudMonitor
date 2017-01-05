@@ -147,24 +147,6 @@ bool CloudVersion::RequestHashList()
 	return LoadHashList(ftpfile.filename, this->remotHashList);
 }
 
-// 确保要存储的路径中包含依赖的‘目录结构’
-// 比如要存储在 "TMP_DIR/APP_PATH/FileA" 则我们要手动创建 'APP_PATH'
-inline void CheckPathExists(string& curPath)
- {
-	size_t pre = curPath.find_first_of('/');
-	size_t tail = curPath.find_last_of('/');
-	string tpDir;
-
-	if (pre != tail)
-	{
-		tpDir = curPath.substr(0, tail);
-		if (0 != _access(tpDir.c_str(), 0))
-		{
-			printf("_makedir [%s]\n", tpDir.c_str());
-			_mkdir(tpDir.c_str());
-		}
-	}
-}
 
 bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 {
@@ -214,9 +196,9 @@ bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 			downloadStatus = DownloadFtpFile(curUrl.c_str(), tfile);
 		}
 
+		// 文件下载‘成功’后，立即校验该文件
 		// 检查下载的文件MD5是否与其在‘远程清单文件’上的MD5一致，如果不一致说明这个文件不正确
-		// 此时放弃该次更新
-		if (!IsFileHashEqual(curPath, curMd5))
+		if (downloadStatus && !IsFileHashEqual(curPath, curMd5))
 		{
 			downloadStatus = false;
 			break;
@@ -228,8 +210,7 @@ bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 
 bool CloudVersion::ReplaceFiles(const char * keepDir)
 {	
-	// TODO
-	// 校验下载文件的完整性
+	this->BackUpOldFiles();	// 在替换文件之前，先备份将要替换的文件
 
 	string baseDir = TMPDOWN_DIR;
 	baseDir += "/";
@@ -240,7 +221,7 @@ bool CloudVersion::ReplaceFiles(const char * keepDir)
 		tpName = i.second;
 		srcName = baseDir + tpName;
 		printf("MoveFile [%s] to [%s]\n", srcName.c_str(), tpName.c_str());
-		bRet = MoveFileEx(srcName.c_str(), tpName.c_str(), MOVEFILE_REPLACE_EXISTING);
+		bRet = MoveFileExA(srcName.c_str(), tpName.c_str(), MOVEFILE_REPLACE_EXISTING);
 		printf("%s\n", result[bRet]);
 	}
 
@@ -251,14 +232,65 @@ bool CloudVersion::ReplaceFiles(const char * keepDir)
 		bRet = FALSE;
 	}
 
+	bRet = MoveFileExA(TMP_HASHLIST, LOCAL_HASHLIST, MOVEFILE_REPLACE_EXISTING);
+
+	// 如果替换失败，则回滚到‘替换前的状态’
+	if (bRet != TRUE)
+	{
+		this->RollBack();
+	}
 	return B2b(bRet);
 }
+
+
+void CloudVersion::BackUpOldFiles()
+{
+	const char* path;
+	string baseDir = TMP_BACKUPDIR;
+	string bakPath;
+	
+	for (auto i : this->downloadList)
+	{
+		path = i.first.c_str();
+		if (_access(path, 0) == 0)
+		{
+			this->replaceList.push_back(path);
+			bakPath = baseDir + path;
+
+			CheckPathExists(path);
+			CopyFileA(path, bakPath.c_str(), FALSE);
+		}
+	}
+}
+
+
+void CloudVersion::RollBack()
+{
+	const char* path;
+	string baseDir = TMP_BACKUPDIR;
+	string bakPath;
+
+	for (auto i : this->replaceList)
+	{
+		path = i.c_str();
+		bakPath = baseDir + path;
+
+		if (_access(bakPath.c_str(), 0) == 0)
+		{
+			CheckPathExists(path);  // 确保可以复制
+			CopyFileA(bakPath.c_str(), path, FALSE);	// FALSE参数: 为覆盖拷贝
+		}
+	}
+
+}
+
 CloudVersion::~CloudVersion()
 {
 	vector<string> pathList{
 		TMPFILE_NAME,
 		TMP_HASHLIST,
 		TMPDOWN_DIR,
+		TMP_BACKUPDIR,
 	};
 
 	// 删除临时文件

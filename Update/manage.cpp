@@ -344,3 +344,27 @@ bool IsFileHashEqual(string& path, string& hash)
 
 	return curHash == hash;
 }
+
+
+void CheckPathExists(const string& curPath)
+{
+	size_t tail = curPath.find_last_of('/');;
+	size_t pos = 0;
+
+	string pureDir = curPath.substr(0, tail);
+	string tpDir;
+
+	while (tpDir != pureDir)
+	{
+		pos += curPath.substr(pos+1, tail).find_first_of('/')+1;
+		tpDir = pureDir.substr(0, pos);
+		//cout << "tpDir: " << tpDir << endl;
+
+		// 如果该目录不存在
+		if (0 != _access(tpDir.c_str(), 0))
+		{
+			//printf("_makedir [%s]\n", tpDir.c_str());
+			_mkdir(tpDir.c_str());
+		}
+	}
+}

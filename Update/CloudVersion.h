@@ -33,14 +33,23 @@ public:
 
 	bool ReplaceFiles(const char* keepDir);
 
+	// 备份需要替换的文件
+	void BackUpOldFiles();
+
+	// 还原备份的文件
+	void RollBack();
+
 private:
 	double CurVersion;
 	double LatestVersion;
 	string LatestVersionStr;
 	char   workPath[MAX_PATH];
 
-	map<string, string> localHashList;
-	map<string, string> remotHashList;
-	map<string, string> downloadList;
+	map<string, string> localHashList;		// 远程清单列表
+	map<string, string> remotHashList;		// 本地清单列表
+	map<string, string> downloadList;		// 将要下载的文件
+
+	vector<string> replaceList;		// 将要替换的文件
+
 };
 
