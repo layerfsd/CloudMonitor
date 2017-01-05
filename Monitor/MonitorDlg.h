@@ -59,6 +59,4 @@ public:
 	CStatic inform;
 	afx_msg void OnEnChangePasswd();
 
-	afx_msg void OnBnClickedMfclink1();
-	afx_msg void OnBnClickedMfclink2();
 };

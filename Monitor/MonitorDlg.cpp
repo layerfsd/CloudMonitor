@@ -45,7 +45,6 @@ BEGIN_MESSAGE_MAP(CMonitorDlg, CDialogEx)
 	ON_STN_CLICKED(IDC_STATUS, &CMonitorDlg::OnStnClickedStatus)
 	ON_BN_CLICKED(IDCANCEL, &CMonitorDlg::OnBnClickedCancel)
 	ON_EN_CHANGE(IDC_PASSWD, &CMonitorDlg::OnEnChangePasswd)
-	ON_BN_CLICKED(IDC_MFCLINK2, &CMonitorDlg::OnBnClickedMfclink2)
 END_MESSAGE_MAP()
 
 
@@ -63,8 +62,6 @@ BOOL CMonitorDlg::OnInitDialog()
 	//ShowWindow(SW_MINIMIZE);
 
 	// TODO: 在此添加额外的初始化代码
-	// ModifyStyle(WS_MAXIMIZEBOX, 0);
-
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -458,9 +455,4 @@ void CMonitorDlg::DoEvent()
 		::TranslateMessage(&msg);
 		::DispatchMessage(&msg);
 	}
-}
-
-void CMonitorDlg::OnBnClickedMfclink2()
-{
-	// TODO: 在此添加控件通知处理程序代码
 }
