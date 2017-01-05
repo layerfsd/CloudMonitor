@@ -2,6 +2,8 @@
 
 #include "manage.h"
 
+#define UPDATE_ARGS		"--backend"
+
 #define VERSION_FILE	"DATA\\VERSION"
 #define CONFIG_FILE 	"DATA\\config.ini"
 #define LOCAL_HASHLIST	"DATA\\hashlist.txt"
@@ -17,7 +19,7 @@
 #define TMPFILE_NAME	"tmp_file_albertofwb"
 #define TMPDOWN_DIR		"tmpdir_albertofwb"	
 
-#define FLAG_FILE		"UPDATE_CHECKED"
+#define UPDATE_CHECKED_FLAG		"UPDATE_CHECKED"
 
 struct AppConfig
 {
@@ -32,6 +34,7 @@ struct Config
 {
 	AppConfig aconfig;
 	char	update_url[MAXLINE];
+	bool	enableLog;
 };
 
 struct HashItem
@@ -78,3 +81,7 @@ void CheckPathExists(const string& curPath);
 
 // 加载并解析配置文件
 bool LoadConfig();
+
+// 由服务运行本程序时，输出必要的日志
+int WriteToLog(char* str);
+void EnableLog();

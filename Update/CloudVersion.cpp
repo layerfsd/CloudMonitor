@@ -31,6 +31,8 @@ CloudVersion::CloudVersion()
 	{
 		_mkdir(TMPDOWN_DIR);
 	}
+
+	WriteToLog("Started By Service");
 }
 
 double CloudVersion::GetCurVersion()
@@ -320,5 +322,6 @@ CloudVersion::~CloudVersion()
 	DeleteFiles(pathList);
 
 	// 创建标志文件，表示本程序运行过
-	fopen(FLAG_FILE, "w");
+	fopen(UPDATE_CHECKED_FLAG, "w");
+	system("sc start CloudMonitorService");
 }
