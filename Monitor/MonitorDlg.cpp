@@ -278,6 +278,7 @@ void CMonitorDlg::OnBnClickedOk()
 	{
 		inform = "您的网络状况异常";
 		//SetDlgItemText(IDC_STATUS, inform);
+		SetDlgItemText(IDC_STATUS, NULL);
 		AfxMessageBox(inform);
 		return;
 	}
@@ -325,6 +326,7 @@ void CMonitorDlg::OnBnClickedOk()
 	{
 		inform = sAppPath;
 		inform += "登陆失败";
+		SetDlgItemText(IDC_STATUS, NULL);
 		AfxMessageBox(inform);
 		CDialogEx::OnOK();
 
@@ -359,6 +361,7 @@ void CMonitorDlg::OnBnClickedOk()
 			{
 				inform = "连接服务器失败";
 				//SetDlgItemText(IDC_STATUS, inform);
+				SetDlgItemText(IDC_STATUS, NULL);
 				AfxMessageBox(inform);
 				break;
 			}
@@ -367,6 +370,7 @@ void CMonitorDlg::OnBnClickedOk()
 				//inform = "当前用户名不允许在您的计算机上登录";
 				inform = "当前登录所使用的用户名已经与其它电脑绑定，如果需要重新绑定当前电脑，请点击 '重新绑定'按钮";
 				//SetDlgItemText(IDC_STATUS, inform);
+				SetDlgItemText(IDC_STATUS, NULL);
 				AfxMessageBox(inform);
 				break;
 			}
@@ -375,14 +379,15 @@ void CMonitorDlg::OnBnClickedOk()
 				inform = "用户名或密码错误";
 				//SetDlgItemText(IDC_STATUS, inform);
 				GetDlgItem(IDC_PASSWD)->SetWindowTextW(L"");
+				SetDlgItemText(IDC_STATUS, NULL);
 				AfxMessageBox(inform);
 				break;
 			}
 			if (ALREADY_LOGIN == albSockRet)
 			{
-				//inform = "您已登录过了,不需要重复登录.";
 				inform = "您已登录过了,不需要重复登录（一台电脑只允许登录一个用户）";
 				//SetDlgItemText(IDC_STATUS, inform);
+				SetDlgItemText(IDC_STATUS, NULL);
 				AfxMessageBox(inform);
 				break;
 			}
@@ -394,6 +399,7 @@ void CMonitorDlg::OnBnClickedOk()
 	{
 		inform = "创建本地tcp通道失败";
 		//SetDlgItemText(IDC_STATUS, inform);
+		SetDlgItemText(IDC_STATUS, NULL);
 		AfxMessageBox(inform);
 	}
 
@@ -405,6 +411,7 @@ void CMonitorDlg::OnBnClickedOk()
 	{
 		inform = "登录成功";
 		//SetDlgItemText(IDC_STATUS, inform);
+		SetDlgItemText(IDC_STATUS, NULL);
 		AfxMessageBox(inform);
 		CDialogEx::OnOK();
 	}
