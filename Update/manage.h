@@ -49,3 +49,7 @@ void SetWorkPath(char *workPath);
 void IsFileExists(vector<string>& fileList);
 
 void DeleteFiles(vector<string>& pathList);
+
+bool GetFileMd5(string& Path, string& fileMd5);
+
+bool IsFileHashEqual(string& path, string& hash);

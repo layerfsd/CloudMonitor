@@ -43,11 +43,11 @@ int main()
 	}
 
 	// 用临时目录中的文件替换安装根目录的文件
-	if (!ver.ReplaceFiles(TMPDOWN_DIR))
-	{
-		printf("Replace Files failed.\n");
-		return 1;
-	}
+	//if (!ver.ReplaceFiles(TMPDOWN_DIR))
+	//{
+	//	printf("Replace Files failed.\n");
+	//	return 1;
+	//}
 	
 	return 0;
 }

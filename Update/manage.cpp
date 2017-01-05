@@ -240,7 +240,7 @@ bool LoadHashList(const char *FileName, map<string, string>& hashList)
 				tpName = tp.fileName;
 			}
 			hashList[tpName] = tp.md5;
-			//printf("%s  %s\n", tp.md5, tpName.c_str());
+			//printf("md5:%s  name:%s\n", hashList[tpName].c_str(), tpName.c_str());
 		}
 	}
 
@@ -285,4 +285,62 @@ void DeleteFiles(vector<string>& pathList)
 		}
 	}
 	return;
+}
+
+
+bool GetFileMd5(string& Path, string& fileMd5)
+{
+	const char* filePath = Path.c_str();
+	if (_access(filePath, 0) != 0)
+	{
+		return false;	// 文件不存在
+	}
+
+	char* CMD_FMT = "ssl\\openssl.exe md5  \"%s\"";	//防止文件路径中包含空格
+	char  cmd[_MAX_PATH];
+	FILE* execfd = NULL;
+
+	memset(cmd, 0, sizeof(cmd));
+	sprintf(cmd, CMD_FMT, filePath);
+	//printf("cmd: [%s]\n", cmd);
+
+	execfd = _popen(cmd, "r");
+
+	if (NULL == execfd)
+	{
+		return false;
+	}
+	else
+	{
+		fgets(cmd, 256, execfd);
+		// MD5(openssl.exe)= 004710323e580fbd9f5f9625f363967d
+		//fputs(cmd, stdout);
+		
+		// 找到第一行末尾
+		char *tail = strchr(cmd, '\n');
+		char *pre = strrchr(cmd, ' ');
+
+		if (NULL != pre)
+		{
+			*tail = 0;	// 把\n 替换为‘终结符’
+			fileMd5 = pre + 1;
+			//cout << "hash: [" << fileMd5 << "] size: " << fileMd5.size() << endl;
+		}
+		_pclose(execfd);
+	}
+
+	return true;
+}
+
+bool IsFileHashEqual(string& path, string& hash)
+{
+	string curHash;
+
+	if (!GetFileMd5(path, curHash))
+	{
+		cout << "GetFileMd5 failed" << endl;
+		return false;
+	}
+
+	return curHash == hash;
 }

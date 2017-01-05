@@ -147,6 +147,8 @@ bool CloudVersion::RequestHashList()
 	return LoadHashList(ftpfile.filename, this->remotHashList);
 }
 
+// 确保要存储的路径中包含依赖的‘目录结构’
+// 比如要存储在 "TMP_DIR/APP_PATH/FileA" 则我们要手动创建 'APP_PATH'
 inline void CheckPathExists(string& curPath)
  {
 	size_t pre = curPath.find_first_of('/');
@@ -166,18 +168,15 @@ inline void CheckPathExists(string& curPath)
 
 bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 {
-	if (this->remotHashList.size() <= 0)
-	{
-		return false;
-	}
-
 	// 找到不一致的文件
-	for (auto i = this->remotHashList.begin(); i != this->remotHashList.end(); i++)
+	for (auto i : remotHashList)
 	{
 		// 如果本地文件对应的MD5与远程文件对应的MD5不一致，则将该文件路径加入下载列表
-		if (this->localHashList[i->first] != this->remotHashList[i->first])
+
+		if (this->localHashList[i.first] != i.second)
 		{
-			this->downloadSet.insert(i->first);
+			this->downloadList[i.first] = i.second;
+			cout << "ori: [" << this->localHashList[i.first] << "] new: [" << i.second << "] name: " << i.first << endl;
 		}
 	}
 
@@ -188,20 +187,21 @@ bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 	string basePath = keepDir;
 	basePath += "/";
 
-	string curUrl, curPath, tpName;
-	bool  downloadStatus = false;
+	string curUrl, curPath, tpName, curMd5;
+	bool  downloadStatus = true;
 	DWORD dwMaxRetryTime = 0;
 
-	for (auto i = this->downloadSet.begin(); i != this->downloadSet.end(); i++)
+	for (auto i : this->downloadList )
 	{
-		tpName = (*i);
+		tpName = i.first;
+		curMd5 = i.second;
 		curUrl = baseUrl + tpName;
 		curPath = basePath + tpName;
 		FtpFile tfile{ curPath.c_str(), NULL };
 
-		//printf("[%s] --> [%s]\n", curUrl.c_str(), curPath.c_str());
+		printf("[%s] --> [%s]\n", curUrl.c_str(), curPath.c_str());
+
 		CheckPathExists(curPath);
-		printf("[%s] [%s]\n", curUrl.c_str(), curPath.c_str());
 		
 		downloadStatus = DownloadFtpFile(curUrl.c_str(), tfile);
 		dwMaxRetryTime = 0;
@@ -212,6 +212,14 @@ bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 			dwMaxRetryTime += 1;
 			printf("[%d] download [%s] failed\n", dwMaxRetryTime, tfile.filename);
 			downloadStatus = DownloadFtpFile(curUrl.c_str(), tfile);
+		}
+
+		// 检查下载的文件MD5是否与其在‘远程清单文件’上的MD5一致，如果不一致说明这个文件不正确
+		// 此时放弃该次更新
+		if (!IsFileHashEqual(curPath, curMd5))
+		{
+			downloadStatus = false;
+			break;
 		}
 	}
 
@@ -227,9 +235,9 @@ bool CloudVersion::ReplaceFiles(const char * keepDir)
 	baseDir += "/";
 	string tpName, srcName;
 	BOOL   bRet = FALSE;
-	for (auto i = this->downloadSet.begin(); i != this->downloadSet.end(); i++)
+	for (auto i : this->downloadList)
 	{
-		tpName = (*i);
+		tpName = i.second;
 		srcName = baseDir + tpName;
 		printf("MoveFile [%s] to [%s]\n", srcName.c_str(), tpName.c_str());
 		bRet = MoveFileEx(srcName.c_str(), tpName.c_str(), MOVEFILE_REPLACE_EXISTING);

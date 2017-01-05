@@ -41,6 +41,6 @@ private:
 
 	map<string, string> localHashList;
 	map<string, string> remotHashList;
-	set<string>      downloadSet;
+	map<string, string> downloadList;
 };
 
