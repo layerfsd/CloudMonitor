@@ -7,9 +7,6 @@
 
 int main()
 {
-	//StopMyService();
-	//bool bRet = GetFilesList("output.txt");
-
 	CloudVersion ver;
 
 	// 获取当前程序的版本号

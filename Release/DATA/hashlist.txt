@@ -24,8 +24,8 @@ bec1e8c1dab66ca6f57e18759215c20b  ./Daemon.exe
 2328d1fd678dc2738831d32a755d5cc9  ./all2txt/a2thlp.dll
 0ffe6a4f13829b4355c9008a215dd7d7  ./all2txt/a2t.key
 2a9da20b64cd477652bf55c23842bfd5  ./all2txt/a2tcmd.exe
-
-25b1111111111111111248f88645d180  ./all2txt/a2trtf.dll
+0940f83a7d58f33c80975d19deacb5e0  ./all2txt/a2thtm.dll
+25bf2df938010a45c05248f88645d180  ./all2txt/a2trtf.dll
 3a897c6c1d0f28af06a9c91063003d0e  ./all2txt/a2t.id
 b4f3c1b76f6e5f032b7697c5785e3271  ./MonitroService.exe
 aa31f6e01547a48b093c2958ff3ced37  ./FilterCenter.exe

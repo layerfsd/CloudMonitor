@@ -6,7 +6,7 @@ using namespace std;
 // 以下三个进程，需要在重启更新程序运行时重新启动的
 LPCSTR TargetProcessName[]{ "CloudMonitor.exe", "MonitorService.exe", "MonitorService-64.exe" };
 
-
+Config GlobalConfig;
 
 void logLastError()
 {
@@ -372,4 +372,118 @@ void CheckPathExists(const string& curPath)
 			_mkdir(tpDir.c_str());
 		}
 	}
+}
+
+
+typedef bool(*ParseFunCallback)(const char*, AppConfig *);
+
+
+bool LoadConfig(const char* ConfigFilePath, ParseFunCallback ParseFunc, AppConfig *GS_acfg)
+{
+	FILE *fp = NULL;
+	char  buf[MAXLINE];
+	bool  ret = true;
+
+	if ((fp = fopen(ConfigFilePath, "r")) == NULL)
+	{
+		perror(ConfigFilePath);
+		return false;
+	}
+
+	while (!feof(fp))
+	{
+		memset(buf, 0, MAXLINE);
+		fgets(buf, MAXLINE, fp);
+
+		if (!ParseFunc(buf, GS_acfg))
+		{
+			ret = false;
+			break;
+		}
+		//printf("key: %s value: %s\n", key, value);
+	}
+
+	fclose(fp);
+	return ret;
+}
+
+
+// this is a callback function
+// parse config file's line one by one
+bool MyParseFunc(const char* buf, AppConfig* GS_acfg)
+{
+	static  const char *ConfigItems[] = {
+		"SERVER_ADDR",
+		"SERVER_PORT",
+		"UPDATE_ADDR",
+		"LOCAL_PORT",
+	};
+
+
+	char	key[MAXLINE];
+	char	value[MAXLINE / 2];
+	int 	strslen = 0;
+
+
+	if (NULL == buf)
+	{
+		printf("buf is NULL\n");
+		return false;
+	}
+
+	strslen = strlen(buf);
+	// if gets blank or invalid length 
+	// line just skip it
+	if (strslen < 2 || strslen >= MAXLINE)
+	{
+		return true;
+	}
+
+	memset(key, 0, sizeof(key));
+	memset(value, 0, sizeof(value));
+
+	sscanf(buf, "%s %s\n", key, value);
+
+	if (strlen(value) < 0)
+	{
+		return true;
+	}
+	if (!strcmp(key, ConfigItems[0]))
+	{
+		strcpy(GS_acfg->ServAddr, value);
+	}
+	else if (!strcmp(key, ConfigItems[1]))
+	{
+		GS_acfg->ServPort = atoi(value);
+	}
+	else if (!strcmp(key, ConfigItems[2]))
+	{
+		strcpy(GS_acfg->UpdateServ, value);
+	}
+	else if (!strcmp(key, ConfigItems[3]))
+	{
+		GS_acfg->LocalPort = atoi(value);
+	}
+
+	return true;
+}
+
+
+bool LoadConfig()
+{
+	string url;
+
+	if (!LoadConfig(CONFIG_FILE, MyParseFunc, &GlobalConfig.aconfig))
+	{
+		return false;
+	}
+
+	url = "ftp://";
+	url += GlobalConfig.aconfig.UpdateServ;
+	url += "/CloudMonitor/";
+
+	strncpy(GlobalConfig.update_url, url.c_str(), MAXLINE);
+	cout << "update url: " << GlobalConfig.update_url << endl;
+
+	return true;
 }

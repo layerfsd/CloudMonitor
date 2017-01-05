@@ -8,6 +8,8 @@ const char* result[]{
 	"[FAILED]", "[OK]"
 };
 
+extern Config GlobalConfig;
+
 
 CloudVersion::CloudVersion()
 {
@@ -18,6 +20,13 @@ CloudVersion::CloudVersion()
 	// 加载本地hash列表
 	printf("Loading Local HashList\n");
 	LoadHashList(LOCAL_HASHLIST, this->localHashList);
+
+	if (!LoadConfig())
+	{
+		cout << "LoadConfig Failed" << endl;
+		exit(1);
+	}
+
 	if (-1 == _access(TMPDOWN_DIR, 0))
 	{
 		_mkdir(TMPDOWN_DIR);
@@ -64,7 +73,7 @@ bool CloudVersion::GetLatestVersion()
 {
 	printf("Getting Lastest Version\n");
 	// 从服务端获取‘版本清单’文件
-	if (!GetFilesList(UPDATE_URL, TMPFILE_NAME))
+	if (!GetFilesList(GlobalConfig.update_url, TMPFILE_NAME))
 	{
 		return false;
 	}
@@ -120,13 +129,13 @@ bool CloudVersion::GetLatestVersion()
 
 bool CloudVersion::WhetherUpdate()
 {
-	printf("LatestVersion: [%lf] CurrentVersion [%lf]\n", this->LatestVersion, this->CurVersion);
+	//printf("LatestVersion: [%lf] CurrentVersion [%lf]\n", this->LatestVersion, this->CurVersion);
 	return this->LatestVersion > this->CurVersion;
 }
 
 bool CloudVersion::RequestHashList()
 {
-	string url = UPDATE_URL;
+	string url = GlobalConfig.update_url;
 
 	// 根据‘最新版本号’拼接 url
 	url += this->LatestVersionStr;
@@ -162,7 +171,7 @@ bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 		}
 	}
 
-	string baseUrl = UPDATE_URL;
+	string baseUrl = GlobalConfig.update_url;
 	baseUrl += this->LatestVersionStr;
 	baseUrl += "/";
 
