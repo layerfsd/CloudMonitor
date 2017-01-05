@@ -17,6 +17,8 @@
 #define TMPFILE_NAME	"tmp_file_albertofwb"
 #define TMPDOWN_DIR		"tmpdir_albertofwb"	
 
+#define FLAG_FILE		"UPDATE_CHECKED"
+
 struct AppConfig
 {
 	char ServAddr[32];	  // 远程服务端IPv4地址

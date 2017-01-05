@@ -318,4 +318,7 @@ CloudVersion::~CloudVersion()
 	// 删除临时文件
 	printf("\n\nCleanning Temporary Files...\n");
 	DeleteFiles(pathList);
+
+	// 创建标志文件，表示本程序运行过
+	fopen(FLAG_FILE, "w");
 }
