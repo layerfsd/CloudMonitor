@@ -348,8 +348,13 @@ bool IsFileHashEqual(string& path, string& hash)
 
 void CheckPathExists(const string& curPath)
 {
-	size_t tail = curPath.find_last_of('/');;
-	size_t pos = 0;
+	int tail = curPath.find_last_of('/');
+	int pos = 0;
+
+	if (-1 == tail)
+	{
+		return;
+	}
 
 	string pureDir = curPath.substr(0, tail);
 	string tpDir;

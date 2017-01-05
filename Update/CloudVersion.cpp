@@ -216,29 +216,35 @@ bool CloudVersion::ReplaceFiles(const char * keepDir)
 	baseDir += "/";
 	string tpName, srcName;
 	BOOL   bRet = FALSE;
+
 	for (auto i : this->downloadList)
 	{
-		tpName = i.second;
+		tpName = i.first;
 		srcName = baseDir + tpName;
-		printf("MoveFile [%s] to [%s]\n", srcName.c_str(), tpName.c_str());
+		printf("MoveFile [%s] to [%s] ", srcName.c_str(), tpName.c_str());
 		bRet = MoveFileExA(srcName.c_str(), tpName.c_str(), MOVEFILE_REPLACE_EXISTING);
 		printf("%s\n", result[bRet]);
+
+		// 如果发生替换错误则退出
+		if (!bRet)
+		{
+			break;
+		}
 	}
 
+
 	// 把最新版本号写入到本地文件
-	if (!this->SetLatestVersion2File())
+	if (bRet && !this->SetLatestVersion2File())
 	{
 		printf("Set Latest Version To File failed.\n");
 		bRet = FALSE;
 	}
 
-	bRet = MoveFileExA(TMP_HASHLIST, LOCAL_HASHLIST, MOVEFILE_REPLACE_EXISTING);
-
-	// 如果替换失败，则回滚到‘替换前的状态’
-	if (bRet != TRUE)
+	if (bRet)
 	{
-		this->RollBack();
+		bRet = MoveFileExA(TMP_HASHLIST, LOCAL_HASHLIST, MOVEFILE_REPLACE_EXISTING);
 	}
+
 	return B2b(bRet);
 }
 
@@ -247,17 +253,22 @@ void CloudVersion::BackUpOldFiles()
 {
 	const char* path;
 	string baseDir = TMP_BACKUPDIR;
+	baseDir += "/";
+
 	string bakPath;
 	
+	cout << "\n\nBackupFiles ..." << endl;
 	for (auto i : this->downloadList)
 	{
 		path = i.first.c_str();
+		bakPath = baseDir + path;
+
 		if (_access(path, 0) == 0)
 		{
 			this->replaceList.push_back(path);
-			bakPath = baseDir + path;
-
+			
 			CheckPathExists(path);
+			cout << "Copy [" << path << "] [" << bakPath << "] " << endl;
 			CopyFileA(path, bakPath.c_str(), FALSE);
 		}
 	}
@@ -270,6 +281,7 @@ void CloudVersion::RollBack()
 	string baseDir = TMP_BACKUPDIR;
 	string bakPath;
 
+	cout << "\n\nRollbacking ..." << endl;
 	for (auto i : this->replaceList)
 	{
 		path = i.c_str();
@@ -278,6 +290,7 @@ void CloudVersion::RollBack()
 		if (_access(bakPath.c_str(), 0) == 0)
 		{
 			CheckPathExists(path);  // 确保可以复制
+			cout << "Copy [" << bakPath << "] [" << path << "] " << endl;
 			CopyFileA(bakPath.c_str(), path, FALSE);	// FALSE参数: 为覆盖拷贝
 		}
 	}
