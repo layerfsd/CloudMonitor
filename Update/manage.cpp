@@ -494,6 +494,11 @@ int WriteToLog(char* str)
 	static char LogFile[] = "Service.txt";
 	static char timeBuf[MAX_PATH];
 
+	// 如果没有开启‘日志功能’，则直接返回
+	if (!GlobalConfig.enableLog)
+	{
+		return 0;
+	}
 
 	time_t timep;
 	struct tm *p;

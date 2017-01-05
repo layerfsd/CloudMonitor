@@ -32,7 +32,7 @@ CloudVersion::CloudVersion()
 		_mkdir(TMPDOWN_DIR);
 	}
 
-	WriteToLog("Started By Service");
+	WriteToLog("[Update.exe] Started By Service");
 }
 
 double CloudVersion::GetCurVersion()
@@ -323,5 +323,12 @@ CloudVersion::~CloudVersion()
 
 	// 创建标志文件，表示本程序运行过
 	fopen(UPDATE_CHECKED_FLAG, "w");
+
+	WriteToLog("[Update.exe] Created " UPDATE_CHECKED_FLAG);
+	WriteToLog("[Update.exe] try start Service");
+
 	system("sc start CloudMonitorService");
+
+	WriteToLog("[Update.exe] exit.");
+
 }
