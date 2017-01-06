@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 	{
 		if (!strncmp(argv[1], "--autostart", 32))
 		{
-			hide = false;
+			hide = true;
 		}
 		else if (!strncmp(argv[1], "--start", 32))	// 从注册表中读取认证信息
 		{
@@ -138,7 +138,13 @@ int main(int argc, char *argv[])
 		cout << "Auth Failed!" << endl;
 		return -1;
 	}
-	
+
+	if (argc == 3)
+	{
+		// 初始化账户信息
+		SetAuth(&act);
+	}
+
 	// 必须是认证成功后才启动本地监听服务, IO监控服务
 	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,与IO过滤中心通信
 	StartHookService();

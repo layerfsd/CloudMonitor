@@ -159,9 +159,6 @@ void ServiceMain(int argc, char** argv)
 		ServiceStatus.dwCurrentState = SERVICE_STOPPED;
 		ServiceStatus.dwWin32ExitCode = -1;
 		SetServiceStatus(hStatus, &ServiceStatus);
-
-		// 服务结束时，删除‘标志文件’
-		remove(UPDATE_CHECKED_FLAG);
 		return;
 	}
 	// We report the running status to SCM. 
@@ -196,6 +193,7 @@ void ServiceMain(int argc, char** argv)
 			return;
 		}
 	}
+
 	return;
 }
 
@@ -220,6 +218,8 @@ int InitService()
 	int result;
 	DWORD dwPid;
 	
+	result = WriteToLog("Monitoring started.");
+
 	if (!IsUpdateChecked())
 	{
 		WriteToLog("not found " UPDATE_CHECKED_FLAG " prepare to start " UPDATE_APP_NAME);
@@ -228,10 +228,11 @@ int InitService()
 		return 1;
 	}
 
-	result = WriteToLog("Monitoring started.");
+	WriteToLog(UPDATE_CHECKED_FLAG " Existed.");
+
 	if (!FindProcessPid(MASTER_APP_NAME, dwPid))
 	{
-		WriteToLog("STARTING " MASTER_APP_NAME);
+		WriteToLog("init start " MASTER_APP_NAME);
 		MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
 	}
 
@@ -244,6 +245,10 @@ void ControlHandler(DWORD request)
 	switch (request)
 	{
 	case SERVICE_CONTROL_STOP:
+		WriteToLog("remove " UPDATE_CHECKED_FLAG);
+		// 服务结束时，删除‘标志文件’
+		remove(UPDATE_CHECKED_FLAG);
+
 		WriteToLog("Monitoring stopped.");
 
 		ServiceStatus.dwWin32ExitCode = 0;
@@ -253,6 +258,9 @@ void ControlHandler(DWORD request)
 
 	case SERVICE_CONTROL_SHUTDOWN:
 		WriteToLog("Monitoring stopped.");
+		WriteToLog("remove " UPDATE_CHECKED_FLAG);
+		// 服务结束时，删除‘标志文件’
+		remove(UPDATE_CHECKED_FLAG);
 
 		ServiceStatus.dwWin32ExitCode = 0;
 		ServiceStatus.dwCurrentState = SERVICE_STOPPED;

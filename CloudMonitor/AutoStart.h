@@ -13,6 +13,8 @@
 #define STARTUP_PATH		 "Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 #define STARTUP_ARGS		"--autostart"
 
+#define AUTH_FILE			"DATA\\auth.ini"
+
 typedef unsigned char uchar;
 
 
