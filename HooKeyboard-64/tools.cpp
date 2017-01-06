@@ -331,15 +331,15 @@ BOOL CheckSockAddr(const struct sockaddr FAR *saddr)
 		bRet = FALSE;
 	}
 	// 如果开启了‘网络控制’，当有进程要访问外网时，弹出对话框
-	if (FALSE == bRet)
-	{
-		char *strAddr;
-		strAddr = inet_ntoa(s->sin_addr);
-		char strModule[MAX_PATH];
-		GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
+	//if (FALSE == bRet)
+	//{
+	//	char *strAddr;
+	//	strAddr = inet_ntoa(s->sin_addr);
+	//	char strModule[MAX_PATH];
+	//	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
 
-		MessageBox(NULL, strAddr, strModule, MB_OK);
-	}
+	//	MessageBox(NULL, strAddr, strModule, MB_OK);
+	//}
 
 	return bRet;
 }
