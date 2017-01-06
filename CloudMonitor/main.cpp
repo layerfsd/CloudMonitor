@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
 
 
 	// [本地测试] 控制当前主机与 Internet 的连接、关闭
-#if 0
+#if 1
 	char c;
 	while (g_RUNNING)
 	{

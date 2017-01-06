@@ -57,6 +57,7 @@ VOID InformAll(LPCSTR Buf, DWORD Length)
 	{
 		LPSOCKET_INFORMATION SocketInfo = SocketArray[i];
 
+		printf("[SEND:%d] %s to %d\n", Length, Buf, i);
 		if (send(SocketInfo->Socket, Buf, Length, 0) == SOCKET_ERROR)
 		{
 			FreeSocketInformation(i);
@@ -158,13 +159,14 @@ int LocalTCPServer()
 		return 1;
 	}
 
-	while (g_RUNNING)
+	while (TRUE)
 	{
 		// 通知IO过滤中心，停止服务
 		if (!g_RUNNING)
 		{
 			printf("tell IO Center to Stop [%s]\n", "STOP_SERVICE");
 			SendCMD(LOCAL_CONTROL["STOP_SERVICE"]);
+			Sleep(10 * 1000);
 			break;
 		}
 		

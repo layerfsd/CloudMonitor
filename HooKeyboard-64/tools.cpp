@@ -108,6 +108,16 @@ BOOL InitTcpConnection()
 	serveraddr.sin_port = htons(SERV_PORT);
 	serveraddr.sin_addr.S_un.S_addr = inet_addr(SERV_ADDR);
 
+	ULONG NonBlock;
+
+	NonBlock = 1;
+	if (ioctlsocket(GLOBAL_SOCKET, FIONBIO, &NonBlock) == SOCKET_ERROR)
+	{
+		printf("ioctlsocket() failed with error %d\n", WSAGetLastError());
+		return 1;
+	}
+
+
 	//connect to server
 	//printf("Try Connect to %s:%d ...\n", SERV_ADDR, SERV_PORT);
 	if (connect(GLOBAL_SOCKET, (SOCKADDR *)&serveraddr, sizeof(serveraddr)) != 0)
@@ -423,27 +433,15 @@ void CheckTaskFromLocal(SOCKET sock)
 	static  char reply[] = "Yes Commander.";
 
 	int		nRet = 0;		//记录发送或者接受的字节数
-	static TIMEVAL	tv = { 0, 500 };//设置超时等待时间
 	static int	CMD = 0;
 
-	FD_ZERO(&fdRead);
-	FD_SET(sock, &fdRead);
-
-	nRet = select(0, &fdRead, NULL, NULL, &tv);
-
-	if (nRet == 0)
-	{
-		return;
-	}
-
+	memset(tmpBuf, 0, sizeof(tmpBuf));
+	nRet = recv(GLOBAL_SOCKET, tmpBuf, LocalControlNumLen, 0);
 	DWORD	netAddr;
 
 	if (nRet > 0)
 	{
 		CMD = 0;
-
-		memset(tmpBuf, 0, sizeof(tmpBuf));
-		nRet = recv(GLOBAL_SOCKET, tmpBuf, LocalControlNumLen, 0);
 
 		// 把字符串形式的数字转换为数字
 		tmpBuf[LocalControlNumLen] = 0;
