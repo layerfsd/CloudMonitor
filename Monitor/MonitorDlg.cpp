@@ -45,6 +45,8 @@ BEGIN_MESSAGE_MAP(CMonitorDlg, CDialogEx)
 	ON_STN_CLICKED(IDC_STATUS, &CMonitorDlg::OnStnClickedStatus)
 	ON_BN_CLICKED(IDCANCEL, &CMonitorDlg::OnBnClickedCancel)
 	ON_EN_CHANGE(IDC_PASSWD, &CMonitorDlg::OnEnChangePasswd)
+	ON_BN_CLICKED(IDC_MFCLINK1, &CMonitorDlg::OnBnClickedMfclink1)
+	ON_BN_CLICKED(IDC_MFCLINK2, &CMonitorDlg::OnBnClickedMfclink2)
 END_MESSAGE_MAP()
 
 
@@ -174,6 +176,7 @@ bool CreateTCPServer()
 }
 
 static int  albSockRet;
+
 
 DWORD WINAPI Func(void* pArg)
 {
@@ -368,10 +371,39 @@ void CMonitorDlg::OnBnClickedOk()
 			if (NOT_SPECIFIC_MAC == albSockRet)
 			{
 				//inform = "当前用户名不允许在您的计算机上登录";
-				inform = "当前登录所使用的用户名已经与其它电脑绑定，如果需要重新绑定当前电脑，请点击 '重新绑定'按钮";
+				inform = "当前登录所使用的用户名已经与其它电脑绑定，如果需要重新绑定当前电脑，请点击'确定'，否则请点击'取消'";
 				//SetDlgItemText(IDC_STATUS, inform);
 				SetDlgItemText(IDC_STATUS, NULL);
-				AfxMessageBox(inform);
+				int a = AfxMessageBox(inform, MB_OKCANCEL);
+				if (a == IDOK)
+				{
+					CString CmdLine;
+					CmdLine = L"explorer.exe http://www.baidu.com/";
+
+					LPTSTR Cmd = (LPTSTR)(LPCTSTR)CmdLine;//类型转换,详见MSDN
+					STARTUPINFO  si = { sizeof(si) }; //保存进程的启动信息
+					PROCESS_INFORMATION pi;  //保存进程的相关信息
+					si.dwFlags = STARTF_USESHOWWINDOW;
+					si.wShowWindow = 1;//1窗口显示,0表示后台运行
+					BOOL bRet = ::CreateProcess //调用创建进程函数
+					(
+						NULL,
+						Cmd,
+						NULL,
+						NULL,
+						FALSE,
+						CREATE_NEW_CONSOLE,
+						NULL,
+						NULL,
+						&si,
+						&pi
+					);
+					if (bRet)
+					{
+						::CloseHandle(pi.hProcess);  //关闭进程句柄
+						::CloseHandle(pi.hThread);  //关闭主线程句柄
+					}
+				}
 				break;
 			}
 			if (INVALID_PASSWD == albSockRet)
@@ -466,4 +498,15 @@ void CMonitorDlg::DoEvent()
 		::TranslateMessage(&msg);
 		::DispatchMessage(&msg);
 	}
+}
+
+void CMonitorDlg::OnBnClickedMfclink1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CMonitorDlg::OnBnClickedMfclink2()
+{
+	// TODO: 在此添加控件通知处理程序代码
 }
