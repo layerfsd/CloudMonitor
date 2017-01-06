@@ -276,8 +276,20 @@ int LocalTCPServer()
 				SocketInfo->DataBuf.buf = SocketInfo->Buffer + SocketInfo->BytesSEND;
 				SocketInfo->DataBuf.len = SocketInfo->BytesRECV - SocketInfo->BytesSEND;
 
-				// 保存‘IO事件详情’（忽略‘心跳包’）
-				if (3 != SocketInfo->DataBuf.len && SocketInfo->DataBuf.len < sizeof(CurPath))
+				// 忽略‘心跳包’）
+				if (0 == strncmp(SocketInfo->Buffer, "HBT", 3))
+				{
+					SocketInfo->BytesSEND += SendBytes;
+
+					if (SocketInfo->BytesSEND == SocketInfo->BytesRECV)
+					{
+						SocketInfo->BytesSEND = 0;
+						SocketInfo->BytesRECV = 0;
+					}
+					continue;
+				} 
+				//保存‘IO事件详情’
+				else if (SocketInfo->DataBuf.len < sizeof(CurPath))
 				{
 					memset(CurPath, 0, sizeof(CurPath));
 					memcpy(CurPath, SocketInfo->DataBuf.buf, SocketInfo->DataBuf.len);
