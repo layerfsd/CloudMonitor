@@ -328,6 +328,9 @@ CloudVersion::~CloudVersion()
 	WriteToLog("[Update.exe] try start Service");
 	WriteToLog("[Update.exe] exit.");
 
-	system("sc start CloudMonitorService");
-
+	// 仅当在后台运行时，才会尝试开启服务
+	if (GlobalConfig.enableLog)
+	{
+		system("sc start CloudMonitorService");
+	}
 }
