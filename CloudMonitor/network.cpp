@@ -366,7 +366,11 @@ bool User::ExecControl()
 
 User::User(const char *userName)
 {
-	fopen(RUNNING_FLAG, "w");
+	// 在程序运行时，创建一个‘标志文件’。
+	// 必须调用fclose()，否则在析构函数中的 remove() 调用会因权限问题而无法删除这个临时文件
+	FILE *fp = fopen(RUNNING_FLAG, "w");
+	fclose(fp);		
+
 	this->statu = STATUE_DISCONNECTED;
 	
 	memset(&GS_acfg, 0, sizeof(GS_acfg));
