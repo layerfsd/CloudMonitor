@@ -3,9 +3,13 @@
 #include <io.h>
 #include <time.h>
 #include <string.h>
+#include <stdio.h>
 #include <Windows.h>
 #include <tlhelp32.h>	//CreateToolhelp32Snapshot
 
+char Gcmd[MAX_PATH];
+
+bool StartInteractiveProcess(LPTSTR cmd, LPCTSTR cmdDir);
 
 bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL)
 {
@@ -50,7 +54,6 @@ bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL)
 	}
 
 	return true;
-
 }
 
 
@@ -179,7 +182,8 @@ void ServiceMain(int argc, char** argv)
 		if (!FindProcessPid(MASTER_APP_NAME, dwPid))
 		{
 			//WriteToLog(MASTER_APP_NAME " RUNNING WELL");
-			MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
+			//MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
+			StartInteractiveProcess(Gcmd, NULL);
 		}		
 	}
 
@@ -207,6 +211,9 @@ int InitService()
 	int result;
 	DWORD dwPid;
 	
+	//snprintf(Gcmd, sizeof(Gcmd), "%s %s", MASTER_APP_NAME, MASTER_APP_ARGS);
+	snprintf(Gcmd, sizeof(Gcmd), "%s",  MASTER_DAEMON);
+
 	result = WriteToLog("Monitoring started.");
 
 	if (!IsUpdateChecked())
@@ -222,7 +229,9 @@ int InitService()
 	if (!FindProcessPid(MASTER_APP_NAME, dwPid))
 	{
 		WriteToLog("init start " MASTER_APP_NAME);
-		MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
+		//MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
+		StartInteractiveProcess(Gcmd, NULL);
+
 	}
 
 	return(result);

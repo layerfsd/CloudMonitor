@@ -8,9 +8,11 @@
 #define UPDATE_APP_NAME		"Update.exe"
 #define UPDATE_ARGS			"--backend"
 
+#define MASTER_DAEMON		"Daemon.exe"
 
 #define MASTER_APP_NAME		"CloudMonitor.exe"
 #define MASTER_APP_ARGS		"--autostart"
+
 
 char* SERVICE_NAME = "CloudMonitorService";
 DWORD SLEEP_TIME = 10;		// seconds
