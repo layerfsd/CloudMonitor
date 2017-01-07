@@ -279,22 +279,17 @@ int LocalTCPServer()
 				// 忽略‘心跳包’）
 				if (0 == strncmp(SocketInfo->Buffer, "HBT", 3))
 				{
-					SocketInfo->BytesSEND += SendBytes;
-
-					if (SocketInfo->BytesSEND == SocketInfo->BytesRECV)
-					{
-						SocketInfo->BytesSEND = 0;
-						SocketInfo->BytesRECV = 0;
-					}
+					SocketInfo->BytesSEND = 0;
+					SocketInfo->BytesRECV = 0;
 					continue;
-				} 
+				}
 				//保存‘IO事件详情’
-				else if (SocketInfo->DataBuf.len < sizeof(CurPath))
+				else 
 				{
 					memset(CurPath, 0, sizeof(CurPath));
 					memcpy(CurPath, SocketInfo->DataBuf.buf, SocketInfo->DataBuf.len);
 					printf("[HOOK-GET] %s [LENGTH:%d]\n", CurPath, SocketInfo->DataBuf.len);
-					LocalPathList.push(SocketInfo->Buffer);
+					LocalPathList.push(CurPath);
 				}
 
 				if (WSASend(SocketInfo->Socket, &(SocketInfo->DataBuf), 1, &SendBytes, 0, NULL, NULL) == SOCKET_ERROR)
