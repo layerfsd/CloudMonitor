@@ -23,8 +23,11 @@ bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL)
 
 	StartupInfo.cb = sizeof(StartupInfo);
 
-	if (CreateProcessA(appName,
-		appArgs,
+	snprintf(output, sizeof(output), "%s %s", appName, appArgs);
+	WriteToLog(output);
+
+	if (CreateProcessA(NULL,
+		output,
 		NULL,
 		NULL,
 		FALSE,
@@ -171,27 +174,13 @@ void ServiceMain(int argc, char** argv)
 	while (ServiceStatus.dwCurrentState == SERVICE_RUNNING)
 	{
 		Sleep(1000 * SLEEP_TIME);
-		// 如果找到该进程则跳过以下代码
-		if (FindProcessPid(MASTER_APP_NAME, dwPid))
+
+		// 如果找不到该进程则启动之
+		if (!FindProcessPid(MASTER_APP_NAME, dwPid))
 		{
 			//WriteToLog(MASTER_APP_NAME " RUNNING WELL");
-			continue;
-		}
-
-		char *buffer {
-			"Start CloudMonitor in service."
-		};
-
-		MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
-
-		int result = WriteToLog(buffer);
-		if (result)
-		{
-			ServiceStatus.dwCurrentState = SERVICE_STOPPED;
-			ServiceStatus.dwWin32ExitCode = -1;
-			SetServiceStatus(hStatus, &ServiceStatus);
-			return;
-		}
+			MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
+		}		
 	}
 
 	return;
@@ -239,6 +228,16 @@ int InitService()
 	return(result);
 }
 
+
+void SetWorkPath()
+{
+	char strModule[MAX_PATH];
+	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
+	strcat(strModule, "\\..\\");     //设置为当前工作路径为当时的上一级
+	SetCurrentDirectory(strModule);
+	GetCurrentDirectory(sizeof(strModule), strModule);
+}
+
 // Control handler function
 void ControlHandler(DWORD request)
 {
@@ -275,14 +274,4 @@ void ControlHandler(DWORD request)
 	SetServiceStatus(hStatus, &ServiceStatus);
 
 	return;
-}
-
-
-void SetWorkPath()
-{
-	char strModule[MAX_PATH];
-	GetModuleFileName(NULL, strModule, MAX_PATH); //得到当前模块路径
-	strcat(strModule, "\\..\\");     //设置为当前工作路径为当时的上一级
-	SetCurrentDirectory(strModule);
-	GetCurrentDirectory(sizeof(strModule), strModule);
 }
