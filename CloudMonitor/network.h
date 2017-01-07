@@ -20,6 +20,8 @@
 #define RUN_IN_COMPANY		1	// 定义服务端IP为具体的工作地址
 
 
+#define RUNNING_FLAG		"RUNNING_FLAG"
+
 #define CONNECT_STRS		"ALBERTOFWB"
 
 #define TEST_FILENAME		"test.docx"
@@ -165,6 +167,8 @@ public:
 	~User()
 	{
 		this->EndSession();
+		cout << "Removing " << RUNNING_FLAG << endl;
+		remove(RUNNING_FLAG);
 	}
 
 	void KeepAlive();

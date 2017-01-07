@@ -366,6 +366,7 @@ bool User::ExecControl()
 
 User::User(const char *userName)
 {
+	fopen(RUNNING_FLAG, "w");
 	this->statu = STATUE_DISCONNECTED;
 	
 	memset(&GS_acfg, 0, sizeof(GS_acfg));

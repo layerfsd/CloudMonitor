@@ -166,7 +166,7 @@ int LocalTCPServer()
 		{
 			printf("tell IO Center to Stop [%s]\n", "STOP_SERVICE");
 			SendCMD(LOCAL_CONTROL["STOP_SERVICE"]);
-			Sleep(10 * 1000);
+			Sleep(3 * 1000);
 			break;
 		}
 		

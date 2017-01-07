@@ -29,7 +29,6 @@ using namespace std;
 #define DEBUG_PARSE_FILE	0
 #define SESSION				1
 
-
 // 控制本程序主循环
 BOOL g_RUNNING = TRUE;
 
@@ -145,7 +144,7 @@ int main(int argc, char *argv[])
 
 
 	// [本地测试] 控制当前主机与 Internet 的连接、关闭
-#if 1
+#if 0
 	char c;
 	while (g_RUNNING)
 	{
@@ -169,8 +168,6 @@ int main(int argc, char *argv[])
 
 	}
 	printf("Waiting Thread\n");
-	WaitForSingleObject(hThread, INFINITE);
-	printf("Done\n");
 #else
 
 	// 先留下接口,后期优化时加上此功能---"记录本地敏感文件的哈希缓存" 以提高文件检索速度
