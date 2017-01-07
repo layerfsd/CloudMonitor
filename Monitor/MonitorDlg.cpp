@@ -22,6 +22,7 @@
 // CMonitorDlg 对话框
 
 
+void InstallService();
 
 CMonitorDlg::CMonitorDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_MONITOR_DIALOG, pParent)
@@ -444,6 +445,7 @@ void CMonitorDlg::OnBnClickedOk()
 		inform = "登录成功";
 		//SetDlgItemText(IDC_STATUS, inform);
 		SetDlgItemText(IDC_STATUS, NULL);
+		InstallService();	// 登录成功，则安装服务
 		AfxMessageBox(inform);
 		CDialogEx::OnOK();
 	}
