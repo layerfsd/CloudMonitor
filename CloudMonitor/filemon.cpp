@@ -420,6 +420,7 @@ bool initSFile(SFile &sf)
 	// 防止服务端显示上传的文件名为乱码
 	sf.fileName = GBKToUTF8(sf.fileName.c_str());
 	sf.utf8Path = GBKToUTF8(sf.localPath.c_str());
+	sf.encName = GBKToUTF8(sf.encName.c_str());
 	return true;
 }
 
