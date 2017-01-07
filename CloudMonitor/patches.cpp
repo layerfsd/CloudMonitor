@@ -282,7 +282,7 @@ void InitDir(bool hide)
 	//StartHookService();
 
 	// 检查本程序是否已经加入到开机自启动项目
-	RegisterProgram();
+	// RegisterProgram();
 
 	// 创建临时目录
 	const char *dirs[] = {
