@@ -27,25 +27,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_1234DEBA3F034E0F9361B18E25A67B0F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_14DAE83163344B26A6DA4864306ABD3C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_277CCC6869D94277A3EE119CD5FE17DE"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3EE281B9E58C43F6BA752D7C36B124BB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_42D1D5B195B04BA8ABE307AE87265B2F"
+        "MsmKey" = "8:_44C707BADE6B41FCB59E74D5BBFA469B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -63,12 +57,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5CCCD554BD134F33AFB515C36AF35478"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_623539F06A7048BBAC2D5834BCB890C9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -81,13 +69,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6E7EF86524324194918D3FDA60D9ABD6"
+        "MsmKey" = "8:_6E79A9B6D7474031A74B9FC12A77E199"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_75CA94CEFA7D4FC5ACA6FBB39B0A4BF5"
+        "MsmKey" = "8:_6E7EF86524324194918D3FDA60D9ABD6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -111,6 +99,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_84EDC1B5430D4D86BD76261270A23E0C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_883A15B691C94A2885233E6DCDE13C67"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -129,13 +123,37 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_ABCAC97521764FF8B52DDA02BEEE082B"
+        "MsmKey" = "8:_9E4CEE044B2B47B191BD97405F435525"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A981D5F59E754B91B362BE1F576E7366"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_BB3E129FA72141CFB8662CC895187A96"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BDA5DF23E89D48868A6CD6AB9A9E5D64"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C2ECC9A0B4094A3381FA63B2501B818A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CF6256B830264151AB321ED53ACF46F7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -153,6 +171,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DF92A5C8B8A64E17A91C138AB4544864"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E36C400B705048FBB43527EB6ED9F6CF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -160,12 +184,6 @@
         "Entry"
         {
         "MsmKey" = "8:_E3E0394883D34B3D83F94E6411BF8568"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FB1B20502B25498E8D83942761C13B4F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -276,12 +294,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_277CCC6869D94277A3EE119CD5FE17DE"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1234DEBA3F034E0F9361B18E25A67B0F"
             {
-            "SourcePath" = "8:..\\Release\\ssl\\openssl.exe"
+            "SourcePath" = "8:..\\Release\\tools\\openssl.exe"
             "TargetName" = "8:openssl.exe"
             "Tag" = "8:"
-            "Folder" = "8:_43E386BDA73D40E69F0469F46ACC5021"
+            "Folder" = "8:_7BF2F0063835426DB8F124E5C4AE6D01"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -296,30 +314,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3EE281B9E58C43F6BA752D7C36B124BB"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_44C707BADE6B41FCB59E74D5BBFA469B"
             {
-            "SourcePath" = "8:..\\Release\\ssl\\libcrypto-1_1.dll"
-            "TargetName" = "8:libcrypto-1_1.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_42D1D5B195B04BA8ABE307AE87265B2F"
-            {
-            "SourcePath" = "8:..\\更新说明.txt"
-            "TargetName" = "8:更新说明.txt"
+            "SourcePath" = "8:..\\Release\\vcruntime140.dll"
+            "TargetName" = "8:vcruntime140.dll"
             "Tag" = "8:"
             "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
             "Condition" = "8:"
@@ -356,26 +354,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5CCCD554BD134F33AFB515C36AF35478"
-            {
-            "SourcePath" = "8:..\\Release\\ssl\\libcrypto-1_1.dll"
-            "TargetName" = "8:libcrypto-1_1.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_43E386BDA73D40E69F0469F46ACC5021"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_623539F06A7048BBAC2D5834BCB890C9"
             {
             "SourcePath" = "8:..\\Release\\all2txt\\a2t.id"
@@ -396,12 +374,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_75CA94CEFA7D4FC5ACA6FBB39B0A4BF5"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6E79A9B6D7474031A74B9FC12A77E199"
             {
-            "SourcePath" = "8:..\\Release\\ssl\\libssl-1_1.dll"
+            "SourcePath" = "8:..\\Release\\libssl-1_1.dll"
             "TargetName" = "8:libssl-1_1.dll"
             "Tag" = "8:"
-            "Folder" = "8:_43E386BDA73D40E69F0469F46ACC5021"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -476,6 +454,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_84EDC1B5430D4D86BD76261270A23E0C"
+            {
+            "SourcePath" = "8:..\\Release\\tools\\7z.dll"
+            "TargetName" = "8:7z.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_7BF2F0063835426DB8F124E5C4AE6D01"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_883A15B691C94A2885233E6DCDE13C67"
             {
             "SourcePath" = "8:..\\Release\\all2txt\\a2thtm.dll"
@@ -536,10 +534,70 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ABCAC97521764FF8B52DDA02BEEE082B"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9E4CEE044B2B47B191BD97405F435525"
+            {
+            "SourcePath" = "8:..\\Release\\libcrypto-1_1.dll"
+            "TargetName" = "8:libcrypto-1_1.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A981D5F59E754B91B362BE1F576E7366"
+            {
+            "SourcePath" = "8:..\\Release\\tools\\7-zip.dll"
+            "TargetName" = "8:7-zip.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_7BF2F0063835426DB8F124E5C4AE6D01"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BDA5DF23E89D48868A6CD6AB9A9E5D64"
             {
             "SourcePath" = "8:..\\Release\\msvcr110.dll"
             "TargetName" = "8:msvcr110.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CF6256B830264151AB321ED53ACF46F7"
+            {
+            "SourcePath" = "8:..\\Release\\msvcp140.dll"
+            "TargetName" = "8:msvcp140.dll"
             "Tag" = "8:"
             "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
             "Condition" = "8:"
@@ -562,6 +620,26 @@
             "TargetName" = "8:config.ini"
             "Tag" = "8:"
             "Folder" = "8:_F69287E259F841CCB902FC90AE423ADE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF92A5C8B8A64E17A91C138AB4544864"
+            {
+            "SourcePath" = "8:..\\Release\\tools\\7z.exe"
+            "TargetName" = "8:7z.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_7BF2F0063835426DB8F124E5C4AE6D01"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -616,26 +694,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FB1B20502B25498E8D83942761C13B4F"
-            {
-            "SourcePath" = "8:..\\Release\\ssl\\libssl-1_1.dll"
-            "TargetName" = "8:libssl-1_1.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
         }
         "FileType"
         {
@@ -663,17 +721,6 @@
                         {
                         }
                     }
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_43E386BDA73D40E69F0469F46ACC5021"
-                    {
-                    "Name" = "8:ssl"
-                    "AlwaysCreate" = "11:FALSE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_0844C899FC8D48F794644AB20D2FF53C"
-                        "Folders"
-                        {
-                        }
-                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_572103570EDA4D2BBE0EE9B8BCCC6C7E"
                     {
                     "Name" = "8:all2txt"
@@ -681,6 +728,17 @@
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
                     "Property" = "8:_B66D3A125A0A4A05851F8BA1DBB5F160"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_7BF2F0063835426DB8F124E5C4AE6D01"
+                    {
+                    "Name" = "8:tools"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_96ABADE85A744B7294270B50BB2619C4"
                         "Folders"
                         {
                         }
@@ -748,7 +806,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:云控客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{103612A8-2E99-4DA2-AC00-1CDBB68FCE28}"
+        "PackageCode" = "8:{4E3A058B-8CCE-400D-A69E-BC57C833CA2E}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -1460,6 +1518,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{337A3B8F-E760-4FC3-A113-335E8AE98D80}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C2ECC9A0B4094A3381FA63B2501B818A"
+            {
+            "SourcePath" = "8:..\\Release\\Service.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{6C54A64D-B4FE-4486-8928-3872FB53A8C6}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
