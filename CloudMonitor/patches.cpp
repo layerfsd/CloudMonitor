@@ -18,6 +18,8 @@
 #define DEPEND_APP_NAME			"MonitorService.exe"
 #define DEPEND_APP_NAME_64		"MonitorService-64.exe"
 
+#define BACKEND_FLAG			"--backend"
+
 
 using namespace std;
 
@@ -121,14 +123,15 @@ BOOL IsDirectory(const char *pDir)
 
 
 
-bool MyCreateProcess(LPCSTR appName, LPSTR appArgs=NULL)
+bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL)
 {
 	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
 	PROCESS_INFORMATION pi;
+	char output[MAXBYTE];
+	char cmd[MAXBYTE];
 
 	if (NULL == appName)
 	{
-		ErrorMsg("appName is NULL");
 		return false;
 	}
 
@@ -137,8 +140,14 @@ bool MyCreateProcess(LPCSTR appName, LPSTR appArgs=NULL)
 
 	StartupInfo.cb = sizeof(StartupInfo);
 
-	if (CreateProcessA(appName,
-		appArgs,
+	snprintf(cmd, sizeof(output), "%s %s", appName, appArgs);
+
+	snprintf(output, sizeof(output), "[CloudMonitor-->CreateProcess]%s %s", appName, appArgs);
+
+	WriteToLog(output);
+
+	if (CreateProcessA(NULL,
+		cmd,
 		NULL,
 		NULL,
 		FALSE,
@@ -155,9 +164,11 @@ bool MyCreateProcess(LPCSTR appName, LPSTR appArgs=NULL)
 	}
 	else
 	{
-		printf("[ERROR] CreateProcess: %s\n", appName);
+		snprintf(output, MAXBYTE, "[ERROR] CreateProcess: %s", appName);
+		WriteToLog(output);
 		return false;
 	}
+
 	return true;
 
 }
@@ -204,7 +215,7 @@ bool StartHookService()
 	}
 
 
-	if (false == bRet && MyCreateProcess(DEPEND_APP_NAME))
+	if (false == bRet && MyCreateProcess(DEPEND_APP_NAME, BACKEND_FLAG))
 	{
 		bRet = true;
 		printf("[%s started]\n", DEPEND_APP_NAME);
@@ -242,7 +253,6 @@ void InitDir(bool hide)
 	p = localtime(&timep);
 	memset(LogName, 0, sizeof(LogName));
 	snprintf(LogName, MAX_PATH, "LOG\\%d-%d-%d[Client].txt", 1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday);
-
 
 	// 隐藏控制台窗口
 	if (hide)
@@ -338,4 +348,34 @@ bool InformUser(int info)
 	WSACleanup();
 
 	return true;
+}
+
+
+
+int WriteToLog(char* str)
+{
+	static char LogFile[] = "Service.txt";
+	static char timeBuf[MAX_PATH];
+
+
+	time_t timep;
+	struct tm *p;
+
+
+	time(&timep);
+	p = localtime(&timep);
+	memset(timeBuf, 0, sizeof(timeBuf));
+	snprintf(timeBuf, MAX_PATH, "[%d-%02d-%02d %02d:%02d:%02d] ", \
+		1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec);
+
+
+	FILE* log;
+	fopen_s(&log, LogFile, "a+");
+
+	if (log == NULL)
+		return -1;
+
+	fprintf(log, "%s%s\n", timeBuf, str);
+	fclose(log);
+	return 0;
 }

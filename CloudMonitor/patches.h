@@ -16,5 +16,8 @@ void SetWorkPath();
 //CopyFrom: https://msdn.microsoft.com/en-us/library/windows/desktop/ms684139(v=vs.85).aspx
 BOOL IsWow64();		// 检测当前系统是否支持64位程序运行
 
+// 记录运行日志
+int WriteToLog(char* str);
+
 
 #endif // ! _PATCHES_ALBERT__
