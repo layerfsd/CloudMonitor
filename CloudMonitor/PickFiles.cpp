@@ -6,6 +6,7 @@
 
 #include "FileMon.h"
 #include "parsedoc.h"
+#include "patches.h"
 
 using namespace std;
 
@@ -156,6 +157,7 @@ bool ScanLocalFiles(vector<Match>& scanResults)
 		// 判断是否为涉密文件
 		if (fsFilter(file, kw, hashList, tMatch))
 		{
+			CleanTmpFiles(file);	// 删除临时文件
 			memset(&tFile, 0, sizeof(tFile));
 			strncpy(tFile.fullPath, file.utf8Path.c_str(), 256);
 			strncpy(tFile.matchDetail, tMatch.c_str(), 512);

@@ -33,14 +33,6 @@ using namespace std;
 BOOL g_RUNNING = TRUE;
 
 
-// 删除临时文件
-void CleanTmpFiles(SFile& file)
-{
-	remove(file.savedPath.c_str());		// tmp\doc
-	remove(file.encPath.c_str());		// tmp\aes
-	remove(file.txtPath.c_str());		// tmp\txt
-}
-
 // 获取本机有线网卡地址
 bool GetWiredMac(string& wiredMac);
 

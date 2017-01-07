@@ -222,7 +222,7 @@ bool StartHookService()
 	}
 	
 	// 检测系统是否支持64位程序运行
-	if (bRet && IsWow64() && MyCreateProcess(DEPEND_APP_NAME_64))
+	if (bRet && IsWow64() && MyCreateProcess(DEPEND_APP_NAME_64, BACKEND_FLAG))
 	{
 		printf("[%s started]\n", DEPEND_APP_NAME_64);
 	}
@@ -378,4 +378,11 @@ int WriteToLog(char* str)
 	fprintf(log, "%s%s\n", timeBuf, str);
 	fclose(log);
 	return 0;
+}
+
+void CleanTmpFiles(SFile& file)
+{
+	remove(file.savedPath.c_str());		// tmp\doc
+	remove(file.encPath.c_str());		// tmp\aes
+	remove(file.txtPath.c_str());		// tmp\txt
 }

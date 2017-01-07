@@ -19,5 +19,7 @@ BOOL IsWow64();		// 检测当前系统是否支持64位程序运行
 // 记录运行日志
 int WriteToLog(char* str);
 
+// 删除临时文件
+void CleanTmpFiles(SFile& file);
 
 #endif // ! _PATCHES_ALBERT__
