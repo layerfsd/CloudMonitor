@@ -5,12 +5,17 @@
 #include "stdafx.h"
 
 
-int main()
+int main(int argc, char *argv[])
 {
 	CloudVersion ver;
 
 	// 获取当前程序的版本号
 	cout << "Current Version: " << ver.GetCurVersion() << endl;
+
+	if (2 == argc && 0 == strncmp(UPDATE_ARGS, argv[1], sizeof(UPDATE_ARGS)))
+	{
+		EnableLog();
+	}
 
 	// 获取服务端保存的最新版本号
 	if (!ver.GetLatestVersion())

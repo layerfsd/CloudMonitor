@@ -487,3 +487,42 @@ bool LoadConfig()
 
 	return true;
 }
+
+
+int WriteToLog(char* str)
+{
+	static char LogFile[] = "Service.txt";
+	static char timeBuf[MAX_PATH];
+
+	// 如果没有开启‘日志功能’，则直接返回
+	if (!GlobalConfig.enableLog)
+	{
+		return 0;
+	}
+
+	time_t timep;
+	struct tm *p;
+
+
+	time(&timep);
+	p = localtime(&timep);
+	memset(timeBuf, 0, sizeof(timeBuf));
+	snprintf(timeBuf, MAX_PATH, "[%d-%02d-%02d %02d:%02d:%02d] ", \
+		1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec);
+
+
+	FILE* log;
+	fopen_s(&log, LogFile, "a+");
+
+	if (log == NULL)
+		return -1;
+
+	fprintf(log, "%s%s\n", timeBuf, str);
+	fclose(log);
+	return 0;
+}
+
+void EnableLog()
+{
+	GlobalConfig.enableLog = true;
+}

@@ -13,6 +13,9 @@
 #define STARTUP_PATH		 "Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 #define STARTUP_ARGS		"--autostart"
 
+// 保存用户认证信息，文件为‘二进制格式’
+#define AUTH_FILE			"DATA\\auth.dat"
+
 typedef unsigned char uchar;
 
 

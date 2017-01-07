@@ -1,6 +1,7 @@
 // ViewStartUp.cpp : 定义控制台应用程序的入口点。
 //
 
+#include "FileMon.h"
 #include "AutoStart.h"
 #include <iostream>
 using std::cout; using std::endl;
@@ -237,25 +238,27 @@ inline bool GetVal(HKEY hKey, LPCSTR lpValue, uchar* data, DWORD size)
 
 bool GetAuth(Account* act)
 {
-	uchar data[64];
+	char data[64];
 
 	memset(data, 0, sizeof(data));
-	HKEY hKey = OpenKey(HKEY_CURRENT_USER, STORE_AUTH_PATH);
-	GetVal(hKey, AUTH_NAME, data, 64);
-	Xor(data, (uchar *)act, 64);
+
+	DumpFromFile(AUTH_FILE, data, sizeof(data));
+
+	Xor((uchar *)data, (uchar *)act, 64);
 	return true;
 }
 
 
 bool SetAuth(Account* act)
 {
-	uchar data[64];
+	char data[64];
 
 	memset(data, 0, sizeof(data));
-	HKEY hKey = OpenKey(HKEY_CURRENT_USER, STORE_AUTH_PATH);
 	
 	// 加密账户
-	Xor((uchar *)act, data, 64);
-	SetVal(hKey, AUTH_NAME, data, 64);
+	Xor((uchar *)act, (uchar *)data, 64);
+
+	DumpToFile(AUTH_FILE, data, sizeof(data));
+
 	return true;
 }
