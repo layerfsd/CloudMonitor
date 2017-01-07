@@ -5,6 +5,8 @@
 #include <signal.h>
 #include <time.h>
 
+#define BACKEND_LOG "--backend"
+
 typedef void(*SignalHandlerPointer)(int);
 
 void SignalHandler(int signal)
@@ -111,7 +113,7 @@ void EnableLog()
 int main(int argc, char *argv[])
 {
 
-	if (2 == argc && !strncmp(argv[1], "backend", 7))
+	if (2 == argc && !strncmp(argv[1], BACKEND_LOG, 7))
 	{
 		EnableLog();
 	}
