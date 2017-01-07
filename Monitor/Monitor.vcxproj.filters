@@ -33,6 +33,9 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="subDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Monitor.cpp">
@@ -57,6 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Monitor.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap1.bmp">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
