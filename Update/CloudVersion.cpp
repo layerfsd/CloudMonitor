@@ -326,9 +326,8 @@ CloudVersion::~CloudVersion()
 
 	WriteToLog("[Update.exe] Created " UPDATE_CHECKED_FLAG);
 	WriteToLog("[Update.exe] try start Service");
+	WriteToLog("[Update.exe] exit.");
 
 	system("sc start CloudMonitorService");
-
-	WriteToLog("[Update.exe] exit.");
 
 }
