@@ -4,6 +4,7 @@
 #include "network.h"
 #include "patches.h"
 #include "AutoStart.h"
+#include "process.h"
 
 #include <signal.h>
 #include <tchar.h>
@@ -203,30 +204,22 @@ BOOL IsWow64()
 bool StartHookService()
 {
 
-	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, DEPEND_APP_NAME);
-	bool    bRet = false;
+	DWORD	dwPid;
 
-	// 打开成功，说明已经有实例在运行
-	if (NULL != semhd)
+	// 找不到目标进程时，才启动
+	if (!FindProcessPid(DEPEND_APP_NAME, dwPid))
 	{
-		bRet = true;
-		CloseHandle(semhd);
-		printf("%s is already running.\n", DEPEND_APP_NAME);
-	}
-
-
-	if (false == bRet && MyCreateProcess(DEPEND_APP_NAME, BACKEND_FLAG))
-	{
-		bRet = true;
-		printf("[%s started]\n", DEPEND_APP_NAME);
+		MyCreateProcess(DEPEND_APP_NAME, BACKEND_FLAG);
+		WriteToLog("[CloudMonitor starting] " DEPEND_APP_NAME);
 	}
 	
 	// 检测系统是否支持64位程序运行
-	if (bRet && IsWow64() && MyCreateProcess(DEPEND_APP_NAME_64, BACKEND_FLAG))
+	if (IsWow64() && !FindProcessPid(DEPEND_APP_NAME_64, dwPid))
 	{
-		printf("[%s started]\n", DEPEND_APP_NAME_64);
+		MyCreateProcess(DEPEND_APP_NAME_64, BACKEND_FLAG);
+		WriteToLog("[CloudMonitor starting] " DEPEND_APP_NAME_64);
 	}
-	return bRet;
+	return true;
 }
 
 void SetWorkPath()

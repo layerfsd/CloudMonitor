@@ -54,5 +54,10 @@ int  KillProcess(vector<Process>& plst, bool KillAll = false);
 
 // 获取成功关闭进程的序号
 bool GenKillResult(vector<Process>& plst, string& message);
+
+
+
+BOOL FindProcessPid(LPCSTR ProcessName, DWORD& dwPid);
+
 //int  KillProcess(vector<Process>& plst, string& message, bool KillAll = false);
 #endif // ! _PROCESS_H__

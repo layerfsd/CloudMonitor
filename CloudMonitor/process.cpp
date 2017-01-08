@@ -519,3 +519,43 @@ void printError(TCHAR* msg)
 	// Display the message
 	_tprintf(TEXT("\n  WARNING: %s failed with error %d (%s)"), msg, eNum, sysMsg);
 }
+
+
+
+
+BOOL FindProcessPid(LPCSTR ProcessName, DWORD& dwPid)
+{
+	HANDLE hProcessSnap;
+	PROCESSENTRY32 pe32;
+
+	// Take a snapshot of all processes in the system.
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (hProcessSnap == INVALID_HANDLE_VALUE)
+	{
+		return(FALSE);
+	}
+
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+
+	if (!Process32First(hProcessSnap, &pe32))
+	{
+		CloseHandle(hProcessSnap);          // clean the snapshot object
+		return(FALSE);
+	}
+
+	BOOL	bRet = FALSE;
+	do
+	{
+		// ºöÂÔ´óÐ¡Ð´
+		if (!_stricmp(ProcessName, pe32.szExeFile))
+		{
+			dwPid = pe32.th32ProcessID;
+			bRet = TRUE;
+			break;
+		}
+
+	} while (Process32Next(hProcessSnap, &pe32));
+
+	CloseHandle(hProcessSnap);
+	return bRet;
+}
