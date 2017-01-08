@@ -128,8 +128,8 @@ BOOL InitTcpConnection()
 	else
 	{
 		isConnectionOK = TRUE;
+		printf("Connect to %s:%d Ok\n", SERV_ADDR, SERV_PORT);
 	}
-	printf("Connected\n");
 
 	return TRUE;
 }
@@ -522,9 +522,8 @@ VOID SendMsg2Backend()
 			}
 			loopCount = 0;
 			sent = send(GLOBAL_SOCKET, "HBT", 3, 0);
-			length = recv(GLOBAL_SOCKET, tmpBuf, 3, 0);
 
-			if (sent <= 0 || length <= 0)
+			if (sent <= 0)
 			{
 				printf("Connect to Local Failed\n");
 				isConnectionOK = FALSE;
