@@ -210,7 +210,7 @@ BOOL GetTask(TASK* tsk)
 			if ((!memcmp(cur.path, it->first.c_str(), cur.len)) && (cur.ltime - it->second < MIN_SENT_INTERVAL))
 			{
 				bRet = FALSE;
-				printf("[REPEAT-IGNORED:] %s\n", it->first.c_str());
+				//printf("[REPEAT-IGNORED:] %s\n", it->first.c_str());
 				break;
 			}
 		}
@@ -543,7 +543,7 @@ REGET_TASK:
 		{
 			if (!NotIgnoreByTime(tsk.path))
 			{
-				printf("[IGNORED] %s\n", tsk.path);
+				//printf("[IGNORED] %s\n", tsk.path);
 				goto REGET_TASK;
 			}
 
