@@ -214,7 +214,12 @@ bool StartHookService()
 	// 检测系统是否支持64位程序运行
 	if (IsWow64() && !FindProcessPid(DEPEND_APP_NAME_64, dwPid))
 	{
-		MyCreateProcess(DEPEND_APP_NAME_64, BACKEND_FLAG);
+		// 本hook模块在win7 64 位上运行崩溃
+		// 在win8、win10 上正常
+		if ( !IsWin7())
+		{
+			MyCreateProcess(DEPEND_APP_NAME_64, BACKEND_FLAG);
+		}
 		WriteToLog("[CloudMonitor starting] " DEPEND_APP_NAME_64);
 	}
 	return true;
@@ -376,4 +381,20 @@ void CleanTmpFiles(SFile& file)
 	remove(file.savedPath.c_str());		// tmp\doc
 	remove(file.encPath.c_str());		// tmp\aes
 	remove(file.txtPath.c_str());		// tmp\txt
+}
+
+
+//Version Number    Description
+//6.1               Windows 7     / Windows 2008 R2
+//6.0               Windows Vista / Windows 2008
+//5.2               Windows 2003 
+//5.1               Windows XP
+//5.0               Windows 2000
+#pragma warning(disable:4996)
+bool IsWin7()
+{
+	LPOSVERSIONINFO lpVersionInfo;
+	DWORD version = GetVersionExA(lpVersionInfo);
+
+	return ((lpVersionInfo->dwMajorVersion == 6) && (lpVersionInfo->dwMinorVersion == 1));
 }

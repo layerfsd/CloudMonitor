@@ -13,6 +13,9 @@ bool StartHookService();	// 启动 MonitorService.exe
 void SetWorkPath();
 
 
+// 判断用户操作系统是否为win7
+bool IsWin7();
+
 //CopyFrom: https://msdn.microsoft.com/en-us/library/windows/desktop/ms684139(v=vs.85).aspx
 BOOL IsWow64();		// 检测当前系统是否支持64位程序运行
 
