@@ -9,12 +9,18 @@
 #define ArraySize(ptr)	(sizeof(ptr) / sizeof(ptr[0]))
 #define ErrorMsg(strs)  printf("ErrorMsg [%s] func [%s] line [%d]\n", strs, __func__, __LINE__);
 
+#define UPDATE_CHECKED_FLAG	"UPDATE_CHECKED"
+
 
 void InitDir(bool hide);
 bool StartHookService();	// 启动 MonitorService.exe
 
 void SetWorkPath();
 
+
+int GetServiceStatus(const char* name);
+
+bool IsServiceRunning();
 
 // 判断用户操作系统是否为win7
 bool IsWin7();

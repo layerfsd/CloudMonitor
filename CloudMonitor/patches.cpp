@@ -622,3 +622,42 @@ VOID __stdcall DoStartSvc(const char* szSvcName)
 	CloseServiceHandle(schSCManager);
 }
 
+
+int GetServiceStatus(const char* name)
+{
+	SC_HANDLE theService, scm;
+	SERVICE_STATUS_PROCESS ssStatus;
+	DWORD dwBytesNeeded;
+
+
+	scm = OpenSCManager(nullptr, nullptr, SC_MANAGER_ENUMERATE_SERVICE);
+	if (!scm) {
+		return 0;
+	}
+
+	theService = OpenServiceA(scm, name, SERVICE_QUERY_STATUS);
+	if (!theService) {
+		CloseServiceHandle(scm);
+		return 0;
+	}
+
+	auto result = QueryServiceStatusEx(theService, SC_STATUS_PROCESS_INFO,
+		reinterpret_cast<LPBYTE>(&ssStatus), sizeof(SERVICE_STATUS_PROCESS),
+		&dwBytesNeeded);
+
+	CloseServiceHandle(theService);
+	CloseServiceHandle(scm);
+
+	if (result == 0) {
+		return 0;
+	}
+
+	return ssStatus.dwCurrentState;
+}
+
+
+bool IsServiceRunning()
+{
+	return SERVICE_RUNNING == GetServiceStatus(SERVICE_NAME);
+}
+

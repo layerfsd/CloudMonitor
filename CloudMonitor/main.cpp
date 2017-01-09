@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
 		SetAuth(&act);
 	}
 	// 每次启动，先更新关键字列表
-	app.GetFile(keywords);
+	 app.GetFile(keywords);
 	if (!LoadKeywords(keywordPath, kw))
 	{
 		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;
@@ -201,6 +201,8 @@ int main(int argc, char *argv[])
 			break;
 		}		
 	}
+	// 等待线程执行结束
+	//WaitForSingleObject(hThread, INFINITE);
 
 	return 0;
 }

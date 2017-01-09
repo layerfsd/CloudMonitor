@@ -17,6 +17,9 @@ CloudVersion::CloudVersion()
 	printf("SetWorkPath\n");
 	SetWorkPath(this->workPath);
 
+	// 创建标志文件，表示本程序（自更新）正在运行
+	fopen(UPDATE_CHECKED_FLAG, "w");
+
 	// 加载本地hash列表
 	printf("Loading Local HashList\n");
 	LoadHashList(LOCAL_HASHLIST, this->localHashList);
@@ -321,8 +324,6 @@ CloudVersion::~CloudVersion()
 	printf("\n\nCleanning Temporary Files...\n");
 	DeleteFiles(pathList);
 
-	// 创建标志文件，表示本程序运行过
-	fopen(UPDATE_CHECKED_FLAG, "w");
 
 	WriteToLog("[Update.exe] Created " UPDATE_CHECKED_FLAG);
 	WriteToLog("[Update.exe] try start Service");

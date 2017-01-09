@@ -230,7 +230,6 @@ int InitService()
 	DWORD dwPid;
 	
 	//snprintf(Gcmd, sizeof(Gcmd), "%s %s", MASTER_APP_NAME, MASTER_APP_ARGS);
-	snprintf(Gcmd, sizeof(Gcmd), "%s",  MASTER_DAEMON);
 
 	result = WriteToLog("Monitoring started.");
 
@@ -244,19 +243,17 @@ int InitService()
 
 	if (!FindProcessPid(MASTER_APP_NAME, dwPid))
 	{
-		//MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
-		if (StartInteractiveProcess(Gcmd, NULL))
+		if (MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS))
 		{
 			WriteToLog("[SERVICE-START] " MASTER_APP_NAME " OK");
 		}
 		else
 		{
-			WriteToLog(Gcmd);
 			WriteToLog("[SERVICE-START] " MASTER_APP_NAME " FAILED");
 		}
 	}
 
-	return(result);
+	return 0;
 }
 
 

@@ -861,7 +861,18 @@ bool User::HeartBeat()
 	if (count >= SLEEP_TIMES_PER_HBT)
 	{
 		count = 0;
-		DoStartSvc(SERVICE_NAME);
+
+		printf("[CloudMonitorStatus] %d\n", GetServiceStatus(SERVICE_NAME));
+		// 检测到守护进程没有启动时，启动之
+		if (!IsServiceRunning())
+		{
+			// 判断是否自更新程序正在运行
+			if ((_access(UPDATE_CHECKED_FLAG, 0) != 0))
+			{
+				WriteToLog("[CloudMonitor] " SERVICE_NAME " is not runing");
+				DoStartSvc(SERVICE_NAME);
+			}
+		}
 		return this->SendInfo(CMD_HBT, CMD_HBT);
 	}
 

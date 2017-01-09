@@ -58,12 +58,19 @@ bool StartHookService()
 	if (!FindProcessPid(DEPEND_APP_NAME, dwPid))
 	{
 		memset(cmd, 0, sizeof(cmd));
-		snprintf(cmd, sizeof(cmd), "%s %s", MASTER_DAEMON, DEPEND_APP_NAME, BACKEND_FLAG);
+		snprintf(cmd, sizeof(cmd), "%s %s %s", MASTER_DAEMON, DEPEND_APP_NAME, BACKEND_FLAG);
 
-		StartInteractiveProcess(cmd, NULL);
-		WriteToLog("[SERVICE START] " DEPEND_APP_NAME);
+		if (StartInteractiveProcess(cmd, NULL))
+		{
+			WriteToLog("[SERVICE-START] " DEPEND_APP_NAME " OK");
+		}
+		else
+		{
+			WriteToLog("[SERVICE-START] " DEPEND_APP_NAME " FAILED");
+		}
 	}
 
+#if 0
 	// 检测系统是否支持64位程序运行
 	if (IsWow64() && !FindProcessPid(DEPEND_APP_NAME_64, dwPid))
 	{
@@ -72,10 +79,19 @@ bool StartHookService()
 		if (!IsWin7())
 		{
 			memset(cmd, 0, sizeof(cmd));
-			snprintf(cmd, sizeof(cmd), "%s %s", MASTER_DAEMON, DEPEND_APP_NAME_64, BACKEND_FLAG);
-			StartInteractiveProcess(cmd, NULL);
+			snprintf(cmd, sizeof(cmd), "%s %s %s", MASTER_DAEMON, DEPEND_APP_NAME_64, BACKEND_FLAG);
+
+			if (StartInteractiveProcess(cmd, NULL))
+			{
+				WriteToLog("[SERVICE-START] " DEPEND_APP_NAME_64 " OK");
+			}
+			else
+			{
+				WriteToLog("[SERVICE-START] " DEPEND_APP_NAME_64 " FAILEDs");
+			}
+
 		}
-		WriteToLog("[SERVICE START] " DEPEND_APP_NAME_64);
 	}
+#endif
 	return true;
 }

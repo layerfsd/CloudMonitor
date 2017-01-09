@@ -35,7 +35,7 @@ static BOOL isShutdownNetwork = FALSE;
 
 
 #define SEM_NAME	"ALBERT_SYNC"
-#define SERV_ADDR  "127.0.0.1"
+#define SERV_ADDR   "127.0.0.1"
 #define SERV_PORT	50006
 #define ONE_SECOND	1000
 #define MIN_SENT_INTERVAL 15  // 最短发送间隔时间(MIN * MIN_SEC = MINUTES)
