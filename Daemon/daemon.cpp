@@ -63,19 +63,8 @@ bool TryStartUp(const char* sem_name)
 }
 
 
-bool StartMyService(const char* args)
+bool StartMyService(char* args)
 {
-
-	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, MASTER_APP_NAME);
-
-	// 打开成功，说明已经有实例在运行
-	if (NULL != semhd)
-	{
-		CloseHandle(semhd);
-		printf("%s is already running.\n", MASTER_APP_NAME);
-		return true;
-	}
-
 
 	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
 	PROCESS_INFORMATION pi;
@@ -87,15 +76,8 @@ bool StartMyService(const char* args)
 
 	// Start the child process
 
-	char cmd[MAX_PATH];
-
-	memset(cmd, 0, MAX_PATH);
-
-	snprintf(cmd, MAX_PATH, "%s %s", MASTER_APP_NAME, args);
-
-	printf("[CMD] %s\n", cmd);
 	if (CreateProcessA(NULL,
-		cmd,
+		args,
 		NULL,
 		NULL,
 		FALSE,
@@ -109,11 +91,11 @@ bool StartMyService(const char* args)
 
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
-		printf("[OK] CreateProcess: %s\n", cmd);
+		printf("[OK] CreateProcess: %s\n", args);
 	}
 	else
 	{
-		printf("[ERROR] CreateProcess: %s\n", cmd);
+		printf("[ERROR] CreateProcess: %s\n", args);
 		return false;
 	}
 	return true;
