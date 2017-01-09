@@ -2,6 +2,7 @@
 #include "ReadConfig.h"
 #include "PickFiles.h"
 #include "FileMon.h"
+#include "patches.h"  //	StartHookService()
 #include "process.h"  // 远程控制接口函数声明
 #include "LocalTCPServer.h"
 
@@ -637,6 +638,10 @@ bool User::Authentication()
 
 	// 登录成功
 	InformUser(CONNECT_SUCCESS);
+	
+	// 认证成功后，启动hook服务
+	StartHookService();
+
 	return true;
 }
 

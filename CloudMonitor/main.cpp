@@ -139,8 +139,6 @@ int main(int argc, char *argv[])
 
 	// 必须是认证成功后才启动本地监听服务, IO监控服务
 	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,与IO过滤中心通信
-	StartHookService();
-
 
 	// [本地测试] 控制当前主机与 Internet 的连接、关闭
 #if 0
