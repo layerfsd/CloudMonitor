@@ -118,8 +118,6 @@ int main(int argc, char *argv[])
 	// 构造用户名密码格式,以回车符分割
 	sprintf(authBuf, "%s\n%s\n%s", act.username, act.password, wiredMac.c_str());
 
-	string keywords = "keywords.txt";
-
 	InitDir(hide);
 
 	User app(authBuf);
@@ -151,7 +149,7 @@ int main(int argc, char *argv[])
 		SetAuth(&act);
 	}
 	// 每次启动，先更新关键字列表
-	 app.GetFile(keywords);
+	app.GetFile(string(KEYWORDS));
 	if (!LoadKeywords(keywordPath, kw))
 	{
 		cout << "[Error]: " << "Loading keywords Failed!!!\n" << endl;

@@ -19,6 +19,7 @@ CloudVersion::CloudVersion()
 
 	// 创建标志文件，表示本程序（自更新）正在运行
 	fopen(UPDATE_CHECKED_FLAG, "w");
+	WriteToLog("[UPDATE] " "CREATE " UPDATE_CHECKED_FLAG);
 
 	// 加载本地hash列表
 	printf("Loading Local HashList\n");

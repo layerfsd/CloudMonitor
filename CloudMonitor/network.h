@@ -21,7 +21,7 @@
 
 
 #define RUNNING_FLAG		"RUNNING_FLAG"
-
+#define KEYWORDS			 "keywords.txt"
 #define CONNECT_STRS		"ALBERTOFWB"
 
 #define TEST_FILENAME		"test.docx"

@@ -282,6 +282,7 @@ void User::KeepAlive()
 	}
 
 	this->Authentication();
+	this->GetFile(string(KEYWORDS));
 }
 
 
