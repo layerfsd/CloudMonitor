@@ -18,6 +18,7 @@ enum ALB_SOCK_RET
 
 #define SERV_PORT	50005
 #define DAEMON_APP	"Daemon.exe"
+#define MASTER_APP	"CloudMonitor.exe"
 
 // CMonitorDlg ¶Ô»°¿ò
 class CMonitorDlg : public CDialogEx

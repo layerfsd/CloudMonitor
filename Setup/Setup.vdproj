@@ -39,6 +39,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_162F838DB8F7249A50BB1800A9961C0E"
+        "OwnerKey" = "8:_05AFBF8346DF47ECA10562D23F0C9AD2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3B7446A808E197CCA88877A0121AE28A"
+        "OwnerKey" = "8:_05AFBF8346DF47ECA10562D23F0C9AD2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_44C707BADE6B41FCB59E74D5BBFA469B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -77,6 +89,12 @@
         {
         "MsmKey" = "8:_6E7EF86524324194918D3FDA60D9ABD6"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_74A99171A1623AF5A4FC0A483026C27E"
+        "OwnerKey" = "8:_05AFBF8346DF47ECA10562D23F0C9AD2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -153,6 +171,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C48C612D331F005A86F77CB4F576DD7D"
+        "OwnerKey" = "8:_05AFBF8346DF47ECA10562D23F0C9AD2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_CF6256B830264151AB321ED53ACF46F7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -191,6 +215,12 @@
         {
         "MsmKey" = "8:_E3E0394883D34B3D83F94E6411BF8568"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E74E864D5B09E8C6E9D100399F15345B"
+        "OwnerKey" = "8:_05AFBF8346DF47ECA10562D23F0C9AD2"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -320,6 +350,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_162F838DB8F7249A50BB1800A9961C0E"
+            {
+            "SourcePath" = "8:IPHLPAPI.DLL"
+            "TargetName" = "8:IPHLPAPI.DLL"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3B7446A808E197CCA88877A0121AE28A"
+            {
+            "SourcePath" = "8:libssl-1_1.dll"
+            "TargetName" = "8:libssl-1_1.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_44C707BADE6B41FCB59E74D5BBFA469B"
             {
             "SourcePath" = "8:..\\Release\\vcruntime140.dll"
@@ -398,6 +468,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_74A99171A1623AF5A4FC0A483026C27E"
+            {
+            "SourcePath" = "8:libcrypto-1_1.dll"
+            "TargetName" = "8:libcrypto-1_1.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_78506F54704B4E77A267992DF315FA9A"
@@ -600,6 +690,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C48C612D331F005A86F77CB4F576DD7D"
+            {
+            "SourcePath" = "8:MonitorService.exe"
+            "TargetName" = "8:MonitorService.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CF6256B830264151AB321ED53ACF46F7"
             {
             "SourcePath" = "8:..\\Release\\msvcp140.dll"
@@ -698,6 +808,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E74E864D5B09E8C6E9D100399F15345B"
+            {
+            "SourcePath" = "8:HooKeyboard.dll"
+            "TargetName" = "8:HooKeyboard.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }

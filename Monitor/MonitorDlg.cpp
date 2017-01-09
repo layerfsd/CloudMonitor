@@ -331,7 +331,6 @@ void CMonitorDlg::OnBnClickedOk()
 
 	sprintf_s(cmd, MAX_PATH, "%s %s %s", DAEMON_APP, cname, cpass);
 
-
 	STARTUPINFOA   StartupInfo;//创建进程所需的信息结构变量    
 	PROCESS_INFORMATION pi;
 

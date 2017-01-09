@@ -63,7 +63,7 @@ bool TryStartUp(const char* sem_name)
 }
 
 
-bool StartMyService()
+bool StartMyService(const char* args)
 {
 
 	HANDLE  semhd = OpenSemaphoreA(SEMAPHORE_MODIFY_STATE, FALSE, MASTER_APP_NAME);
@@ -88,15 +88,12 @@ bool StartMyService()
 	// Start the child process
 
 	char cmd[MAX_PATH];
-	char curDir[MAX_PATH];
 
 	memset(cmd, 0, MAX_PATH);
-	memset(curDir, 0, MAX_PATH);
 
-	GetCurrentDirectoryA(MAX_PATH, curDir);
+	snprintf(cmd, MAX_PATH, "%s %s", MASTER_APP_NAME, args);
 
-
-	snprintf(cmd, MAX_PATH, "%s\\%s --autostart", curDir, MASTER_APP_NAME);
+	printf("[CMD] %s\n", cmd);
 	if (CreateProcessA(NULL,
 		cmd,
 		NULL,
@@ -128,8 +125,8 @@ void SetWorkPath()
 	GetModuleFileNameA(NULL, strModule, MAX_PATH); //得到当前模块路径
 	strcat(strModule, "\\..\\");     //设置为当前工作路径为当时的上一级
 	SetCurrentDirectoryA(strModule);
+	GetModuleFileNameA(NULL, strModule, MAX_PATH); //得到当前模块路径
 }
-
 
 int __stdcall WinMain(HINSTANCE hInstance,      // handle to current instance
 	HINSTANCE hPrevInstance,  // handle to previous instance
@@ -139,7 +136,7 @@ int __stdcall WinMain(HINSTANCE hInstance,      // handle to current instance
 {
 
 	SetWorkPath();
-	StartMyService();
+	StartMyService(lpCmdLine);
 
 	return 0;
 }
