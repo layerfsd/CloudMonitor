@@ -58,7 +58,7 @@ bool StartHookService()
 	if (!FindProcessPid(DEPEND_APP_NAME, dwPid))
 	{
 		memset(cmd, 0, sizeof(cmd));
-		snprintf(cmd, sizeof(cmd), "%s %s", DEPEND_APP_NAME, BACKEND_FLAG);
+		snprintf(cmd, sizeof(cmd), "%s %s", MASTER_DAEMON, DEPEND_APP_NAME, BACKEND_FLAG);
 
 		StartInteractiveProcess(cmd, NULL);
 		WriteToLog("[SERVICE START] " DEPEND_APP_NAME);
@@ -72,7 +72,7 @@ bool StartHookService()
 		if (!IsWin7())
 		{
 			memset(cmd, 0, sizeof(cmd));
-			snprintf(cmd, sizeof(cmd), "%s %s", DEPEND_APP_NAME_64, BACKEND_FLAG);
+			snprintf(cmd, sizeof(cmd), "%s %s", MASTER_DAEMON, DEPEND_APP_NAME_64, BACKEND_FLAG);
 			StartInteractiveProcess(cmd, NULL);
 		}
 		WriteToLog("[SERVICE START] " DEPEND_APP_NAME_64);

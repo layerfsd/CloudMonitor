@@ -184,7 +184,7 @@ void ServiceMain(int argc, char** argv)
 		// 如果找不到该进程则启动之
 		if (!FindProcessPid(MASTER_APP_NAME, dwPid))
 		{
-
+			// 以admin身份启动 CloudMonitor 进程
 			if (MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS))
 			{
 				WriteToLog("[SERVICE-START] " MASTER_APP_NAME " OK");
@@ -210,6 +210,10 @@ bool IsUpdateChecked()
 
 	if ((_access(UPDATE_CHECKED_FLAG, 0) == 0))
 	{
+		WriteToLog("[SERVICE] " UPDATE_CHECKED_FLAG " Existed.");
+		WriteToLog("[SERVICE] delete " UPDATE_CHECKED_FLAG);
+		// 一旦检测到，‘标志文件’，立刻删除
+		remove(UPDATE_CHECKED_FLAG);
 		ret = true;
 	}
 
@@ -238,11 +242,8 @@ int InitService()
 		return 1;
 	}
 
-	WriteToLog(UPDATE_CHECKED_FLAG " Existed.");
-
 	if (!FindProcessPid(MASTER_APP_NAME, dwPid))
 	{
-		WriteToLog("[SERVICE-INIT] " MASTER_APP_NAME);
 		//MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
 		if (StartInteractiveProcess(Gcmd, NULL))
 		{
@@ -254,10 +255,7 @@ int InitService()
 			WriteToLog("[SERVICE-START] " MASTER_APP_NAME " FAILED");
 		}
 	}
-	else
-	{
-		WriteToLog("[SERVICE-INIT] " MASTER_APP_NAME " IS ALREADY RUNNING");
-	}
+
 	return(result);
 }
 
@@ -277,12 +275,7 @@ void ControlHandler(DWORD request)
 	switch (request)
 	{
 	case SERVICE_CONTROL_STOP:
-		WriteToLog("remove " UPDATE_CHECKED_FLAG);
-		// 服务结束时，删除‘标志文件’
-		remove(UPDATE_CHECKED_FLAG);
-
 		WriteToLog("Monitoring stopped.");
-
 		ServiceStatus.dwWin32ExitCode = 0;
 		ServiceStatus.dwCurrentState = SERVICE_STOPPED;
 		SetServiceStatus(hStatus, &ServiceStatus);
@@ -290,10 +283,6 @@ void ControlHandler(DWORD request)
 
 	case SERVICE_CONTROL_SHUTDOWN:
 		WriteToLog("Monitoring stopped.");
-		WriteToLog("remove " UPDATE_CHECKED_FLAG);
-		// 服务结束时，删除‘标志文件’
-		remove(UPDATE_CHECKED_FLAG);
-
 		ServiceStatus.dwWin32ExitCode = 0;
 		ServiceStatus.dwCurrentState = SERVICE_STOPPED;
 		SetServiceStatus(hStatus, &ServiceStatus);
