@@ -296,7 +296,7 @@ bool GetFileMd5(string& Path, string& fileMd5)
 		return false;	// 文件不存在
 	}
 
-	char* CMD_FMT = "ssl\\openssl.exe md5  \"%s\"";	//防止文件路径中包含空格
+	char* CMD_FMT = "tools\\openssl.exe md5  \"%s\"";	//防止文件路径中包含空格
 	char  cmd[_MAX_PATH];
 	FILE* execfd = NULL;
 
