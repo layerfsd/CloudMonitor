@@ -2,7 +2,9 @@
 #include <Windows.h>
 #include <WtsApi32.h>
 
-bool StartInteractiveProcess(LPTSTR cmd, LPCTSTR cmdDir) {
+// 以当前用户身份启动一个进程
+bool StartInteractiveProcess(LPSTR cmd, LPSTR cmdDir)
+{
 	STARTUPINFO si;
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
