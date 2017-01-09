@@ -7,11 +7,14 @@
 #include <Windows.h>
 #include <tlhelp32.h>	//CreateToolhelp32Snapshot
 
+SERVICE_STATUS ServiceStatus;
+SERVICE_STATUS_HANDLE hStatus;
+
 char Gcmd[MAX_PATH];
 
-bool StartInteractiveProcess(LPTSTR cmd, LPCTSTR cmdDir);
+bool StartHookService();
 
-bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL)
+bool MyCreateProcess(LPCSTR appName, LPSTR appArgs)
 {
 	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
 	PROCESS_INFORMATION pi;
@@ -181,8 +184,8 @@ void ServiceMain(int argc, char** argv)
 		// 如果找不到该进程则启动之
 		if (!FindProcessPid(MASTER_APP_NAME, dwPid))
 		{
-			//MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
-			if (StartInteractiveProcess(Gcmd, NULL))
+
+			if (MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS))
 			{
 				WriteToLog("[SERVICE-START] " MASTER_APP_NAME " OK");
 			}
@@ -191,6 +194,10 @@ void ServiceMain(int argc, char** argv)
 				WriteToLog("[SERVICE-START] " MASTER_APP_NAME " FAILED");
 			}
 		}
+		else {
+			StartHookService();
+		}
+
 		// end while
 	}
 

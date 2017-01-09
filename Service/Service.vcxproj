@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="CreateProcessAsUser.cpp" />
     <ClCompile Include="service.cpp" />
+    <ClCompile Include="start_hook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="service.h" />
