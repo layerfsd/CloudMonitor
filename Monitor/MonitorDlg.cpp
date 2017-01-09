@@ -297,7 +297,6 @@ void CMonitorDlg::OnBnClickedOk()
 		AfxMessageBox(inform);
 		return;
 	}
-	char cWinDir[MAX_PATH];
 	char cmd[MAX_PATH];
 	const char *cname;
 	const char *cpass;
@@ -329,12 +328,8 @@ void CMonitorDlg::OnBnClickedOk()
 
 
 	memset(cmd, 0, MAX_PATH);
-	GetCurrentDirectoryA(MAX_PATH, cWinDir);
 
-	char* sAppPath = cWinDir;
-	strcat_s(cWinDir, sizeof(cWinDir), "\\CloudMonitor.exe");
-
-	sprintf_s(cmd, MAX_PATH, "%s %s %s", sAppPath, cname, cpass);
+	sprintf_s(cmd, MAX_PATH, "%s %s %s", DAEMON_APP, cname, cpass);
 
 
 	STARTUPINFOA   StartupInfo;//创建进程所需的信息结构变量    
@@ -347,7 +342,6 @@ void CMonitorDlg::OnBnClickedOk()
 
 
 	// 在后台开启 CloudMonitor.exe 进程
-	;
 	if (StartInteractiveProcess(cmd, NULL))
 	{
 
@@ -357,8 +351,7 @@ void CMonitorDlg::OnBnClickedOk()
 	}
 	else
 	{
-		inform = sAppPath;
-		inform += "登陆失败";
+		inform = "登陆失败";
 		SetDlgItemText(IDC_STATUS, NULL);
 		AfxMessageBox(inform);
 		CDialogEx::OnOK();

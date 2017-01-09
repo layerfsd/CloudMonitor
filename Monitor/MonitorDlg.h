@@ -16,7 +16,8 @@ enum ALB_SOCK_RET
 	NOT_SPECIFIC_MAC,
 };
 
-#define SERV_PORT 50005
+#define SERV_PORT	50005
+#define DAEMON_APP	"Daemon.exe"
 
 // CMonitorDlg ¶Ô»°¿ò
 class CMonitorDlg : public CDialogEx
