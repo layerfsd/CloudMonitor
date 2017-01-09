@@ -9,16 +9,12 @@
 
 #pragma comment(lib,"ws2_32.lib")
 
-//#include <vector>
-//#include <map>
-//
-//using namespace;
-//
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-
+#define LOGIN_TIMEOUT	5 * 1000
+static bool isTcpChannelUseful = false;
 // CMonitorDlg 对话框
 
 
@@ -133,11 +129,17 @@ int Talk2Client()
 	closesocket(slisten);
 	
 	WSACleanup();
+	isTcpChannelUseful = false;
 	return atoi(revData);
 }
 
 bool CreateTCPServer()
 {
+	if (isTcpChannelUseful)
+	{
+		return true;
+	}
+
 	//初始化WSA
 	WORD sockVersion = MAKEWORD(2, 2);
 	WSADATA wsaData;
@@ -173,6 +175,7 @@ bool CreateTCPServer()
 		return false;
 	}
 
+	isTcpChannelUseful = true;
 	return true;
 }
 
@@ -337,6 +340,7 @@ void CMonitorDlg::OnBnClickedOk()
 	     HANDLE hThread = CreateThread(NULL, 0, Func, 0, NULL, NULL);//创建下载线程
 
 		 bool proceccFlag = false;
+		 CTime timeStart = GetCurrentTime();
 		do
 		{
 
@@ -412,6 +416,15 @@ void CMonitorDlg::OnBnClickedOk()
 				//SetDlgItemText(IDC_STATUS, inform);
 				SetDlgItemText(IDC_STATUS, NULL);
 				AfxMessageBox(inform);
+				break;
+			}
+
+			CTime endTime = GetCurrentTime();
+			if (endTime - timeStart >= LOGIN_TIMEOUT)
+			{
+				inform = "客户端未响应";
+				SetDlgItemText(IDC_STATUS, NULL);
+				AfxMessageBox(inform, MB_OK);
 				break;
 			}
 		} while ((dwRet != WAIT_OBJECT_0) && (dwRet != WAIT_FAILED));
