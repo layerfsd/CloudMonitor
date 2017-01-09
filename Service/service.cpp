@@ -243,6 +243,7 @@ int InitService()
 		}
 		else
 		{
+			WriteToLog(Gcmd);
 			WriteToLog("[SERVICE-START] " MASTER_APP_NAME " FAILED");
 		}
 	}

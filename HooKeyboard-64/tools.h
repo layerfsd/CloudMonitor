@@ -28,4 +28,7 @@ BOOL CheckSockAddr(const struct sockaddr FAR *saddr);
 // ·Ç×èÈû
 void CheckTaskFromLocal(SOCKET sock);
 
+
+bool FormatTime(char *buf, int bufSize);
+
 #endif // ! MY_TOOLS_INCLUDE

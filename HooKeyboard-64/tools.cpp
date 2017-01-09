@@ -499,6 +499,7 @@ VOID SendMsg2Backend()
 	int sent = 0;
 	int loopCount = 0;
 	int reConnectTime = 0;
+	char timeBuf[64];
 
 	while (KEEP_RUNNING)
 	{
@@ -552,7 +553,9 @@ REGET_TASK:
 			while (KEEP_RUNNING && (tsk.status != TRUE) && (MaxRetryTime++ < MAX_RETRY_TIME))
 			{
 				//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
-				printf("[SEND:%zd] %s\n", tsk.ltime, tsk.path);
+				memset(timeBuf, 0, sizeof(timeBuf));
+				FormatTime(timeBuf, sizeof(timeBuf));
+				printf("[SEND:%s] %s\n", timeBuf, tsk.path);
 				sent = send(GLOBAL_SOCKET, tsk.path, tsk.len, 0);
 
 				if (sent <= 0)
@@ -615,4 +618,18 @@ DWORD WINAPI ThreadProc(LPVOID lpParam)
 
 	SendMsg2Backend();
 	return 0;
+}
+
+bool FormatTime(char *buffer, int bufSize)
+{
+	time_t rawtime;
+	struct tm * timeinfo;
+
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	strftime(buffer, bufSize, "%H:%M:%S", timeinfo);
+	//strftime(buffer, bufSize, "Now is %Y/%m/%d %H:%M:%S", timeinfo);
+
+	return true;
 }

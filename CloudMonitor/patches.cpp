@@ -143,8 +143,6 @@ bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL)
 
 	snprintf(cmd, sizeof(output), "%s %s", appName, appArgs);
 
-	snprintf(output, sizeof(output), "[CloudMonitor-->CreateProcess]%s %s", appName, appArgs);
-
 	WriteToLog(output);
 
 	if (CreateProcessA(NULL,
