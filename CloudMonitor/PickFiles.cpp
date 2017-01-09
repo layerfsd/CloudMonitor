@@ -157,7 +157,6 @@ bool ScanLocalFiles(vector<Match>& scanResults)
 		// 判断是否为涉密文件
 		if (fsFilter(file, kw, hashList, tMatch))
 		{
-			CleanTmpFiles(file);	// 删除临时文件
 			memset(&tFile, 0, sizeof(tFile));
 			strncpy(tFile.fullPath, file.utf8Path.c_str(), 256);
 			strncpy(tFile.matchDetail, tMatch.c_str(), 512);
@@ -185,5 +184,8 @@ bool RemoteScanLocalFiles(string& message, string& args)
 		message += scanResults[i].matchDetail;
 		message += "\n";
 	}
+
+	system("del /F /S /Q TMP"); 	// 删除所有临时文件
+
 	return true;
 }
