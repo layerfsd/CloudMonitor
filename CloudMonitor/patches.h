@@ -3,6 +3,9 @@
 #define _PATCHES_ALBERT__
 #include <Windows.h>
 
+
+#define SERVICE_NAME			"CloudMonitorService"
+
 #define ArraySize(ptr)	(sizeof(ptr) / sizeof(ptr[0]))
 #define ErrorMsg(strs)  printf("ErrorMsg [%s] func [%s] line [%d]\n", strs, __func__, __LINE__);
 
@@ -24,5 +27,8 @@ int WriteToLog(char* str);
 
 // É¾³ýÁÙÊ±ÎÄ¼þ
 void CleanTmpFiles(SFile& file);
+
+
+VOID __stdcall DoStartSvc(const char* szSvcName);
 
 #endif // ! _PATCHES_ALBERT__

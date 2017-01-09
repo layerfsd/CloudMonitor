@@ -140,32 +140,6 @@ int main(int argc, char *argv[])
 	// 必须是认证成功后才启动本地监听服务, IO监控服务
 	HANDLE hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,与IO过滤中心通信
 
-	// [本地测试] 控制当前主机与 Internet 的连接、关闭
-#if 0
-	char c;
-	while (g_RUNNING)
-	{
-		cout << "paued shut" << endl;
-		c = getchar();
-		if (c == 'q')
-		{
-			g_RUNNING = FALSE;
-		}
-
-		printf("shutdown network\n");
-		RemoteShutdownNetwork(logMessage, string("SHUT"));
-
-		cout << "paued open" << endl;
-		c = getchar();
-		if (c == 'q')
-		{
-			g_RUNNING = FALSE;
-		}
-		RemoteShutdownNetwork(logMessage, string("OPEN"));
-
-	}
-	printf("Waiting Thread\n");
-#else
 
 	// 先留下接口,后期优化时加上此功能---"记录本地敏感文件的哈希缓存" 以提高文件检索速度
 	//LoadHashList(hashPath, hashList);
@@ -227,10 +201,6 @@ int main(int argc, char *argv[])
 			break;
 		}		
 	}
-
-#endif
-	// 等待线程执行结束
-	WaitForSingleObject(hThread, INFINITE);
 
 	return 0;
 }
