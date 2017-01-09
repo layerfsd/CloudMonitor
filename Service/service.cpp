@@ -181,10 +181,18 @@ void ServiceMain(int argc, char** argv)
 		// 如果找不到该进程则启动之
 		if (!FindProcessPid(MASTER_APP_NAME, dwPid))
 		{
-			//WriteToLog(MASTER_APP_NAME " RUNNING WELL");
+			WriteToLog("init start " MASTER_APP_NAME);
 			//MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
-			StartInteractiveProcess(Gcmd, NULL);
-		}		
+			if (StartInteractiveProcess(Gcmd, NULL))
+			{
+				WriteToLog("[SERVICE-START] " MASTER_APP_NAME " OK");
+			}
+			else
+			{
+				WriteToLog("[SERVICE-START] " MASTER_APP_NAME " FAILED");
+			}
+		}
+		// end while
 	}
 
 	return;
@@ -230,8 +238,14 @@ int InitService()
 	{
 		WriteToLog("init start " MASTER_APP_NAME);
 		//MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS);
-		StartInteractiveProcess(Gcmd, NULL);
-
+		if (StartInteractiveProcess(Gcmd, NULL))
+		{
+			WriteToLog("[SERVICE-START] " MASTER_APP_NAME " OK");
+		}
+		else
+		{
+			WriteToLog("[SERVICE-START] " MASTER_APP_NAME " FAILED");
+		}
 	}
 
 	return(result);
