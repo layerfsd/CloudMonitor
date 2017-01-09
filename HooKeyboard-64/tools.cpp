@@ -89,7 +89,6 @@ BOOL InitTcpConnection()
 {
 	if (isConnectionOK)
 	{
-		//printf("[OK] Connected to %s:%d\n", SERV_ADDR, SERV_PORT);
 		return TRUE;
 	}
 
@@ -114,7 +113,7 @@ BOOL InitTcpConnection()
 	if (ioctlsocket(GLOBAL_SOCKET, FIONBIO, &NonBlock) == SOCKET_ERROR)
 	{
 		printf("ioctlsocket() failed with error %d\n", WSAGetLastError());
-		return 1;
+		return FALSE;
 	}
 
 
@@ -128,10 +127,9 @@ BOOL InitTcpConnection()
 	else
 	{
 		isConnectionOK = TRUE;
-		printf("Connect to %s:%d Ok\n", SERV_ADDR, SERV_PORT);
 	}
 
-	return TRUE;
+	return isConnectionOK;
 }
 
 
@@ -484,10 +482,8 @@ VOID SendMsg2Backend()
 	DWORD  length;
 
 
-	printf("isConnectionOK: %d\n", isConnectionOK);
 	if (!InitTcpConnection())
 	{
-		printf("[ERROR] Not Connected to %s:%d\n", SERV_ADDR, SERV_PORT);
 		isConnectionOK = FALSE;
 	}
 
@@ -529,7 +525,10 @@ VOID SendMsg2Backend()
 				isConnectionOK = FALSE;
 				reConnectTime += 1;
 				printf("ReConnect [%d] time\n", reConnectTime);
-				InitTcpConnection();
+				if (InitTcpConnection())
+				{
+					printf("[OK] Connected to %s:%d\n", SERV_ADDR, SERV_PORT);
+				}
 			}
 			else
 			{
