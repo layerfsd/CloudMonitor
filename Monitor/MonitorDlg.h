@@ -14,7 +14,9 @@ enum ALB_SOCK_RET
 	INVALID_PASSWD,
 	ALREADY_LOGIN,
 	NOT_SPECIFIC_MAC,
+	NO_LOGIN,		// ²»ÔÊÐíµÇÂ½
 };
+
 
 #define SERV_PORT	50005
 #define DAEMON_APP	"Daemon.exe"

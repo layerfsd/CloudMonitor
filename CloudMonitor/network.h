@@ -123,7 +123,7 @@ enum LogType
 };
 
 
-// 通过命名管道,通知用户界面登录结果
+// 通过本地tcp,通知用户界面登录结果
 enum ALB_SOCK_RET
 {
 
@@ -133,6 +133,7 @@ enum ALB_SOCK_RET
 	INVALID_PASSWD,
 	ALREADY_LOGIN,
 	MAC_DIFF,
+	NO_LOGIN,
 };
 
 // 远程控制结构体

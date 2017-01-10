@@ -363,6 +363,16 @@ void CMonitorDlg::OnBnClickedOk()
 				AfxMessageBox(inform);
 				break;
 			}
+
+			if (NO_LOGIN == albSockRet)
+			{
+				inform = "该账号已被管理员禁止登录";
+				//SetDlgItemText(IDC_STATUS, inform);
+				SetDlgItemText(IDC_STATUS, NULL);
+				AfxMessageBox(inform);
+				break;
+			}
+
 			if (NOT_SPECIFIC_MAC == albSockRet)
 			{
 				//inform = "当前用户名不允许在您的计算机上登录";

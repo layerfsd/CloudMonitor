@@ -434,7 +434,7 @@ bool User::GetReplyInfo()
 	if (reveivedSize != HEAD_SIZE)
 	{
 		std::cout << "Receiving Failed!\n" << endl;
-		cout << "receivedSize: " << reveivedSize << endl;
+		cout << "Disconnected From Server... " << endl;
 		this->statu = STATUE_DISCONNECTED;
 		return false;
 	}
@@ -617,6 +617,18 @@ bool User::Authentication()
 		InformUser(INVALID_PASSWD);
 		return false;
 	}
+
+
+	// 检查 mac 是否与注册时的一致
+	const char* no_login = "NO_LOGIN";
+	if (!memcmp(no_login, pkt.text, strlen(no_login)))
+	{
+		cout << no_login << endl;
+		InformUser(NO_LOGIN);
+		return false;
+	}
+
+
 
 	// 检查 mac 是否与注册时的一致
 	const char* mac_diff = "MAC_DIFF";
