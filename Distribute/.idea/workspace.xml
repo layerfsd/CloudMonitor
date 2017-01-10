@@ -57,8 +57,8 @@
       <file leaf-file-name="serv.py" pinned="true" current-in-tab="true">
         <entry file="remoteDeploymentFS://&lt;56dce757-2559-4ea2-800d-60b9154f724e&gt;/RecvFile/serv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="229" column="0" selection-start-line="226" selection-start-column="0" selection-end-line="229" selection-end-column="0" />
+            <state relative-caret-position="483">
+              <caret line="238" column="47" selection-start-line="238" selection-start-column="47" selection-end-line="238" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -441,7 +441,7 @@
         <state relative-caret-position="425">
           <caret line="27" column="17" selection-start-line="27" selection-start-column="17" selection-end-line="27" selection-end-column="17" />
           <folding>
-            <element signature="e#41#69#0" expanded="true" />
+            <element signature="e#41#69#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -467,7 +467,7 @@
         <state relative-caret-position="680">
           <caret line="42" column="33" selection-start-line="42" selection-start-column="33" selection-end-line="42" selection-end-column="33" />
           <folding>
-            <element signature="e#41#69#0" expanded="true" />
+            <element signature="e#41#69#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -509,7 +509,7 @@
         <state relative-caret-position="459">
           <caret line="27" column="17" selection-start-line="27" selection-start-column="17" selection-end-line="27" selection-end-column="17" />
           <folding>
-            <element signature="e#41#69#0" expanded="true" />
+            <element signature="e#41#69#0" expanded="false" />
           </folding>
         </state>
       </provider>
