@@ -14,7 +14,8 @@ enum ALB_SOCK_RET
 	INVALID_PASSWD,
 	ALREADY_LOGIN,
 	NOT_SPECIFIC_MAC,
-	NO_LOGIN,		// 不允许登陆
+	NO_LOGIN,			// 不允许登陆
+	ALREADY_ONLINE,		// 该账号已经在线
 };
 
 

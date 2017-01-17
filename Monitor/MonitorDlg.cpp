@@ -364,10 +364,19 @@ void CMonitorDlg::OnBnClickedOk()
 				break;
 			}
 
+
+			if (ALREADY_ONLINE == albSockRet)
+			{
+				inform = "该账号已经在其它机器上登录，不允许重复登陆";
+				SetDlgItemText(IDC_STATUS, NULL);
+				AfxMessageBox(inform);
+				break;
+			}
+
+
 			if (NO_LOGIN == albSockRet)
 			{
 				inform = "该账号已被管理员禁止登录";
-				//SetDlgItemText(IDC_STATUS, inform);
 				SetDlgItemText(IDC_STATUS, NULL);
 				AfxMessageBox(inform);
 				break;

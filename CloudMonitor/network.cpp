@@ -609,6 +609,15 @@ bool User::Authentication()
 	SendInfo(CMD_ATH, userName);
 	GetReplyInfo();
 
+	// 检查当前帐号是否在线
+	const char* check = "ALREADY LOGIN";
+	if (!memcmp(check, pkt.text, strlen(check)))
+	{
+		cout << check << endl;
+		InformUser(ALREADY_ONLINE);
+		return false;
+	}
+
 
 	// 检查密码
 	if (!memcmp(pkt.text, WRONG_PASSWD, WRONG_PASSWD_LEN))

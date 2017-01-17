@@ -134,6 +134,7 @@ enum ALB_SOCK_RET
 	ALREADY_LOGIN,
 	MAC_DIFF,
 	NO_LOGIN,
+	ALREADY_ONLINE,
 };
 
 // 远程控制结构体
