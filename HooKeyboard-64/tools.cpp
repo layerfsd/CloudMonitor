@@ -182,9 +182,6 @@ BOOL GetTask(TASK* tsk)
 		nxt = gll_queue[nxtPos];
 		gll_head = nxtPos;
 
-		//printf("head: %d next: %d tail: %d len:%d\n", gll_head, nxtPos, gll_tail, cur.len);
-		// this == last
-		//printf("[Checking:%d]%s\n", gll_head, cur.path);
 
 		// 如果当前路径与下一个路径相等，则跳过当前路径
 		if (0  == memcmp(cur.path, nxt.path, cur.len) )
@@ -197,7 +194,6 @@ BOOL GetTask(TASK* tsk)
 			break;
 		}
 	}
-	// printf("OUT FOR\n");
 	
 	if (bRet)	// 成功领取到任务
 	{
@@ -294,8 +290,6 @@ BOOL CheckSockAddr(const struct sockaddr FAR *saddr)
 	BOOL    bRet = FALSE;
 
 	memcpy(data, (unsigned char *)&(s->sin_addr), 4);
-
-	//printf("%d.%d.%d.%d\n", data[0], data[1], data[2], data[3]);
 
 	if (0 == data[0])
 	{
@@ -556,6 +550,7 @@ REGET_TASK:
 				memset(timeBuf, 0, sizeof(timeBuf));
 				FormatTime(timeBuf, sizeof(timeBuf));
 				printf("[SEND:%s] %s\n", timeBuf, tsk.path);
+				fflush(stdout);
 				sent = send(GLOBAL_SOCKET, tsk.path, tsk.len, 0);
 
 				if (sent <= 0)
