@@ -69,7 +69,7 @@ void InstallService()
 	if (GetServiceStatus(SERVICE_NAME) == 0)
 	{
 		snprintf(ServicePath, sizeof(ServicePath), "%s\\%s", workPath, SERVICE_APP);
-		snprintf(cmd, sizeof(cmd), "sc create %s binpath= \"%s\" start= delayed-auto", SERVICE_NAME, ServicePath);
+		snprintf(cmd, sizeof(cmd), "sc create %s binpath= \"%s\" start= auto", SERVICE_NAME, ServicePath);
 		SysRun(cmd);
 	}
 
