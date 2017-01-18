@@ -116,20 +116,19 @@ BOOL InitTcpConnection()
 		return FALSE;
 	}
 
-
 	//connect to server
-	//printf("Try Connect to %s:%d ...\n", SERV_ADDR, SERV_PORT);
-	if (connect(GLOBAL_SOCKET, (SOCKADDR *)&serveraddr, sizeof(serveraddr)) != 0)
+	int ret = connect(GLOBAL_SOCKET, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
+
+	if (ret != 0)
 	{
-		//printf("Connect fail!\n");
-		return FALSE;
+		ret = FALSE;
 	}
 	else
 	{
-		isConnectionOK = TRUE;
+		ret = TRUE;
 	}
 
-	return isConnectionOK;
+	return ret;
 }
 
 
@@ -427,6 +426,10 @@ void CheckTaskFromLocal(SOCKET sock)
 	int		nRet = 0;		//记录发送或者接受的字节数
 	static int	CMD = 0;
 
+
+	if (!isConnectionOK)
+		return;
+
 	memset(tmpBuf, 0, sizeof(tmpBuf));
 	nRet = recv(GLOBAL_SOCKET, tmpBuf, LocalControlNumLen, 0);
 	DWORD	netAddr;
@@ -504,7 +507,7 @@ VOID SendMsg2Backend()
 		length = 0;
 		CheckTaskFromLocal(GLOBAL_SOCKET);
 
-		if (loopCount >= 10)	// 此处是一个本地心跳，保证与CloudMonitor的正常通信。间隔‘10’秒发送一次
+		if (loopCount >= 3)	// 此处是一个本地心跳，保证与CloudMonitor的正常通信。间隔‘3’秒发送一次
 		{
 			if (reConnectTime >= MAX_RETRY_TIME)
 			{
@@ -520,10 +523,8 @@ VOID SendMsg2Backend()
 				isConnectionOK = FALSE;
 				reConnectTime += 1;
 				printf("ReConnect [%d] time\n", reConnectTime);
-				if (InitTcpConnection())
-				{
-					printf("[OK] Connected to %s:%d\n", SERV_ADDR, SERV_PORT);
-				}
+				printf("Trying connect again...\n");
+				InitTcpConnection();
 			}
 			else
 			{

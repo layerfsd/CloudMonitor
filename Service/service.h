@@ -16,7 +16,7 @@
 #define MASTER_APP_ARGS		"--autostart"
 
 
-#define SLEEP_TIME  10		// seconds
+#define SLEEP_TIME  2.5		// seconds
 
 void SetWorkPath();
 

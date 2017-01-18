@@ -17,9 +17,9 @@
 
 using namespace std;
 
-#pragma comment(lib,"ws2_32.lib")		// 建立socket()套接字
-#pragma comment(lib,"libcrypto.lib")	// ssl 加密函数
-#pragma comment(lib,"libssl.lib")		// ssl 安全信道 
+#pragma comment(lib, "ws2_32.lib")		// 建立socket()套接字
+#pragma comment(lib, "libcrypto.lib")	// ssl 加密函数
+#pragma comment(lib, "libssl.lib")		// ssl 安全信道 
 #pragma comment(lib, "iphlpapi.lib")	// 获取网络连接状况
 
 #define LOCAL_SCAN
