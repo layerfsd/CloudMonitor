@@ -242,7 +242,10 @@ bool GetAuth(Account* act)
 
 	memset(data, 0, sizeof(data));
 
-	DumpFromFile(AUTH_FILE, data, sizeof(data));
+	if (0 != DumpFromFile(AUTH_FILE, data, sizeof(data)))
+	{
+		return false;
+	}
 
 	Xor((uchar *)data, (uchar *)act, 64);
 	return true;
