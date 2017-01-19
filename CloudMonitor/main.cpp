@@ -72,7 +72,11 @@ int main(int argc, char *argv[])
 		printf("Need args\n");
 		return 1;
 	}
-
+	if (argc > 3)
+	{
+		printf("invalid args\n");
+		return 1;
+	}
 	// 当该程序自动运行时，默认从注册表中解析出认证信息
 	if (2 == argc)
 	{
@@ -100,8 +104,8 @@ int main(int argc, char *argv[])
 	if (argc == 3)
 	{
 		// 初始化账户信息
-		strcpy_s(act.username, 32, argv[1]);
-		strcpy_s(act.password, 32, argv[2]);
+		strncpy(act.username, argv[1], 32);
+		strncpy(act.password, argv[2], 32);
 	}
 
 	string wiredMac;			// 临时获取网卡地址
