@@ -11,6 +11,7 @@
 using namespace std;
 
 #pragma data_seg("Shared")
+HHOOK g_hHook2= NULL;
 HHOOK g_hHook = NULL;
 HWND  g_ExeHwnd = NULL;
 #pragma data_seg()
@@ -40,7 +41,7 @@ VOID SetHookOn()
 	HANDLE hThrd = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);		// 创建一个本地 TCP 端口,发送敏感事件
 
 	//g_hHook = SetWindowsHookEx(WH_CALLWNDPROC, GetMsgProc, g_hInst, 0);	// 窗口函数的过滤函数， 无法对wps打开多个文档时hook
-	//g_hHook = SetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, g_hInst, 0);	// 获取消息过滤函数，无法对wps新建进程时hook
+	g_hHook2 = SetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, g_hInst, 0);	// 获取消息过滤函数，无法对wps新建进程时hook
 	//g_hHook = SetWindowsHookEx(WH_KEYBOARD, GetMsgProc, g_hInst, 0);		// 键盘过滤，系统崩溃
 
 	// 消息过滤函数,在64为hook中，只要转到文件目录，则自动上场了，甚至没有打开操作
@@ -58,6 +59,7 @@ VOID SetHookOff()
 {
 	// 卸载钩子
 	UnhookWindowsHookEx(g_hHook);
+	UnhookWindowsHookEx(g_hHook2);
 	g_hHook = NULL;
 	printf("KEEP_RUNNING %d:\n", KEEP_RUNNING);
 	KEEP_RUNNING = FALSE;
