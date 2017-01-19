@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
 		app.GetFromServer();   // 接收服务端发送的 远程控制指令
 
 		app.ExecControl();    // 处理远程控制任务
-		app.HeartBeat();	  // 休眠 CLIENT_SLEEP_TIME 毫秒定时向服务端发送一个心跳包
+		app.HeartBeat();	  // 定时向服务端发送一个心跳包
 
 		if (!g_RUNNING)
 		{

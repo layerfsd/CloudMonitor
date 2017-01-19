@@ -896,7 +896,7 @@ bool User::HeartBeat()
 
 		FD_SET fdRead;
 		int		nRet = 0;				// 记录发送或者接受的字节数					
-		static TIMEVAL	tv = { 2, 0 };  // 最多等待服务端两秒钟
+		static TIMEVAL	tv = { 5, 0 };  // 最多等待服务端5秒钟，在这个时间内如果没有收到心跳回复，则认为服务器已经掉线，客户端会尝试重连
 
 		if (STATUE_DISCONNECTED == this->statu)
 		{
@@ -919,7 +919,7 @@ bool User::HeartBeat()
 		}
 		else
 		{
-			this->statu = STATUE_DISCONNECTED;
+			this->EndSession();
 			memset(pkt.text, 0, 3);
 
 			printf("[CloudMonitor] disconnected from server");
