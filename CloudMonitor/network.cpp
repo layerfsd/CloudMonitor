@@ -919,8 +919,8 @@ bool User::HeartBeat()
 		}
 		else
 		{
-			this->EndSession();
-			memset(pkt.text, 0, 3);
+			// this->EndSession();
+			// memset(pkt.text, 0, 3);
 
 			printf("[CloudMonitor] disconnected from server");
 			WriteToLog("[CloudMonitor] disconnected from server");
