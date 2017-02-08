@@ -25,10 +25,10 @@ int main()
 {
 	const char *cmds[]{
 		"sc stop CloudMonitorService",
-		"sc delete CloudMonitorService",
 		"taskkill /f /im CloudMonitor.exe",
 		"taskkill /f /im MonitorService.exe",
 		"taskkill /f /im MonitorService-64.exe",
+		"sc delete CloudMonitorService",
 	};
 
 	for (int i = 0; i < ArraySize(cmds); i++)
