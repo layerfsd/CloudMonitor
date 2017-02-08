@@ -1,3 +1,4 @@
+#include "network.h"
 #include "FileMon.h"
 #include "Encrypt.h"
 #include "parsedoc.h"
@@ -11,6 +12,11 @@
 #include <map>
 
 using namespace std;
+
+// 规定提取关键字上下文时的最大长度
+#define	CONTEXT_LEN			16	
+#define	UTF8_CHINESE_LEN	3	
+
 
 int DumpToFile(const char *FileName, char *buf, size_t FileSize)
 {
@@ -176,6 +182,58 @@ string GBKToUTF8(const char* strGBK)
 	return strTemp;
 }
 
+// 提取关键字的上下文
+// 搜索最多 CONTEXT_LEN 的长度
+void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context)
+{
+	if (offset < 0 || FileSize < 0)
+	{
+		return;
+	}
+	if (offset >= FileSize || NULL == FileBuf)
+	{
+		return;
+	}
+
+	int prevPos = offset;
+	int tailPos = offset + context.word.size();
+	int tp = 0;
+
+	const int limitSize = (UTF8_CHINESE_LEN *  CONTEXT_LEN) >> 1;
+
+	tp = prevPos - limitSize;
+	if (tp >= 0)
+	{
+		prevPos = tp;
+	}
+	else {
+		prevPos = 0;
+	}
+
+	// look tail
+	tp = 0;
+	tp = tailPos + limitSize;
+	if (tp <= FileSize)
+	{
+		tailPos = tp;
+	}
+	else {
+		tailPos = FileSize;
+	}
+
+	// 设置字符串断点
+	tp = FileBuf[tailPos];
+	FileBuf[tailPos] = 0;
+	//printf(FileBuf + prevPos);
+
+	context.context = FileBuf + prevPos;
+
+	// 还原
+	FileBuf[tailPos] = tp;
+	//cout << "\n\n\n  \t\t\t CONTEXT \n\n\n" << endl;
+	//printf("prevPos: %d tailPos: %d FileSize: %d offset: %d\n", prevPos, tailPos, FileSize, offset);
+	//cout << context.context << endl;
+}
 
 
 
@@ -221,6 +279,11 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 				MatchRecord[kw[i]]++;
 				nmatch += 1;
 				//printf("%s matched in offset %u!!!\n", kw[i].word.c_str(), offset);
+
+				// 提取第一个非重复关键字的上下文
+				if (1 == MatchRecord[kw[i]]) {
+					GetKeywordContext(FileBuf, offset, FileSize, kw[i]);
+				}
 			}
 		}
 		offset += 1;
@@ -234,13 +297,33 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 
 	map<Keyword, int>::const_iterator ite;
 	message.clear();
+
+	// 定义一个极大的不存在的关键字等级
+	// 找出rank最小的关键字
+	int whichWord = 10;
 	for (ite = MatchRecord.begin(); ite != MatchRecord.end(); ite++)
 	{
+		if (ite->first.rank < whichWord) {
+			whichWord = ite->first.rank;
+		}
 		memset(tmp, 0, MAX_LOG_SIZE);
 		sprintf(tmp, "%d-%s-%d ", (int)(ite->first.rank), ite->first.word.c_str(), ite->second);
 		message += tmp;
 	}
-	//message += '\n';	//关键字详情后追加一个‘换行’
+
+	// 构造日志详情: 日志类型 + 日志详情(关键字上下文)
+	memset(tmp, 0, MAX_LOG_SIZE);
+
+	// 找出最小rank对应的上下文
+	for (ite = MatchRecord.begin(); ite != MatchRecord.end(); ite++)
+	{
+		if (ite->first.rank == whichWord) {
+			sprintf(tmp, "\n%d %s", OPEN_FILE_WHILE_ONLINE, ite->first.context.c_str());
+			break;
+		}
+	}
+
+	message += tmp;
 	//cout << message << endl;
 	free(FileBuf);
 	return nmatch;
