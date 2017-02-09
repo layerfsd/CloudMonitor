@@ -105,12 +105,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_855BCDB8A42215F6A05B949712D52B08"
-        "OwnerKey" = "8:_6E7EF86524324194918D3FDA60D9ABD6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_883A15B691C94A2885233E6DCDE13C67"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -131,12 +125,6 @@
         {
         "MsmKey" = "8:_9E4CEE044B2B47B191BD97405F435525"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A649DA0E17464D9F9B93106753A162A3"
-        "OwnerKey" = "8:_C2ECC9A0B4094A3381FA63B2501B818A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -183,12 +171,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D5592FB94961EAC616057EFAB36EDF05"
-        "OwnerKey" = "8:_6E7EF86524324194918D3FDA60D9ABD6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_D5DC8F18080B4B70910D1A0E4F4E9090"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -215,12 +197,6 @@
         {
         "MsmKey" = "8:_E3E0394883D34B3D83F94E6411BF8568"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F252195F640BB9C856F53ADBF31E5103"
-        "OwnerKey" = "8:_6E7EF86524324194918D3FDA60D9ABD6"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -538,26 +514,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_855BCDB8A42215F6A05B949712D52B08"
-            {
-            "SourcePath" = "8:CRYPT32.dll"
-            "TargetName" = "8:CRYPT32.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_883A15B691C94A2885233E6DCDE13C67"
             {
             "SourcePath" = "8:..\\Release\\all2txt\\a2thtm.dll"
@@ -636,26 +592,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A649DA0E17464D9F9B93106753A162A3"
-            {
-            "SourcePath" = "8:WTSAPI32.dll"
-            "TargetName" = "8:WTSAPI32.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A981D5F59E754B91B362BE1F576E7366"
@@ -738,26 +674,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D5592FB94961EAC616057EFAB36EDF05"
-            {
-            "SourcePath" = "8:Normaliz.dll"
-            "TargetName" = "8:Normaliz.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF92A5C8B8A64E17A91C138AB4544864"
             {
             "SourcePath" = "8:..\\Release\\tools\\7z.exe"
@@ -816,26 +732,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F252195F640BB9C856F53ADBF31E5103"
-            {
-            "SourcePath" = "8:WLDAP32.dll"
-            "TargetName" = "8:WLDAP32.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }

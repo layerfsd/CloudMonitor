@@ -5,6 +5,12 @@
 
 #include <Windows.h>
 
+#if _WIN64
+#define INSTRUCTION_LEN		12
+#else
+#define INSTRUCTION_LEN		5
+#endif
+
 class CILHook
 {
 public:
@@ -18,8 +24,8 @@ public:
 
 private:
 	PROC m_pfnOrig;
-	BYTE m_bOldBytes[5];
-	BYTE m_bNewBytes[5];
+	BYTE m_bOldBytes[INSTRUCTION_LEN];
+	BYTE m_bNewBytes[INSTRUCTION_LEN];
 };
 
 #endif
