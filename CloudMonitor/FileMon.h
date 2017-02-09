@@ -55,7 +55,9 @@ struct Match
 struct Keyword
 {
 	string word;
+	string context;
 	int rank;
+
 	bool operator<(const Keyword& test) const
 	{
 		if (word < test.word)
