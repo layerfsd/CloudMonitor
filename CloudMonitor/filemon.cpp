@@ -14,7 +14,7 @@
 using namespace std;
 
 // 规定提取关键字上下文时的最大长度
-#define	CONTEXT_LEN			16	
+#define	CONTEXT_LEN			24
 #define	UTF8_CHINESE_LEN	3	
 
 
@@ -200,14 +200,17 @@ void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context
 	int tp = 0;
 
 	const int limitSize = (UTF8_CHINESE_LEN *  CONTEXT_LEN) >> 1;
+	char ch;
 
 	tp = prevPos - limitSize;
+	int addition = 0;
 	if (tp >= 0)
 	{
 		prevPos = tp;
 	}
 	else {
 		prevPos = 0;
+		addition = abs(tp);
 	}
 
 	// look tail
@@ -220,19 +223,51 @@ void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context
 	else {
 		tailPos = FileSize;
 	}
+	tailPos += addition;
 
 	// 设置字符串断点
 	tp = FileBuf[tailPos];
 	FileBuf[tailPos] = 0;
 	//printf(FileBuf + prevPos);
+	
+	// 把回车转化为空格
+	for (int i = 0; i < tailPos; i++)
+	{
+		if ('\r' == FileBuf[i] || '\n' == FileBuf[i])
+		{
+			FileBuf[i] = '_';
+		}
+	}
+
+	for (int i = 0; i < UTF8_CHINESE_LEN; i++)
+	{
+		ch = FileBuf[i + prevPos];
+		if ((ch & 0xe0) == 0xe0)
+		{
+			prevPos = i + prevPos;
+			break;
+		}
+	}
+
+
+	for (int i = 0; i < UTF8_CHINESE_LEN; i++)
+	{
+		ch = FileBuf[tailPos - i];
+		if ((ch & 0xe0) == 0xe0)
+		{
+			tailPos = tailPos - i + 2;
+			break;
+		}
+	}
+
 
 	context.context = FileBuf + prevPos;
 
 	// 还原
 	FileBuf[tailPos] = tp;
-	//cout << "\n\n\n  \t\t\t CONTEXT \n\n\n" << endl;
-	//printf("prevPos: %d tailPos: %d FileSize: %d offset: %d\n", prevPos, tailPos, FileSize, offset);
-	//cout << context.context << endl;
+
+	cout << "\n\n\n  \t\t\t CONTEXT \n\n\n" << endl;
+	cout << context.context << endl;
 }
 
 
@@ -290,9 +325,6 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 	}
 
 	// 生成报告日志
-	//message += "File: ";
-	//message += PlainFile;
-//	message += " Matches ";
 	char tmp[MAX_LOG_SIZE];
 
 	map<Keyword, int>::const_iterator ite;
@@ -312,19 +344,28 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 	}
 
 	// 构造日志详情: 日志类型 + 日志详情(关键字上下文)
-	memset(tmp, 0, MAX_LOG_SIZE);
+	message += "\n";
+	message += to_string(OPEN_FILE_WHILE_ONLINE);
+	message += " ";
+
+	//message += "ThisIsContext";
 
 	// 找出最小rank对应的上下文
-	for (ite = MatchRecord.begin(); ite != MatchRecord.end(); ite++)
+	for (auto& i : kw)
 	{
-		if (ite->first.rank == whichWord) {
-			sprintf(tmp, "\n%d %s", OPEN_FILE_WHILE_ONLINE, ite->first.context.c_str());
+		if (i.context.size() && i.rank == whichWord) {
+			message += i.context;
+			printf("[MatchContext] %s size: %d word: %s rank: %d\n", \
+				i.context.c_str(), i.context.size(), i.word.c_str(), i.rank);
 			break;
 		}
 	}
 
-	message += tmp;
-	//cout << message << endl;
+	for (auto& i : kw)
+	{
+		i.context.clear();
+	}
+
 	free(FileBuf);
 	return nmatch;
 }
