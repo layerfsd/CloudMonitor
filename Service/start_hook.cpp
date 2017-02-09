@@ -16,10 +16,14 @@
 #pragma warning(disable:4996)
 bool IsWin7()
 {
-	LPOSVERSIONINFO lpVersionInfo;
-	DWORD version = GetVersionExA(lpVersionInfo);
+	OSVERSIONINFO osvi;
 
-	return ((lpVersionInfo->dwMajorVersion == 6) && (lpVersionInfo->dwMinorVersion == 1));
+	ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+	GetVersionEx(&osvi);
+
+	return ((osvi.dwMajorVersion == 6) && (osvi.dwMinorVersion == 1));
 }
 
 
@@ -48,15 +52,11 @@ BOOL IsWow64()
 }
 
 
-bool StartHookService()
+inline void  Start32HookService()
 {
-
 	DWORD	dwPid;
 	char	cmd[MAX_PATH];
-
-	// 找不到目标进程时，才启动
-	if (!FindProcessPid(DEPEND_APP_NAME, dwPid))
-	{
+	if (!FindProcessPid(DEPEND_APP_NAME, dwPid)) {
 		memset(cmd, 0, sizeof(cmd));
 		snprintf(cmd, sizeof(cmd), "%s %s %s", MASTER_DAEMON, DEPEND_APP_NAME, BACKEND_FLAG);
 
@@ -66,32 +66,51 @@ bool StartHookService()
 		}
 		else
 		{
-			WriteToLog("[SERVICE-START] " DEPEND_APP_NAME " FAILED");
+			WriteToLog("[SERVICE-START] " DEPEND_APP_NAME " FAILEDs");
 		}
 	}
+}
 
-#if 0
-	// 检测系统是否支持64位程序运行
-	if (IsWow64() && !FindProcessPid(DEPEND_APP_NAME_64, dwPid))
-	{
-		// 本hook模块在win7 64 位上运行崩溃
-		// 在win8、win10 上正常
-		if (!IsWin7())
+inline void  Start64HookService()
+{
+	DWORD	dwPid;
+	char	cmd[MAX_PATH];
+	if (!FindProcessPid(DEPEND_APP_NAME_64, dwPid)) {
+		memset(cmd, 0, sizeof(cmd));
+		snprintf(cmd, sizeof(cmd), "%s %s %s", MASTER_DAEMON, DEPEND_APP_NAME_64, BACKEND_FLAG);
+
+		if (StartInteractiveProcess(cmd, NULL))
 		{
-			memset(cmd, 0, sizeof(cmd));
-			snprintf(cmd, sizeof(cmd), "%s %s %s", MASTER_DAEMON, DEPEND_APP_NAME_64, BACKEND_FLAG);
-
-			if (StartInteractiveProcess(cmd, NULL))
-			{
-				WriteToLog("[SERVICE-START] " DEPEND_APP_NAME_64 " OK");
-			}
-			else
-			{
-				WriteToLog("[SERVICE-START] " DEPEND_APP_NAME_64 " FAILEDs");
-			}
-
+			WriteToLog("[SERVICE-START] " DEPEND_APP_NAME_64 " OK");
+		}
+		else
+		{
+			WriteToLog("[SERVICE-START] " DEPEND_APP_NAME_64 " FAILEDs");
 		}
 	}
-#endif
+}
+
+
+bool StartHookService()
+{
+	if (IsWin7())
+	{
+		if (IsWow64())
+		{
+			Start64HookService();
+		}
+		else
+		{
+			Start32HookService();
+		}
+	}
+	else
+	{
+		Start32HookService();
+		if (IsWow64())
+		{
+			Start64HookService();
+		}
+	}
 	return true;
 }
