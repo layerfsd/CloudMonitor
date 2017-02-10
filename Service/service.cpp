@@ -181,6 +181,7 @@ void ServiceMain(int argc, char** argv)
 	{
 		Sleep(1000 * SLEEP_TIME);
 
+		dwPid = 0;
 		// 如果找不到该进程则启动之
 		if (!FindProcessPid(MASTER_APP_NAME, dwPid))
 		{

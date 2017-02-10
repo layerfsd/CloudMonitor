@@ -38,7 +38,7 @@ static BOOL isShutdownNetwork = FALSE;
 #define SERV_ADDR   "127.0.0.1"
 #define SERV_PORT	50006
 #define ONE_SECOND	1000
-#define MIN_SENT_INTERVAL 5  // 最短发送间隔时间
+#define MIN_SENT_INTERVAL 3  // 最短发送间隔时间
 
 BOOL		KEEP_RUNNING = TRUE;
 BOOL		isConnectionOK = FALSE;

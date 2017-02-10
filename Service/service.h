@@ -13,7 +13,7 @@
 #define MASTER_DAEMON		"Daemon.exe"
 
 #define MASTER_APP_NAME		"CloudMonitor.exe"
-#define MASTER_APP_ARGS		"--autostart"
+#define MASTER_APP_ARGS		"--start"
 
 
 #define SLEEP_TIME  2.5		// seconds
