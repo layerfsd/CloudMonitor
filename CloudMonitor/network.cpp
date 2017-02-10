@@ -690,11 +690,22 @@ bool User::SendLog(const char* fHash, const char* text, int logType)
 			now->tm_sec
 			 );
 		fHash = tpHash;
+	
+		snprintf(tmp, MAX_LOG_SIZE, "%d-%02d-%02d %02d:%02d\n%s\n%s\n%d %s",
+			now->tm_year + 1900,
+			now->tm_mon + 1,
+			now->tm_mday,
+			now->tm_hour,
+			now->tm_min,
+			fHash,
+			"USB Event",
+			logType, 
+			text);
 	}
 
 	// 获取时间
 	// 将时间和文件哈希拼入同一块缓存
-	if (OPEN_FILE_WHILE_ONLINE == logType)
+	else if (OPEN_FILE_WHILE_ONLINE == logType)
 	{
 		snprintf(tmp, MAX_LOG_SIZE, "%d-%02d-%02d %02d:%02d\n%s\n%s",
 			now->tm_year + 1900,
@@ -706,21 +717,8 @@ bool User::SendLog(const char* fHash, const char* text, int logType)
 			text);
 
 	}
-	else {
-		snprintf(tmp, MAX_LOG_SIZE, "%d-%02d-%02d %02d:%02d\n%s\n%s\n%d ",
-			now->tm_year + 1900,
-			now->tm_mon + 1,
-			now->tm_mday,
-			now->tm_hour,
-			now->tm_min,
-			fHash,
-			text,
-			logType);
-	}
-
 
 	// 构造日志
-	this->message.clear();
 	this->message = tmp;
 
 	return this->SendInfo(CMD_LOG, this->message.c_str());
