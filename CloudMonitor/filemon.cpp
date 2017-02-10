@@ -225,19 +225,6 @@ void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context
 	}
 	tailPos += addition;
 
-	// 设置字符串断点
-	tp = FileBuf[tailPos];
-	FileBuf[tailPos] = 0;
-	//printf(FileBuf + prevPos);
-	
-	// 把回车转化为空格
-	for (int i = 0; i < tailPos; i++)
-	{
-		if ('\r' == FileBuf[i] || '\n' == FileBuf[i])
-		{
-			FileBuf[i] = '_';
-		}
-	}
 
 	for (int i = 0; i < UTF8_CHINESE_LEN; i++)
 	{
@@ -250,13 +237,28 @@ void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context
 	}
 
 
+	// 将游标向前移动到一个utf8汉字之前
 	for (int i = 0; i < UTF8_CHINESE_LEN; i++)
 	{
 		ch = FileBuf[tailPos - i];
 		if ((ch & 0xe0) == 0xe0)
 		{
-			tailPos = tailPos - i + 2;
+			tailPos = tailPos - i;
 			break;
+		}
+	}
+
+	// 设置字符串断点
+	tp = FileBuf[tailPos];
+	FileBuf[tailPos] = 0;
+	//printf(FileBuf + prevPos);
+
+	// 把回车转化为空格
+	for (int i = 0; i < tailPos; i++)
+	{
+		if ('\r' == FileBuf[i] || '\n' == FileBuf[i])
+		{
+			FileBuf[i] = '_';
 		}
 	}
 
