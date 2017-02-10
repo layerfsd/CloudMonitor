@@ -1,0 +1,17 @@
+// 配置服务.txt
+
+创建服务：
+sc create CloudMonitorService binpath="d:\Dev\CloudMonitor\Release\Service.exe" start=auto
+
+删除服务：
+sc delete CloudMonitorService
+
+运行服务：
+sc start CloudMonitorService
+
+停止服务：
+sc stop CloudMonitorService
+
+创建并运行服务：
+sc create CloudMonitorService binpath="d:\Dev\CloudMonitor\Release\Service.exe" start=auto
+sc start CloudMonitorService

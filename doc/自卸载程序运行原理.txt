@@ -1,0 +1,17 @@
+自卸载程序运行原理.txt
+
+0.  把Update.exe 拷贝一份到系统的临时目录中，启动之
+	这样做的意义在于：一个正在运行的程序不能删除自己
+
+1.  检测并关闭服务 
+		CloudMonitorService		守护进程
+
+2.  关闭进程
+		CloudMonitor.exe			通信进程
+		MonitorService.exe 			IO监控进程
+		MonitorService-64.exe		64位IO监控进程
+		Update.exe					自更新程序(正常情况下该进程检测不到)
+
+4.	通过注册表找到本程序的安装路径
+		清空该路径下的所有文件，包括该目录本身
+		删除注册表下的‘安装路径’信息

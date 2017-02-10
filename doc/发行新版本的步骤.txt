@@ -1,0 +1,12 @@
+发行新版本的步骤.txt
+
+	当"云控客户端"版本升级后，我们希望已经在客户现场运行的客户端能够在后台自动升级。
+关于客户端后台自动升级的原理请看同一目录的 “自更新程序运行原理.txt”文件。
+
+	1、使用git tag 命令生成一个标签
+		eg：git tag -a v0.5 -m "some important updates"
+		
+	2、运行 Distribute 目录下的 xxx.py 文件就可以了
+
+	在 Distribute 建立第三方的 virtualenv 环境依赖
+	python3.4

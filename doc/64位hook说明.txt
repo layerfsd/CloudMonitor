@@ -1,0 +1,22 @@
+64位hook说明.txt
+
+
+   在64位系统中能不能实现inline api hook呢？答案是肯定的，但实现的方法有所不同。因为64位系
+统中API函数的地址和我们的处理函数地址之间的偏移量会大于2GB，而jmp指令最远只能跳2GB，所以无
+法通过改前5个字节的方式实现，我们只能通过其他的方式来达到目的。
+   通过实践，证明可以通过两种方法很容易地实现：一是先保存API函数入口处的12个字节，然后把AP
+I入口处改为48H B8H XX XX XX XX XX XX XX XX 50H C3H,其中XX XX XX XX XX XX XX 
+为我们的处理函数的64位地址，这12个字节相当于三条指令
+	mov rax,XX XX XX XX XX XX XX XX
+	PUSH RAX
+	RET 
+以实现到我们的处理函数的跳转;
+
+	二是先保存API函数入口处的14个字节，然后改为FFH,25H,0,0,0,0,XX XX XX XX XX XX XX XX，
+XX XX XX XX XX XX XX XX处为处理函数地址，等效于指令jmp [rip + XX XX XX XX XX XX XX XX]。
+     在网上，有人说可以把前14个字节改为FFH,15H,0,0,0,0  XX XX XX XX XX XX XX XX，等效为
+call [rip + XX XX XX XX XX XX XX XX]，这样应该是可以的，但call指令要把下一指令的地址压栈，
+这样就会改变rsp的值，在我们的处理函数中就要涉及到堆栈的调整，增加程序的复杂程度。而且我们
+不能保证API函数入口第15个字节开始处正好是一条有效的指令。
+   
+    以上两种方法在win7 64位旗舰版 fasm 1.96.12下均成功实现。

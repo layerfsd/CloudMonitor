@@ -1,0 +1,7 @@
+测试人员信息.txt
+
+win7-32 虚拟机
+
+	赵四 saaxjyt004
+
+ftp_server: 123.207.144.181 (linuxgcc.cn)

@@ -1,0 +1,38 @@
+我的吐槽.txt
+
+2017年1月19日16:26:23
+	我不知道为什么，win7-32下可以实现重启后一切正常，而win10-64下之前一直好好的。
+但是突然就不能够hook到anything了。fuck！！！！
+
+
+2017年1月26日11:32:26
+64位移植过程中的异常
+	本软件(CloudMonitor)在win7-64环境下运行系统范围内的hook服务时，会导致其它进程崩溃。
+经过‘二分法查找’，发现只要注释掉hook相关代码，就不会影响其它进程的运行。
+	但是同样的代码在win10-64环境中就没有任何问题。
+	
+
+
+
+
+我用钩子函数拦截指定进程(自己使用CreateProcess加载的进程)按键消息,SetWindowsHookEx执行成功,但是在目标进程窗口按键时,目标进程崩溃? WH_KEYBOARD换成WH_CBT则目标进程直接崩溃. 换句话说,只要HOOK成功,就会使目标进程不行.
+
+现在我已经解决一部分问题，目标进程崩溃的原因是因我的DLL在程序中用LIB静态连接的，这样就会崩，后来改成LoadLibiray装载
+再GetProcAddress，可以实现功能了。
+   这个程序被我移植到delphi上了，在delphi下钩子安装部分正常，消息拦截正常，然而执行UnHookWindowsHookEx目标进程又弹出对话框提示某地址内存读写失败，内容如楼主位的截图，但是确定后可以继续正常执行。 UnHookWindowsHookEx反回值我看了，是成功的
+
+
+ 2017年2月9日
+	测试发现，在win7-64平台上，如果使用32位文档编辑器打开一个文件时，MonitorService.exe 和
+MonitorService-64.exe都能监听到打开事件。使用64位文档编辑器时，则只有MonitorService-64.exe
+可以监听到打开事件。
+	因此本软件目前的逻辑存在缺陷：在win7-64位平台上同时启动 MonitorService.exe 和 MonitorService-64.exe
+有可能会产生重复的通知。
+
+
+2017年2月10日
+	0、发现重启后 CloudMonitor.exe 进程没有运行			Ok
+	1、MSI 创建的快捷方式不纯粹，需要手动创建快捷方式
+	2、utf8 上下文预览，测试其稳定性  					issue#1 Ok
+	3、usb日志重新导入									OK
+	4、win7 掉线后无法重连								Ok
