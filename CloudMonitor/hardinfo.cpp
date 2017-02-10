@@ -53,12 +53,12 @@ bool getMAC(vector<string>& mList)
 				macSet.insert(string(mac_addr).substr(0, 9));
 				if (WIRELESS_TYPE == pAdapterInfo->Type && strstr(pAdapterInfo->Description, "802.11n"))
 				{
-					sprintf(tmp, " %s-%s", mac_addr, "wireless");
+					sprintf(tmp, "%s-%s", mac_addr, "wireless");
 					mList.push_back(tmp);
 				}
 				else if (WIRED_TYPE == pAdapterInfo->Type)
 				{
-					sprintf(tmp, " %s-%s", mac_addr, "wired");
+					sprintf(tmp, "%s-%s", mac_addr, "wired");
 					mList.push_back(tmp);
 				}
 			}

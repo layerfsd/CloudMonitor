@@ -58,11 +58,11 @@ BOOL GetUSBDriverInfo(LPSTR szDrive, USB &usb)
 		//printf("\t[USB DEVICE] ");
 		break;
 	case DRIVE_REMOTE:
-		isRemovable = TRUE;
+		isRemovable = FALSE;
 		//printf("\t[NETWORK DEVICE] ");
 		break;
 	case DRIVE_CDROM:
-		isRemovable = TRUE;
+		isRemovable = FALSE;
 		//printf("\t[CD-ROM] ");
 		break;
 	default:

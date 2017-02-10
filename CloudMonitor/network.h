@@ -229,6 +229,10 @@ public:
 private:
 	HeadPacket	pkt;
 	char		userName[MAX_USERNAME];
+
+	// 保存一个mac 用于登录验证
+	string		oneMac;
+
 	string		message;
 	string		macList;
 	string		hdsList;

@@ -11,6 +11,8 @@
 #include <queue>
 #include <map>
 
+// 获取本机有线网卡地址
+bool GetWiredMac(string& wiredMac);
 
 AppConfig GS_acfg{};
 
@@ -399,6 +401,7 @@ User::User(const char *userName)
 	}
 	strncpy(this->userName, userName, MAX_USERNAME);
 	//cout << "workdir: " << workDir << endl;
+	GetWiredMac(this->oneMac);
 }
 
 
@@ -668,12 +671,25 @@ bool User::SendLog(const char* fHash, const char* text, int logType)
 	time_t t = time(0);   // get time now
 	struct tm* now = localtime(&t);
 	char   tmp[MAX_LOG_SIZE];
+	char   tpHash[64];
 
 	memset(tmp, 0, sizeof(tmp));
 
+	// 如果是usb 事件，用MAC+date+time 生成一个替代
+	// 以此来满足服务端的日志处理需求
 	if (USB_PLUG_EVENT == logType)
 	{
-		fHash = "abcd1234";
+		memset(tpHash, 0, sizeof(tpHash));
+		snprintf(tpHash, MAX_LOG_SIZE, "%s%d%02d%02d%02d%02d%02d.",
+			this->oneMac.c_str(),
+			now->tm_year + 1900,
+			now->tm_mon + 1,
+			now->tm_mday,
+			now->tm_hour,
+			now->tm_min,
+			now->tm_sec
+			 );
+		fHash = tpHash;
 	}
 
 	// 获取时间
