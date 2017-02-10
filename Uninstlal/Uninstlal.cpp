@@ -2,6 +2,9 @@
 //
 
 #include "stdafx.h"
+#include <windows.h>
+#include <iostream>
+#include <string>
 
 #define ArraySize(ptr)		(sizeof(ptr) / sizeof(ptr[0]))
 
@@ -35,6 +38,21 @@ int main()
 	{
 		SysRun(cmds[i]);
 	}
-    return 0;
-}
 
+	char buf[1000];
+	char buffer[1000];
+	int i = 1000;
+	GetCurrentDirectory(1000, buf);
+	//printf("the current dictory is:%s\n", buf);
+	std::string setdirectory;
+	setdirectory.assign(buf);
+	//printf("the dictory is :%s\n",setdirectory);
+	setdirectory.append("//..//");     //设置为当前工作路径为当时的上一级
+							//a=a+"..//";
+	SetCurrentDirectory(setdirectory.c_str());  //设置
+	//GetCurrentDirectory(1000, buffer);
+
+	system("rd CloudMonitor /s/q");
+
+	return 0;
+}
