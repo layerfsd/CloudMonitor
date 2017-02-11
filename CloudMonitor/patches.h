@@ -17,6 +17,7 @@ bool StartHookService();	// Æô¶¯ MonitorService.exe
 
 void SetWorkPath();
 
+void CheckDaemonService();
 
 int GetServiceStatus(const char* name);
 

@@ -152,6 +152,9 @@ int main(int argc, char *argv[])
 	{
 		SetAuth(&act);
 	}
+	
+	CheckDaemonService();
+
 	// 每次启动，先更新关键字列表
 	app.GetFile(string(KEYWORDS));
 	if (!LoadKeywords(keywordPath, kw))

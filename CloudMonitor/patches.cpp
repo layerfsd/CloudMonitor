@@ -28,6 +28,23 @@ extern BOOL g_RUNNING;
 
 bool InformUser(int info);
 
+
+// 检查守护服务是否开启
+void CheckDaemonService()
+{
+	if (!IsServiceRunning())
+	{
+		// 判断是否自更新程序正在运行
+		if ((_access(UPDATE_CHECKED_FLAG, 0) != 0))
+		{
+			WriteToLog("[CloudMonitor] " SERVICE_NAME " is not runing");
+			WriteToLog("[CloudMonitor] I will start the Service.exe");
+			DoStartSvc(SERVICE_NAME);
+		}
+	}
+
+}
+
 bool GetMyName(char* szBuf, size_t bufSize)
 {
 
