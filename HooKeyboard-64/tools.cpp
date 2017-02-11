@@ -427,9 +427,6 @@ void CheckTaskFromLocal(SOCKET sock)
 	static int	CMD = 0;
 
 
-	if (!isConnectionOK)
-		return;
-
 	memset(tmpBuf, 0, sizeof(tmpBuf));
 	nRet = recv(GLOBAL_SOCKET, tmpBuf, LocalControlNumLen, 0);
 	DWORD	netAddr;

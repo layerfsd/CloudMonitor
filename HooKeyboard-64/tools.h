@@ -4,7 +4,7 @@
 #define MY_TOOLS_INCLUDE
 
 // 设置最大重复通知次数
-#define MAX_RETRY_TIME	18
+#define MAX_RETRY_TIME	5
 
 #include <Windows.h>
 
