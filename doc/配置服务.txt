@@ -15,3 +15,21 @@ sc stop CloudMonitorService
 创建并运行服务：
 sc create CloudMonitorService binpath="d:\Dev\CloudMonitor\Release\Service.exe" start=auto
 sc start CloudMonitorService
+
+
+创建用户
+	create user 'qll'@'localhost' IDENTIFIED BY 'your_password'; 
+
+数据库赋权
+	grant all privileges on db_name.* to 'qll'@'localhost';
+	flush privileges;
+
+更改用户密码
+	set password for qll=password("xaut.qll");
+
+删除用户
+	drop user ‘qll’@’%’; 
+
+允许用户远程登陆
+	update user_name set Host='%' where User=user_name and Host='localhost';
+	flush privileges;

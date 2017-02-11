@@ -122,7 +122,7 @@ string FormatMAC() {
 
 	if (getMAC(mList))
 	{
-		sprintf(num, "%d", mList.size());
+		sprintf(num, "%d ", mList.size());
 		txt += num;
 
 		for (size_t i = 0; i < mList.size(); i++)
@@ -198,7 +198,7 @@ string FormatHDS()
 
 	if (getHDS(mList))
 	{
-		sprintf(num, "%d", mList.size());
+		sprintf(num, "%d ", mList.size());
 		txt += num;
 
 		for (size_t i = 0; i < mList.size(); i++)

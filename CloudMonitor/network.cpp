@@ -656,6 +656,7 @@ bool User::Authentication()
 		{
 			// ×¢²áÊ§°Ü
 			InformUser(CONNECT_FAILED);
+			return false;
 		}
 	}
 
