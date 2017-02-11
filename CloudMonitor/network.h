@@ -237,7 +237,7 @@ private:
 	string		macList;
 	string		hdsList;
 	string		workDir;
-	char		tmpBuf[MAXBUF];
+	char		tmpBuf[MAXBUF*10];
 	int			statu;
 
 

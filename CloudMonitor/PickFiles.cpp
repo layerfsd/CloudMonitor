@@ -153,11 +153,12 @@ bool ScanLocalFiles(vector<Match>& scanResults)
 
 	for (size_t i = 0; i < collector.size(); i++)
 	{
+		memset(&tFile, 0, sizeof(tFile));
+
 		file.localPath = collector[i];
 		// 判断是否为涉密文件
-		if (fsFilter(file, kw, hashList, tMatch))
+		if (fsFilter(file, kw, hashList, tMatch, tFile.keywordContext))
 		{
-			memset(&tFile, 0, sizeof(tFile));
 			strncpy(tFile.fullPath, file.utf8Path.c_str(), 256);
 			strncpy(tFile.matchDetail, tMatch.c_str(), 512);
 			scanResults.push_back(tFile);
@@ -183,6 +184,8 @@ bool RemoteScanLocalFiles(string& message, string& args)
 		message += "|";
 		message += scanResults[i].matchDetail;
 		message += "\n";
+		//message += scanResults[i].keywordContext;
+		//message += "\n";
 	}
 
 	system("del /F /S /Q TMP"); 	// 删除所有临时文件

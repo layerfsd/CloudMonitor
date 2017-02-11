@@ -21,6 +21,11 @@
 #define KEYWORD_PATH		"DATA\\keywords.txt"
 #define HASHLST_PATH		"DATA\\hashlist.txt"
 
+// 规定提取关键字上下文时的最大长度
+#define	CONTEXT_LEN			24
+#define	UTF8_CHINESE_LEN	3	
+#define MAX_CONTEXT			(CONTEXT_LEN * UTF8_CHINESE_LEN+1)
+
 
 #include <string>
 #include <iostream>
@@ -48,6 +53,7 @@ struct Match
 {
 	char    fullPath[256];
 	char    matchDetail[512];
+	char    keywordContext[MAX_CONTEXT];
 };
 
 // 重载 '<' 运算符是为了 map() 的哈希计算
@@ -107,7 +113,7 @@ struct SFile
 };
 
 // 文件内容过滤
-bool fsFilter(SFile &file, vector<Keyword> &kw, vector<HashItem> &hashList, string &message);
+bool fsFilter(SFile &file, vector<Keyword> &kw, vector<HashItem> &hashList, string &message, char *context=NULL);
 
 // 从本地加载哈希索引
 bool LoadHashList(string &path, vector<HashItem> hashList);

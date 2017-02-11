@@ -13,10 +13,6 @@
 
 using namespace std;
 
-// 规定提取关键字上下文时的最大长度
-#define	CONTEXT_LEN			24
-#define	UTF8_CHINESE_LEN	3	
-
 
 int DumpToFile(const char *FileName, char *buf, size_t FileSize)
 {
@@ -274,7 +270,7 @@ void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context
 
 
 
-int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
+int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message, char *context=NULL)
 {
 	char    *FileBuf;
 	size_t  FileSize = 0;
@@ -346,9 +342,12 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 	}
 
 	// 构造日志详情: 日志类型 + 日志详情(关键字上下文)
-	message += "\n";
-	message += to_string(OPEN_FILE_WHILE_ONLINE);
-	message += " ";
+	if (NULL == context)
+	{
+		message += "\n";
+		message += to_string(OPEN_FILE_WHILE_ONLINE);
+		message += " ";
+	}
 
 	//message += "ThisIsContext";
 
@@ -356,7 +355,14 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message)
 	for (auto& i : kw)
 	{
 		if (i.context.size() && i.rank == whichWord) {
-			message += i.context;
+			if (NULL == context)
+			{
+				message += i.context;
+			}
+			else
+			{
+				strncpy(context, i.context.c_str(), MAX_CONTEXT);
+			}
 			printf("[MatchContext] %s size: %d word: %s rank: %d\n", \
 				i.context.c_str(), i.context.size(), i.word.c_str(), i.rank);
 			break;
@@ -568,7 +574,8 @@ inline void _showSFile(SFile &sf)
 }
 
 
-bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string &message)
+bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, \
+	string &message, char *context)
 {	
 	if (-1 ==_access(sf.localPath.c_str(), 0))
 	{
@@ -595,7 +602,7 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, string
 	ParseFile2Text(localPath, txtPath);
 
 	// 如果没有匹配到关键字，则忽略该文件
-	if (KeywordFilter(kw, txtPath, message) <= 0)
+	if (KeywordFilter(kw, txtPath, message, context) <= 0)
 	{
 		cout << "Find nothing from: " << sf.localPath << endl;
 		return false;

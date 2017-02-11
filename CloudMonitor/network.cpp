@@ -931,14 +931,6 @@ bool User::HeartBeat()
 		{
 			printf("[CloudMonitor] Channel OK");
 		}
-		else
-		{
-			this->EndSession();
-			memset(pkt.text, 0, 3);
-
-			printf("[CloudMonitor] disconnected from server");
-			WriteToLog("[CloudMonitor] disconnected from server");
-		}
 	}
 
 	//cout << "LOOP_SLEEP_TIME: " << count << endl;
