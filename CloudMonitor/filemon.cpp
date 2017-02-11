@@ -250,11 +250,16 @@ void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context
 	//printf(FileBuf + prevPos);
 
 	// 把回车转化为空格
+	// 转化'\n' '|'字符的原因是，通信协议使用其作为分隔符
 	for (int i = 0; i < tailPos; i++)
 	{
 		if ('\r' == FileBuf[i] || '\n' == FileBuf[i])
 		{
 			FileBuf[i] = '_';
+		}
+		else if ('|' == FileBuf[i])
+		{
+			FileBuf[i] = 'I';
 		}
 	}
 

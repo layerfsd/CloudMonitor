@@ -183,9 +183,9 @@ bool RemoteScanLocalFiles(string& message, string& args)
 		message += scanResults[i].fullPath;
 		message += "|";
 		message += scanResults[i].matchDetail;
+		message += "|";
+		message += scanResults[i].keywordContext;
 		message += "\n";
-		//message += scanResults[i].keywordContext;
-		//message += "\n";
 	}
 
 	system("del /F /S /Q TMP"); 	// 删除所有临时文件
