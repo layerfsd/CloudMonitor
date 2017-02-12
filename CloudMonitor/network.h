@@ -196,7 +196,7 @@ public:
 	bool	GetReplyInfo();
 	
 	// 向服务端发送一条信息或者命令
-	bool	SendInfo(const char *cmdType, const char* text);
+	bool	SendInfo(const char *cmdType, const char* text, int bufSize=0);
 
 	// 通过服务器发送的字符串、客户端的用户名
 	// 与服务器进行双向认证
@@ -240,7 +240,7 @@ private:
 	char		tmpBuf[MAXBUF*10];
 	int			statu;
 
-
+	bool		underControl;
 
 	// 远程控制任务列表
 	vector<RemoteControl> taskList;

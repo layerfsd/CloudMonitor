@@ -167,6 +167,8 @@ int main(int argc, char *argv[])
 
 	while (g_RUNNING)
 	{
+		app.HeartBeat();	  // 定时向服务端发送一个心跳包
+
 		// 检查USB 接口
 		if (CheckUsbDevice(usb))
 		{
@@ -195,9 +197,9 @@ int main(int argc, char *argv[])
 		}
 
 		app.GetFromServer();   // 接收服务端发送的 远程控制指令
-
 		app.ExecControl();    // 处理远程控制任务
-		app.HeartBeat();	  // 定时向服务端发送一个心跳包
+							  // 检测到守护进程没有启动时，启动之
+		CheckDaemonService();
 
 		if (!g_RUNNING)
 		{

@@ -441,7 +441,7 @@ VOID __stdcall DoStartSvc(const char* szSvcName)
 
 	if (NULL == schSCManager)
 	{
-		printf("OpenSCManager failed (%d)\n", GetLastError());
+		//printf("OpenSCManager failed (%d)\n", GetLastError());
 		return;
 	}
 
@@ -677,4 +677,3 @@ bool IsServiceRunning()
 {
 	return SERVICE_RUNNING == GetServiceStatus(SERVICE_NAME);
 }
-

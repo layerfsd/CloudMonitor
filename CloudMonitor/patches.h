@@ -4,6 +4,8 @@
 #include <Windows.h>
 
 
+//#define _DEBUG
+
 #define SERVICE_NAME			"CloudMonitorService"
 
 #define ArraySize(ptr)	(sizeof(ptr) / sizeof(ptr[0]))
@@ -35,6 +37,16 @@ int WriteToLog(char* str);
 // 删除临时文件
 void CleanTmpFiles(SFile& file);
 
+// 调试输出函数
+inline void XTrace(char* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+#if defined(_DEBUG) || defined(SHOW_DEBUG_MESSAGES)
+	vfprintf_s(stdout, fmt, args);
+#endif
+	va_end(args);
+}
 
 VOID __stdcall DoStartSvc(const char* szSvcName);
 

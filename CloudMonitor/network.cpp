@@ -352,12 +352,12 @@ bool User::ExecControl()
 			if (execStatus)
 			{
 				// 任务成功执行,通知服务端处理结果 
-				this->SendInfo(CTL_RPL_OK, message.c_str());							
+				this->SendInfo(CTL_RPL_OK, message.c_str(), message.length());
 			}
 			else
 			{
 				// 任务执行失败,也通知服务端处理结果 
-				this->SendInfo(CTL_RPL_FAILED, message.c_str());						
+				this->SendInfo(CTL_RPL_FAILED, message.c_str(), message.length());						
 			}
 			this->taskList[i].notExecuted = false;			 // 任务执行后,标记任务`未执行状态`为假
 			break;
@@ -365,6 +365,7 @@ bool User::ExecControl()
 		}
 	//end for
 	}
+	this->underControl = false;
 	return execStatus;
 }
 
@@ -476,6 +477,9 @@ bool User::GetReplyInfo()
 				<< "\tfunc at: " << tmpTask.func << endl
 				<< "\tfuncDesc: " << funcList[instructionCode].funcDesc << endl;
 			cout << "}" << endl;
+
+			// 设置客户端当前正处于远程任务执行状态
+			this->underControl = true;
 			return true;
 		}
 		else // 如果远程控制编码不支持,则通知服务端此条控制信息为非法指令
@@ -492,11 +496,22 @@ bool User::GetReplyInfo()
 }
 
 
-bool User::SendInfo(const char *cmdType, const char* text)
+bool User::SendInfo(const char *cmdType, const char* text, int bufSize)
 {
 	int pktSize = 0;
-	int textLen = strlen(text);
-	int netLen = n2hi(textLen);
+	int textLen = 0;
+	int netLen = 0;
+
+	if (bufSize > 0)
+	{
+		textLen = bufSize;
+	}
+	else
+	{
+		textLen = strlen(text);
+	}
+	
+	netLen = n2hi(textLen);
 
 	if (STATUE_DISCONNECTED == this->statu)
 	{
@@ -662,7 +677,8 @@ bool User::Authentication()
 
 	// 登录成功
 	InformUser(CONNECT_SUCCESS);
-	
+	this->underControl = false;
+
 	return true;
 }
 
@@ -898,47 +914,49 @@ bool User::UploadFile(SFile &file)
 bool User::HeartBeat()
 {
 	static int count = 0;   // 设计一个静态计数器来控制心跳发送
+	FD_SET fdRead;
+	int		nRet = 0;				// 记录发送或者接受的字节数					
+	static TIMEVAL	tv = { 5, 0 };  // 最多等待服务端5秒钟，在这个时间内如果没有收到心跳回复，则认为服务器已经掉线，客户端会尝试重连
+
 
 	if (count >= SLEEP_TIMES_PER_HBT)
 	{
 		count = 0;
 
-		printf("[CloudMonitorStatus] %d\n", GetServiceStatus(SERVICE_NAME));
-		// 检测到守护进程没有启动时，启动之
-		CheckDaemonService();
-		this->SendInfo(CMD_HBT, CMD_HBT);
-
-		FD_SET fdRead;
-		int		nRet = 0;				// 记录发送或者接受的字节数					
-		static TIMEVAL	tv = { 5, 0 };  // 最多等待服务端5秒钟，在这个时间内如果没有收到心跳回复，则认为服务器已经掉线，客户端会尝试重连
-
-		if (STATUE_DISCONNECTED == this->statu)
+		// 检查心跳回复
+		// 如果客户端正在执行远程派发的任务，则暂时不进行心跳检查
+		// 因为此时远程服务器正在等待任务执行结果，而不会回复客户端的心跳
+		if (false == this->underControl)
 		{
-			return false;
+			this->SendInfo(CMD_HBT, CMD_HBT, 3);
+			
+			FD_ZERO(&fdRead);
+			FD_SET(hdl.sock, &fdRead);
+			
+			XTrace("Before select underControl: %d\n", this->underControl);
+			nRet = select(0, &fdRead, NULL, NULL, &tv);
+
+			if ((nRet > 0) && this->GetReplyInfo() && (0 == memcmp(pkt.text, CMD_HBT, 3)))
+			{
+				XTrace("After GetReplyInfo() underControl: %d\n", this->underControl);
+
+				if (STATUE_DISCONNECTED == this->statu)
+				{
+					return false;
+				}
+				printf("[CloudMonitor] Channel OK\n");
+			}
+			else
+			{
+				this->EndSession();
+			}
 		}
-
-		FD_ZERO(&fdRead);
-		FD_SET(hdl.sock, &fdRead);
-
-		nRet = select(0, &fdRead, NULL, NULL, &tv);
-
-		if (nRet > 0)
-		{
-			this->GetReplyInfo();
-		}
-
-		if ( 0 == memcmp(pkt.text, CMD_HBT, 3) ) 
-		{
-			printf("[CloudMonitor] Channel OK");
-		}
+		this->KeepAlive();  // 当检测到客户端掉线时，尝试重新连接
 	}
-
-	//cout << "LOOP_SLEEP_TIME: " << count << endl;
-
-	this->KeepAlive();  // 当检测到客户端掉线时，尝试重新连接
-
-	count += 1;
-	Sleep(LOOP_SLEEP_TIME);
+	else{
+		count += 1;
+		Sleep(LOOP_SLEEP_TIME);
+	}
 
 	return true;
 }
