@@ -175,6 +175,7 @@ public:
 
 	void KeepAlive();
 
+	bool IsMyAppExpired();
 
 	// 接收服务端远程控制指令
 	bool GetFromServer();

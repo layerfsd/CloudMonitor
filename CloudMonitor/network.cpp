@@ -45,7 +45,11 @@ namespace session
 	const char*		CMD_UPD			= "UPD";
 	const char*		CMD_BGN			= "BEGIN";
 	const char*     CMD_HBT			= "HBT";
+	const char*		CMD_EPT			= "EPT";
+	const char*		CMD_CTM			= "CTM";
 
+
+	
 	// 定义远程控制的包头为 `CTL`
 	const char*     CMD_CONTROL = "CTL";
 
@@ -288,6 +292,71 @@ void User::KeepAlive()
 }
 
 
+static bool GetNtpTime(string& szTime)
+{
+	szTime = "2017-02-12 19:00";
+	return true;
+}
+
+
+static time_t Time2Int(string& szTime)
+{
+	return 1;
+}
+
+
+bool User::IsMyAppExpired()
+{
+	string szCurTime[2]{};	// 从服务端获取当前时间
+	string szExpTime{};
+
+	time_t curTime[2]{ 0 };
+	time_t realTime = 0;
+	time_t expTime = 0;
+
+	bool   isExpired = false;
+
+	// 从服务端获取本软件截止日期
+	this->SendInfo(CMD_RPL, CMD_CTM, CMD_SIZE);
+	this->GetReplyInfo();
+	szExpTime = this->pkt.text;
+
+
+	for (int i = 0; i < ArraySize(curTime); i++)
+	{
+		// 从服务端获取当前时间
+		if (0 == i)
+		{
+			this->SendInfo(CMD_RPL, CMD_EPT, CMD_SIZE);
+			this->GetReplyInfo();
+			szCurTime[i] = this->pkt.text;
+		}
+		// 从互联网获取当前时间
+		else if (1 == i)
+		{
+			if (!GetNtpTime(szCurTime[i]))
+			{
+				szCurTime[i] = "0";
+			}
+		}
+		curTime[i] = Time2Int(szCurTime[i]);
+	}
+
+	// 找出最接近过期的时间
+	for (int i = 0; i < ArraySize(curTime); i++)
+	{
+		if (curTime[i] > realTime)
+		{
+			realTime = curTime[i];
+		}
+	}
+
+	isExpired = (realTime > expTime);
+
+	return isExpired;
+}
+
+
 bool User::GetFromServer()
 {
 	static	FD_SET fdRead;
@@ -348,6 +417,9 @@ bool User::ExecControl()
 
 			// 传送User类中的message引用给远程处理函数,远程处理函数产生的处理结果存储在 message 中
 			cout << "Executing task ..." << endl;
+
+			// 获取结果之前，先清空缓存
+			this->message.clear();
 			execStatus = this->taskList[i].func(this->message, taskList[i].ctlDetails);	
 			if (execStatus)
 			{

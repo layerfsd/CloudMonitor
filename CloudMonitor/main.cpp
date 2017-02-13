@@ -155,6 +155,14 @@ int main(int argc, char *argv[])
 	
 	CheckDaemonService();
 
+	// 检查本软件是否已经过期，过期则自动停止服务
+	// 如果用户激活后，需要重新使用GUI界面程序登录
+	if (app.IsMyAppExpired())
+	{
+		//system("Uninstall.exe");
+		exit(0);
+	}
+
 	// 每次启动，先更新关键字列表
 	app.GetFile(string(KEYWORDS));
 	if (!LoadKeywords(keywordPath, kw))
