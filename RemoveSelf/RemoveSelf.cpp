@@ -57,7 +57,7 @@ int main()
 	system("rd CloudMonitor /s/q"); //删除CloudMonitor下除了uninstall的所有文件
 
 	string UserName = getusername();
-	system("del /f/s/q C:\\Users\\%UserName%\\Desktop\\云控客户端.lnk");//删除桌面快捷方式
+	system("del /f/s/q C:\\Users\\%UserName%\\Desktop\\安全监管客户端.lnk");//删除桌面快捷方式
 	
 	SelfDel(); //自删除
 	return 0;
