@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CloudMonitor", "CloudMonitor\CloudMonitor.vcxproj", "{4A092B22-A339-4259-9CA9-FE3FDDA3F82A}"
 EndProject
@@ -23,7 +23,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Daemon", "Daemon\Daemon.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Service", "Service\Service.vcxproj", "{6C54A64D-B4FE-4486-8928-3872FB53A8C6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Uninstlal", "Uninstlal\Uninstlal.vcxproj", "{93BA9F3E-C303-46A3-8AB5-8EAB996C86F5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Uninstall", "Uninstlal\Uninstlal.vcxproj", "{93BA9F3E-C303-46A3-8AB5-8EAB996C86F5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RemoveSelf", "RemoveSelf\RemoveSelf.vcxproj", "{E3CC953D-D81A-4265-8254-DADFB2C560E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -189,6 +191,20 @@ Global
 		{93BA9F3E-C303-46A3-8AB5-8EAB996C86F5}.Release|x64.Build.0 = Release|x64
 		{93BA9F3E-C303-46A3-8AB5-8EAB996C86F5}.Release|x86.ActiveCfg = Release|Win32
 		{93BA9F3E-C303-46A3-8AB5-8EAB996C86F5}.Release|x86.Build.0 = Release|Win32
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Debug|ARM.ActiveCfg = Debug|Win32
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Debug|x64.ActiveCfg = Debug|x64
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Debug|x64.Build.0 = Debug|x64
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Debug|x86.ActiveCfg = Debug|Win32
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Debug|x86.Build.0 = Debug|Win32
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Release|Any CPU.ActiveCfg = Release|Win32
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Release|ARM.ActiveCfg = Release|Win32
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Release|ARM64.ActiveCfg = Release|Win32
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Release|x64.ActiveCfg = Release|x64
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Release|x64.Build.0 = Release|x64
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Release|x86.ActiveCfg = Release|Win32
+		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
