@@ -221,13 +221,13 @@ BOOL GetTask(TASK* tsk)
 			if ((!memcmp(cur.path, it->first.c_str(), cur.len)) &&\
 				(cur.ltime - it->second.ltime < MIN_SENT_INTERVAL))
 			{
-				printf("[REPEAT-INTERVAL] %s %Iu \n", it->first.c_str(), it->second.ltime);
+				//printf("[REPEAT-INTERVAL] %s %Iu \n", it->first.c_str(), it->second.ltime);
 				bRet = FALSE;
 				break;
 			}
 			if (cur.fileSize == it->second.fileSize)
 			{
-				printf("[REPEAT-FILESIZE] %s %Iu %Iu\n", it->first.c_str(), it->second.fileSize,it->second.ltime);
+				//printf("[REPEAT-FILESIZE] %s %Iu %Iu\n", it->first.c_str(), it->second.fileSize,it->second.ltime);
 				bRet = FALSE;
 				break;
 			}
