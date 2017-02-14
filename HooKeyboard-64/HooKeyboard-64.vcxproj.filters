@@ -14,10 +14,10 @@
     <ClCompile Include="ILHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="myHook.cpp">
+    <ClCompile Include="tools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="tools.cpp">
+    <ClCompile Include="myHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

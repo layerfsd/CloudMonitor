@@ -4,41 +4,37 @@
 #include <map>
 #include <string>
 #include <time.h>
-
 #include <sys/types.h>  
 #include <sys/stat.h>  
-
 #include <windows.h>
 
-using namespace std;
-
-
-struct TASK
-{
-	CHAR	path[MAX_PATH];
-	size_t  ltime;
-	DWORD	len;
-	BOOL    status;
-};
 #define MAX_QUEUE_SIZE 1024
-
-#pragma data_seg("GV_ALBERT_QUEUE")
-
-size_t gll_head = 0;
-size_t gll_tail = 0;
-TASK gll_queue[MAX_QUEUE_SIZE] = {0};
-
-static BOOL isShutdownNetwork = FALSE;
-
-#pragma data_seg()
-#pragma comment(linker,"/SECTION:GV_ALBERT_QUEUE,RWS")
-
-
 #define SEM_NAME	"ALBERT_SYNC"
 #define SERV_ADDR   "127.0.0.1"
 #define SERV_PORT	50006
 #define ONE_SECOND	1000
 #define MIN_SENT_INTERVAL 3  // 最短发送间隔时间
+
+using namespace std;
+
+struct TASK
+{
+	CHAR	path[MAX_PATH];
+	size_t  ltime;
+	size_t  fileSize;
+	DWORD	len;
+	BOOL    status;
+};
+
+#pragma data_seg("GV_ALBERT_QUEUE")
+size_t gll_head = 0;
+size_t gll_tail = 0;
+TASK gll_queue[MAX_QUEUE_SIZE] {0};
+#pragma data_seg()
+#pragma comment(linker,"/SECTION:GV_ALBERT_QUEUE,RWS")
+
+static BOOL isShutdownNetwork = FALSE;
+
 
 BOOL		KEEP_RUNNING = TRUE;
 BOOL		isConnectionOK = FALSE;
@@ -81,6 +77,24 @@ static bool NotIgnoreByTime(const char* filename)
 	return false;
 }
 
+
+int GetFileSize(const char *FileName, size_t *FileSize)
+{
+	FILE *fp;
+
+	if ((fp = fopen(FileName, "rb")) == NULL)
+	{
+		//perror(FileName);  //调试,显示具体出错信息
+		return -1;
+	}
+	fseek(fp, 0, SEEK_END);
+	*FileSize = ftell(fp);
+
+	fclose(fp);
+	fp = NULL;
+
+	return 0;
+}
 
 
 // 通过此 TCP 接口通报消息
@@ -138,7 +152,7 @@ BOOL InitTcpConnection()
 // 其工作原理是: 接收到 Hook 通知后,将·路径·记录到队列中立刻返回
 // 由一个专有线程负责从队列中读取数据通知另外一个程序
 
-static 	map<string,size_t> LastTask;
+static 	map<string,TASK> LastTask;
 
 BOOL GetTask(TASK* tsk)
 {
@@ -193,19 +207,28 @@ BOOL GetTask(TASK* tsk)
 			break;
 		}
 	}
+
+	printf("head: %Iu tail: %Iu\n", gll_head, gll_tail);
 	
 	if (bRet)	// 成功领取到任务
 	{
+		GetFileSize(cur.path, &cur.fileSize);
 		// 在一定时间内,不允许重复发送.
 		// 检测是否与上一个任务一致
-
 		// 检查该路径是否在 MIN_SENT_INTERVAL 秒内重复发送过
 		for (auto it = LastTask.begin(); it != LastTask.end(); ++it)
 		{
-			if ((!memcmp(cur.path, it->first.c_str(), cur.len)) && (cur.ltime - it->second < MIN_SENT_INTERVAL))
+			if ((!memcmp(cur.path, it->first.c_str(), cur.len)) &&\
+				(cur.ltime - it->second.ltime < MIN_SENT_INTERVAL))
 			{
+				printf("[REPEAT-INTERVAL] %s %Iu \n", it->first.c_str(), it->second.ltime);
 				bRet = FALSE;
-				//printf("[REPEAT-IGNORED:] %s\n", it->first.c_str());
+				break;
+			}
+			if (cur.fileSize == it->second.fileSize)
+			{
+				printf("[REPEAT-FILESIZE] %s %Iu %Iu\n", it->first.c_str(), it->second.fileSize,it->second.ltime);
+				bRet = FALSE;
 				break;
 			}
 		}
@@ -214,7 +237,7 @@ BOOL GetTask(TASK* tsk)
 		{
 			memset(tsk, 0, sizeof(TASK));
 			*tsk = cur;
-			LastTask[cur.path] = cur.ltime;
+			LastTask[cur.path] = cur;
 		}
 		//MessageBox(NULL, lpFilePath, "Release SEM", MB_OK);
 	}
@@ -255,7 +278,7 @@ VOID AddTask(CONST CHAR* lpFilePath, DWORD dwSize)
 	tTask.ltime = (size_t)time(NULL);
 	tTask.len = dwSize;
 	tTask.status = FALSE;
-
+	tTask.fileSize = 0;
 	// acquire lock: gll_tail
 	WaitForSingleObject(semhd, INFINITE);
 
@@ -263,6 +286,7 @@ VOID AddTask(CONST CHAR* lpFilePath, DWORD dwSize)
 	gll_tail = (gll_tail + 1) % MAX_QUEUE_SIZE;
 	
 	ReleaseSemaphore(semhd, 1, NULL);
+	
 	//MessageBox(NULL, lpFilePath, "Tell Backend", MB_OK);
 	// release lock: gll_tail
 	return;
@@ -497,6 +521,7 @@ VOID SendMsg2Backend()
 
 	while (KEEP_RUNNING)
 	{
+REGET_TASK:
 		Sleep(ONE_SECOND);
 
 		loopCount += 1;
@@ -531,12 +556,11 @@ VOID SendMsg2Backend()
 			continue;
 		}
 		
-REGET_TASK:
 		if (GetTask(&tsk))
 		{
 			if (!NotIgnoreByTime(tsk.path))
 			{
-				//printf("[IGNORED] %s\n", tsk.path);
+				printf("[IGNORED] %s\n", tsk.path);
 				goto REGET_TASK;
 			}
 

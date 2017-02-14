@@ -31,4 +31,18 @@ void CheckTaskFromLocal(SOCKET sock);
 
 bool FormatTime(char *buf, int bufSize);
 
+
+// µ÷ÊÔÊä³öº¯Êý
+#define ALBERT_DEBUG
+#include <stdio.h>
+inline void XTrace(char* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+#if defined(ALBERT_DEBUG) || defined(SHOW_DEBUG_MESSAGES)
+	printf(fmt, args);
+#endif
+	va_end(args);
+}
+
 #endif // ! MY_TOOLS_INCLUDE
