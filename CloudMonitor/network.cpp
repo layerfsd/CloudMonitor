@@ -45,7 +45,11 @@ namespace session
 	const char*		CMD_UPD			= "UPD";
 	const char*		CMD_BGN			= "BEGIN";
 	const char*     CMD_HBT			= "HBT";
+	const char*		CMD_EPT			= "EPT";
+	const char*		CMD_CTM			= "CTM";
+	const char*		CMD_TIM			= "TIM";
 
+	
 	// 定义远程控制的包头为 `CTL`
 	const char*     CMD_CONTROL = "CTL";
 
@@ -288,6 +292,78 @@ void User::KeepAlive()
 }
 
 
+static bool GetNtpTime(string& szTime)
+{
+	szTime = "2017-02-12 19:10:10";
+	return true;
+}
+
+time_t StringToDatetime(const char *str)
+{
+	tm tm_;
+	int year, month, day, hour, minute, second;
+	sscanf(str, "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
+	tm_.tm_year = year - 1900;
+	tm_.tm_mon = month - 1;
+	tm_.tm_mday = day;
+	tm_.tm_hour = hour;
+	tm_.tm_min = minute;
+	tm_.tm_sec = second;
+	tm_.tm_isdst = 0;
+
+	time_t t_ = mktime(&tm_); //已经减了8个时区  
+	return t_; //秒时间  
+}
+bool User::IsMyAppExpired()
+{
+	string szCurTime[2]{};	// 从服务端获取当前时间
+	string szExpTime{};
+
+	time_t curTime[2]{ 0 };
+	time_t realTime = 0;
+	time_t expTime = 0;
+
+	bool   isExpired = false;
+
+	// 从服务端获取本软件截止日期
+	this->SendInfo(CMD_TIM, CMD_EPT, CMD_SIZE);
+	this->GetReplyInfo();
+	szExpTime = this->pkt.text;
+	expTime = StringToDatetime(szExpTime.c_str());
+	printf("[EXPIRED] %s  %lld\n", szExpTime.c_str(), expTime);
+
+	// 从服务端获取当前时间
+	this->SendInfo(CMD_TIM, CMD_CTM, CMD_SIZE);
+	this->GetReplyInfo();
+	szCurTime[0] = this->pkt.text;
+	curTime[0] = StringToDatetime(szCurTime[0].c_str());
+	printf("[SERVER] %s  %lld\n", szCurTime[0].c_str(), curTime[0]);
+
+
+	// 从互联网获取当前时间
+	if (!GetNtpTime(szCurTime[1]))
+	{
+		szCurTime[1] = "0";
+		curTime[1] = StringToDatetime(szCurTime[1].c_str());
+	}
+	printf("[NTP] %s  %lld\n", szCurTime[1].c_str(), curTime[1]);
+
+	// 找出最接近过期的时间
+	for (int i = 0; i < ArraySize(curTime); i++)
+	{
+		if (curTime[i] > realTime)
+		{
+			realTime = curTime[i];
+		}
+	}
+
+	isExpired = (realTime > expTime);
+	printf("isExpired: %d\n", isExpired);
+
+	return isExpired;
+}
+
+
 bool User::GetFromServer()
 {
 	static	FD_SET fdRead;
@@ -348,6 +424,9 @@ bool User::ExecControl()
 
 			// 传送User类中的message引用给远程处理函数,远程处理函数产生的处理结果存储在 message 中
 			cout << "Executing task ..." << endl;
+
+			// 获取结果之前，先清空缓存
+			this->message.clear();
 			execStatus = this->taskList[i].func(this->message, taskList[i].ctlDetails);	
 			if (execStatus)
 			{
