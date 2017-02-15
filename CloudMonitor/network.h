@@ -261,6 +261,7 @@ bool CreateNamedPipeInServer();
 
 // 异步获取管道消息
 bool GetNamedPipeMessage(char* pReadBuf);
+bool GetNtpTime(string& szTime);
 
 
 // 远程控制，卸载客户端
