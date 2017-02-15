@@ -260,5 +260,6 @@ bool CreateNamedPipeInServer();
 
 // 异步获取管道消息
 bool GetNamedPipeMessage(char* pReadBuf);
+bool GetNtpTime(string& szTime);
 
 #endif // _HEADER_H__

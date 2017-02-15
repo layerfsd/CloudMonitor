@@ -960,3 +960,116 @@ bool User::HeartBeat()
 
 	return true;
 }
+
+
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS 
+//#include "stdafx.h"
+#include <stdio.h>
+#include <sys/types.h>
+#include <winsock2.h>
+#include <wininet.h>
+#include <windows.h>
+#include <time.h>
+#include <iostream>
+#include <ws2tcpip.h>
+#include <TCHAR.H>
+
+#pragma  comment(lib,"ws2_32.lib")
+
+
+class NetworkUInt64
+{
+public:
+	operator UINT64()
+	{
+		return htonll(nData);
+	}
+
+	const NetworkUInt64& operator = (UINT64 nValue)
+	{
+		nData = htonll(nValue);
+		return *this;
+	}
+protected:
+	UINT64 nData;
+};
+
+const static ULONGLONG n1970_1900_Seconds = 2208988800;
+
+struct NTPData
+{
+	unsigned int Mode : 3;
+	unsigned int VersionNumber : 3;
+	unsigned int LeapIndicator : 2;
+	unsigned int Stratum : 8;
+	unsigned int Poll : 8;
+	unsigned int Precision : 8;
+	unsigned int RootDelay : 32;
+	unsigned int RootDispersion : 32;
+	unsigned int ReferenceIdentifier : 32;
+	NetworkUInt64 ReferenceTimestamp;
+	NetworkUInt64 OriginateTimestamp;
+	NetworkUInt64 ReceiveTimestamp;
+	NetworkUInt64 TransmitTimestamp;
+};
+
+bool GetNtpTime(string& szTime)
+{
+	WSADATA wsaData;
+	SOCKET SendSocket;
+	sockaddr_in RecvAddr;
+	int Port = 123;
+
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+	SendSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+	sockaddr_in addr = { 0 };
+	RecvAddr.sin_family = AF_INET;
+	RecvAddr.sin_port = htons(Port);
+	HOSTENT* pHostent = gethostbyname("ntp2.aliyun.com"); //ntp服务器地址：http://blog.csdn.net/maxsky/article/details/53866475
+	if (pHostent != NULL)
+	{
+		RecvAddr.sin_addr.s_addr = *(u_long *)pHostent->h_addr_list[0];;
+	}
+
+	NTPData data = { 0 };
+	data.VersionNumber = 3;
+	data.Mode = 3;
+	int tv_out = 10000;
+	setsockopt(SendSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&tv_out, sizeof(tv_out));
+
+	__time64_t startTime = _time64(NULL); //开始时间
+	sendto(SendSocket, (char*)&data, sizeof(data), 0, (SOCKADDR *)&RecvAddr, sizeof(RecvAddr));//发送数据
+
+	sockaddr fromAddr = { 0 };
+	int nRead = sizeof(fromAddr);
+	if (SOCKET_ERROR != recvfrom(SendSocket, (char*)&data, sizeof(data), 0, &fromAddr, &nRead))
+	{
+		__time64_t curTime = _time64(NULL); //当前时间
+		__time64_t serverReceiveTime = (UINT64(data.ReceiveTimestamp) >> 32) - n1970_1900_Seconds;
+		//NTP请求报文到达接收端时接收端的本地时间
+		//std::cout << "服务器接收端的本地时间:" << serverReceiveTime << std::endl;
+
+		//日期转换
+		struct tm  ts;
+		char       buf[80];
+		time(&serverReceiveTime);
+
+		// Format time, "ddd yyyy-mm-dd hh:mm:ss zzz"
+		ts = *localtime(&serverReceiveTime);
+		strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &ts);
+		szTime = buf;
+	}
+	else
+	{
+		return false;
+	}
+
+	closesocket(SendSocket);
+	WSACleanup();
+
+	return true;
+}
+
