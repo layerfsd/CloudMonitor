@@ -193,6 +193,12 @@
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_E7B569425FF84F9D82F27560C76BB0E4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -290,6 +296,20 @@
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
             "Identifier" = "8:_572F4F5C_BB68_44FF_9B4F_1B6311595446"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_F13D6D7C463E42B5A309FC237A3A91F9"
+            {
+            "Name" = "8:主输出 from autoStart (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_E7B569425FF84F9D82F27560C76BB0E4"
+            "FileType" = "3:2"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:/Commit"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_7F53422F_D13F_4369_9025_9DD7EFAD232D"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
@@ -820,7 +840,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:安全监管客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{3D5D82F7-2636-4F0A-BDF8-8948C901C8BF}"
+        "PackageCode" = "8:{DBC3D319-A939-49C8-9DBB-EE6588D14F45}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -1672,6 +1692,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{93BA9F3E-C303-46A3-8AB5-8EAB996C86F5}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E7B569425FF84F9D82F27560C76BB0E4"
+            {
+            "SourcePath" = "8:..\\Release\\autoStart.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_30F64AD018294771A036CDC72C4A9872"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

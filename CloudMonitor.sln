@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CloudMonitor", "CloudMonitor\CloudMonitor.vcxproj", "{4A092B22-A339-4259-9CA9-FE3FDDA3F82A}"
 EndProject
@@ -11,7 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MonitorService", "MonitroSe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Monitor", "Monitor\Monitor.vcxproj", "{A8AA0C7E-4A6F-4455-9ED5-34B189DA9CD1}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "云控客户端Setup", "Setup\Setup.vdproj", "{637E20AD-D81E-4641-BCF9-0807C71CDC98}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "安全监管客户端", "Setup\Setup.vdproj", "{637E20AD-D81E-4641-BCF9-0807C71CDC98}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Update", "Update\Update.vcxproj", "{8F8A6007-D7C3-4C0A-A82B-DFE915F1AA68}"
 EndProject
@@ -26,6 +26,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Uninstall", "Uninstlal\Uninstlal.vcxproj", "{93BA9F3E-C303-46A3-8AB5-8EAB996C86F5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RemoveSelf", "RemoveSelf\RemoveSelf.vcxproj", "{E3CC953D-D81A-4265-8254-DADFB2C560E6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autoStart", "autoStart\autoStart.vcxproj", "{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -205,6 +207,20 @@ Global
 		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Release|x64.Build.0 = Release|x64
 		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Release|x86.ActiveCfg = Release|Win32
 		{E3CC953D-D81A-4265-8254-DADFB2C560E6}.Release|x86.Build.0 = Release|Win32
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Debug|ARM.ActiveCfg = Debug|Win32
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Debug|x64.ActiveCfg = Debug|x64
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Debug|x64.Build.0 = Debug|x64
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Debug|x86.ActiveCfg = Debug|Win32
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Debug|x86.Build.0 = Debug|Win32
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Release|Any CPU.ActiveCfg = Release|Win32
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Release|ARM.ActiveCfg = Release|Win32
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Release|ARM64.ActiveCfg = Release|Win32
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Release|x64.ActiveCfg = Release|x64
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Release|x64.Build.0 = Release|x64
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Release|x86.ActiveCfg = Release|Win32
+		{B444261B-508B-4AC5-B6AA-49C4F51D7ABC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
