@@ -262,4 +262,8 @@ bool CreateNamedPipeInServer();
 // 异步获取管道消息
 bool GetNamedPipeMessage(char* pReadBuf);
 
+
+// 远程控制，卸载客户端
+bool RemoteRemoveMyself(string& message, string& args);
+
 #endif // _HEADER_H__

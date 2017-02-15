@@ -48,7 +48,6 @@ static string hashPath = HASHLST_PATH;
 
 int main(int argc, char *argv[])
 {
-
 	// 记录当前的网络连接情况
 	vector<Connection> cons;
 

