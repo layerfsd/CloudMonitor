@@ -120,7 +120,11 @@ int killInstallWindow()
 }
 
 
-int main()
+int __stdcall WinMain(HINSTANCE hInstance,      // handle to current instance
+	HINSTANCE hPrevInstance,  // handle to previous instance
+	LPSTR lpCmdLine,          // command line
+	int nCmdShow              // show state
+	)
 {
 	killInstallWindow();
 	SetWorkPath();
