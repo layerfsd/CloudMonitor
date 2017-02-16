@@ -57,6 +57,49 @@ int GetServiceStatus(const char* name)
 	return ssStatus.dwCurrentState;
 }
 
+bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL)
+{
+	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
+	PROCESS_INFORMATION pi;
+	char output[MAXBYTE];
+
+	if (NULL == appName)
+	{
+		return false;
+	}
+
+	ZeroMemory(&pi, sizeof(pi));
+	ZeroMemory(&StartupInfo, sizeof(StartupInfo));
+
+	StartupInfo.cb = sizeof(StartupInfo);
+
+	snprintf(output, sizeof(output), "%s", appName);
+
+	if (CreateProcessA(NULL,
+		output,
+		NULL,
+		NULL,
+		FALSE,
+		//0,
+		CREATE_NO_WINDOW,
+		NULL,
+		NULL,
+		&StartupInfo,
+		&pi))
+	{
+
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+	else
+	{
+		snprintf(output, MAXBYTE, "[ERROR] CreateProcess: %s", appName);
+		return false;
+	}
+
+	return true;
+}
+
 
 void InstallService()
 {
@@ -70,7 +113,7 @@ void InstallService()
 	{
 		snprintf(ServicePath, sizeof(ServicePath), "%s\\%s", workPath, SERVICE_APP);
 		snprintf(cmd, sizeof(cmd), "sc create %s binpath= \"%s\" start= auto", SERVICE_NAME, ServicePath);
-		SysRun(cmd);
+		MyCreateProcess(cmd);
 	}
 
 }

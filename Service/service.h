@@ -16,7 +16,7 @@
 #define MASTER_APP_ARGS		"--start"
 
 
-#define SLEEP_TIME  2.5		// seconds
+#define SLEEP_TIME 2500		// seconds
 
 void SetWorkPath();
 

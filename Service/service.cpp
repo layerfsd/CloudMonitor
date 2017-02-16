@@ -14,6 +14,36 @@ char Gcmd[MAX_PATH];
 
 bool StartHookService();
 
+inline void killCloudMonitor()
+{
+	DWORD dwPid = 0;
+
+	if (FindProcessPid(MASTER_APP_NAME, dwPid))
+	{
+		HANDLE hnh = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+		if (NULL != dwPid) {
+			TerminateProcess(hnh, 0);
+			CloseHandle(hnh);
+		}
+	}
+}
+
+BOOL WINAPI ConsoleHandler(DWORD event)
+{
+	if (CTRL_SHUTDOWN_EVENT)
+	{
+		WriteToLog("Closing " MASTER_APP_NAME);
+		//kill CloudMonitor.exe
+		killCloudMonitor();
+
+		// stop service
+		ServiceStatus.dwCurrentState = SERVICE_STOPPED;
+		WriteToLog("POWER OFF");
+	}
+	return TRUE;
+}
+
+
 bool MyCreateProcess(LPCSTR appName, LPSTR appArgs)
 {
 	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
@@ -179,7 +209,7 @@ void ServiceMain(int argc, char** argv)
 	// The worker loop of a service
 	while (ServiceStatus.dwCurrentState == SERVICE_RUNNING)
 	{
-		Sleep(1000 * SLEEP_TIME);
+		Sleep(SLEEP_TIME);
 
 		dwPid = 0;
 		// 如果找不到该进程则启动之
@@ -233,6 +263,15 @@ int InitService()
 	//snprintf(Gcmd, sizeof(Gcmd), "%s %s", MASTER_APP_NAME, MASTER_APP_ARGS);
 
 	result = WriteToLog("Monitoring started.");
+	if (SetConsoleCtrlHandler(
+		(PHANDLER_ROUTINE)ConsoleHandler, TRUE) == FALSE)
+	{
+		// unable to install handler... 
+		// display message to the user
+		WriteToLog("Unable to install handler!\n");
+		return -1;
+	}
+
 
 	if (!IsUpdateChecked())
 	{
