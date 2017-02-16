@@ -177,7 +177,13 @@ bool RemoteScanLocalFiles(string& message, string& args)
 		return false;
 	}
 
-	message.clear();
+	// 处理结果为空的情况
+	if (scanResults.size() < 1)
+	{
+		message = "This computer is clean";
+		return false;
+	}
+
 	for (size_t i = 0; i < scanResults.size(); i++)
 	{
 		message += scanResults[i].fullPath;
