@@ -6,6 +6,7 @@
 #include "Monitor.h"
 #include "MonitorDlg.h"
 #include "afxdialogex.h"
+#include <tlhelp32.h>	//CreateToolhelp32Snapshot
 
 #pragma comment(lib,"ws2_32.lib")
 
@@ -19,6 +20,60 @@ static bool isTcpChannelUseful = false;
 
 
 void InstallService();
+
+BOOL FindProcessPid(LPTSTR ProcessName, DWORD& dwPid)
+{
+	HANDLE hProcessSnap;
+	PROCESSENTRY32 pe32;
+
+	// Take a snapshot of all processes in the system.
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (hProcessSnap == INVALID_HANDLE_VALUE)
+	{
+		return(FALSE);
+	}
+
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+
+	if (!Process32First(hProcessSnap, &pe32))
+	{
+		CloseHandle(hProcessSnap);          // clean the snapshot object
+		return(FALSE);
+	}
+
+	BOOL	bRet = FALSE;
+	do
+	{
+		// 忽略大小写
+		if (!_wcsicmp(ProcessName, pe32.szExeFile))
+		{
+			dwPid = pe32.th32ProcessID;
+			bRet = TRUE;
+			break;
+		}
+
+	} while (Process32Next(hProcessSnap, &pe32));
+
+	CloseHandle(hProcessSnap);
+	return bRet;
+}
+
+inline void killCloudMonitor()
+{
+	DWORD dwPid = 0;
+
+	if (FindProcessPid(L"CloudMonitor.exe", dwPid))
+	{
+		HANDLE hnh = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+		if (NULL != dwPid) {
+			TerminateProcess(hnh, 0);
+			CloseHandle(hnh);
+		}
+	}
+}
+
+
+
 
 CMonitorDlg::CMonitorDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_MONITOR_DIALOG, pParent)
@@ -441,9 +496,11 @@ void CMonitorDlg::OnBnClickedOk()
 			CTime endTime = GetCurrentTime();
 			if (endTime - timeStart >= LOGIN_TIMEOUT)
 			{
-				inform = "客户端未响应";
+				inform = "超时未响应，服务器可能遇到了一些问题，请您稍后再试。";
 				SetDlgItemText(IDC_STATUS, NULL);
 				AfxMessageBox(inform, MB_OK);
+				killCloudMonitor();
+
 				break;
 			}
 		} while ((dwRet != WAIT_OBJECT_0) && (dwRet != WAIT_FAILED));
