@@ -14,7 +14,7 @@
 #define new DEBUG_NEW
 #endif
 
-#define LOGIN_TIMEOUT	5 * 1000
+#define LOGIN_TIMEOUT	3 * 1000
 static bool isTcpChannelUseful = false;
 // CMonitorDlg ¶Ô»°¿ò
 
