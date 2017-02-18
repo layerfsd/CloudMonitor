@@ -22,3 +22,6 @@
 
 
 	启动服务 CloudMonitorService
+
+	注意：服务器端的DATA\目录下和版本号的根目录下都需要hashlist.txt文件，并且该文件中不能包含Update.exe文件的哈希
+
