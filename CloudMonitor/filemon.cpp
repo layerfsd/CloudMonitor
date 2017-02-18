@@ -192,7 +192,10 @@ void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context
 	}
 
 	int prevPos = offset;
-	int tailPos = offset + context.word.size();
+	// string.size() 与 string.length() 的区别？
+	// size: 拥有存储空间大小
+	// length: 当前字符串的长度
+	int tailPos = offset + context.word.length();
 	int tp = 0;
 
 	const int limitSize = (UTF8_CHINESE_LEN *  CONTEXT_LEN) >> 1;
@@ -219,7 +222,10 @@ void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context
 	else {
 		tailPos = FileSize;
 	}
-	tailPos += addition;
+
+	// 都已经确定文件末尾了，为何还要做变动？！
+	//tailPos += addition;
+
 
 
 	for (int i = 0; i < UTF8_CHINESE_LEN; i++)
@@ -239,7 +245,7 @@ void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context
 		ch = FileBuf[tailPos - i];
 		if ((ch & 0xe0) == 0xe0)
 		{
-			tailPos = tailPos - i;
+			tailPos = tailPos - i -3;
 			break;
 		}
 	}
@@ -268,9 +274,7 @@ void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context
 
 	// 还原
 	FileBuf[tailPos] = tp;
-
-	cout << "\n\n\n  \t\t\t CONTEXT \n\n\n" << endl;
-	cout << context.context << endl;
+	//cout << context.context << endl;
 }
 
 
@@ -604,7 +608,12 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, \
 	strncpy(localPath, sf.savedPath.c_str(), _MAX_PATH);
 	strncpy(txtPath, sf.txtPath.c_str(), _MAX_PATH);
 
-	ParseFile2Text(localPath, txtPath);
+	// 如果文件编码转换失败，则放弃搜索该文件
+	if (0 != ParseFile2Text(localPath, txtPath))
+	{
+		cout << "[ParseFile2Text] FAILED" << sf.localPath << endl;
+		return false;
+	}
 
 	// 如果没有匹配到关键字，则忽略该文件
 	if (KeywordFilter(kw, txtPath, message, context) <= 0)
@@ -612,11 +621,10 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, \
 		cout << "Find nothing from: " << sf.localPath << endl;
 		return false;
 	}
-
-	//_showSFile(sf);
-
-	//cout << "matched: " << message << endl;
-	return true;
+	else
+	{
+		return true;
+	}
 }
 
 
