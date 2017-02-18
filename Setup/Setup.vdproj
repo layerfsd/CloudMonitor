@@ -51,6 +51,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5C87B4E49E834FDD9231E453A9321619"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_623539F06A7048BBAC2D5834BCB890C9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -374,6 +380,26 @@
             "TargetName" = "8:a2tpdf.dll"
             "Tag" = "8:"
             "Folder" = "8:_572103570EDA4D2BBE0EE9B8BCCC6C7E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5C87B4E49E834FDD9231E453A9321619"
+            {
+            "SourcePath" = "8:..\\Release\\DATA\\hashlist.txt"
+            "TargetName" = "8:hashlist.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_F69287E259F841CCB902FC90AE423ADE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -840,7 +866,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:安全监管客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{DBC3D319-A939-49C8-9DBB-EE6588D14F45}"
+        "PackageCode" = "8:{9FBA69AF-7662-423D-A77D-CAE74210E248}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
