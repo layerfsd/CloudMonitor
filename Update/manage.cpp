@@ -488,7 +488,6 @@ bool LoadConfig()
 	return true;
 }
 
-
 int WriteToLog(char* str)
 {
 	static char LogFile[] = "Service.txt";
