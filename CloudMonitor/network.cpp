@@ -1027,6 +1027,7 @@ bool User::HeartBeat()
 			}
 			else
 			{
+				printf("[CloudMonitor] Channel FAILED\n");
 				this->EndSession();
 			}
 		}

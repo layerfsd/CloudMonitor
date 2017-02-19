@@ -159,9 +159,16 @@ bool ScanLocalFiles(vector<Match>& scanResults)
 		// 判断是否为涉密文件
 		if (fsFilter(file, kw, hashList, tMatch, tFile.keywordContext))
 		{
-			strncpy(tFile.fullPath, file.utf8Path.c_str(), 256);
-			strncpy(tFile.matchDetail, tMatch.c_str(), 512);
-			scanResults.push_back(tFile);
+			if (tMatch.length() > 0)
+			{
+				strncpy(tFile.fullPath, file.utf8Path.c_str(), 256);
+				strncpy(tFile.matchDetail, tMatch.c_str(), 512);
+				scanResults.push_back(tFile);
+			}
+			else
+			{
+				printf("[THIS IS FUCKING WIRED]\n\n\n");
+			}
 		}
 	}
 
@@ -177,7 +184,14 @@ bool RemoteScanLocalFiles(string& message, string& args)
 		return false;
 	}
 
-	message.clear();
+	// 处理结果为空的情况
+	if (scanResults.size() < 1)
+	{
+		message = "This computer is clean";
+		return false;
+	}
+
+	message = "";
 	for (size_t i = 0; i < scanResults.size(); i++)
 	{
 		message += scanResults[i].fullPath;

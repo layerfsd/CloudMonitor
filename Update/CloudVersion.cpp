@@ -202,6 +202,9 @@ bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 
 		CheckPathExists(curPath);
 		
+		WriteToLog("DOWNLOADING");
+		WriteToLog((char *)tfile.filename);
+
 		downloadStatus = DownloadFtpFile(curUrl.c_str(), tfile);
 		dwMaxRetryTime = 0;
 
@@ -217,9 +220,11 @@ bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 		// 检查下载的文件MD5是否与其在‘远程清单文件’上的MD5一致，如果不一致说明这个文件不正确
 		if (downloadStatus && !IsFileHashEqual(curPath, curMd5))
 		{
+			WriteToLog("MD5 MISMATCH");
 			downloadStatus = false;
 			break;
 		}
+		WriteToLog("DOWNLAOD SUCCESS");
 	}
 
 	return downloadStatus;

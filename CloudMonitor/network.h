@@ -57,7 +57,7 @@
 #define MAX_USERNAME		128
 #define MAC_SIZE			20
 #define IP_SIZE				16
-#define MAX_RETRY_TINE		10000
+#define MAX_RETRY_TINE		3
 
 #define	LOOP_SLEEP_TIME		500 // 休眠 500 毫秒
 #define HEART_BEAT_TIME		10  //定义心跳时间(秒)
