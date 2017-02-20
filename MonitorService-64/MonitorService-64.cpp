@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 
 	if (2 == argc && !strncmp(argv[1], BACKEND_LOG, 7))
 	{
-		EnableLog();
+		// EnableLog();
 	}
 	if (!TryStartUp())
 	{

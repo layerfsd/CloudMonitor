@@ -13,6 +13,14 @@
 	
 
 
+**********************************************
+[Start Time] LOG\2017-2-17 15:14
+sem_name: CloudMonitor.exe
+20:1A:06:1B:CD:9B-wired
+ssl channel established successfully!
+
+客户端时常卡在这一步
+**********************************************
 
 
 我用钩子函数拦截指定进程(自己使用CreateProcess加载的进程)按键消息,SetWindowsHookEx执行成功,但是在目标进程窗口按键时,目标进程崩溃? WH_KEYBOARD换成WH_CBT则目标进程直接崩溃. 换句话说,只要HOOK成功,就会使目标进程不行.

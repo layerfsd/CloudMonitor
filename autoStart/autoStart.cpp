@@ -117,6 +117,8 @@ int killInstallWindow()
 	}
 	TerminateProcess(hnh, 0);
 	CloseHandle(hnw);
+
+	return 0;
 }
 
 
