@@ -3,6 +3,7 @@
 #include "manage.h"
 
 #define MAX_RETRY_TIME	3
+#define TOO_SHORT_TO_QUIT 2  // seconds
 
 const char* result[]{
 	"[FAILED]", "[OK]"
@@ -13,6 +14,8 @@ extern Config GlobalConfig;
 
 CloudVersion::CloudVersion()
 {
+	this->startTime = time(NULL);
+
 	memset(this->workPath, 0, sizeof(this->workPath));
 	printf("SetWorkPath\n");
 	SetWorkPath(this->workPath);
@@ -230,6 +233,12 @@ bool CloudVersion::DownloadLatestFiles(const char* keepDir)
 	return downloadStatus;
 }
 
+const char *cmds[]{
+	"taskkill /f /im CloudMonitor.exe",
+	"taskkill /f /im MonitorService.exe",
+	"taskkill /f /im MonitorService-64.exe",
+};
+
 bool CloudVersion::ReplaceFiles(const char * keepDir)
 {	
 	this->BackUpOldFiles();	// 在替换文件之前，先备份将要替换的文件
@@ -238,6 +247,12 @@ bool CloudVersion::ReplaceFiles(const char * keepDir)
 	baseDir += "/";
 	string tpName, srcName;
 	BOOL   bRet = FALSE;
+
+	// 先关闭正在工作的进程，以防止替换时由于其正在运行时导致失败
+	for (int i = 0; i < ArraySize(cmds); i++)
+	{
+		MyCreateProcess(cmds[i]);
+	}
 
 	for (auto i : this->downloadList)
 	{
@@ -336,6 +351,16 @@ CloudVersion::~CloudVersion()
 	WriteToLog("[Update.exe] Created " UPDATE_CHECKED_FLAG);
 	WriteToLog("[Update.exe] try start Service");
 	WriteToLog("[Update.exe] exit.");
+
+	this->endTime = time(NULL);
+
+	while (this->endTime - this->startTime < TOO_SHORT_TO_QUIT)
+	{
+		WriteToLog("[Update.exe] SLEEPING");
+		Sleep(500);	// 不敢睡眠太久，恐影响用户体验
+		this->endTime = time(NULL);
+		printf("start: %lld end: %lld\n", this->startTime, this->endTime);
+	}
 
 	// 仅当在后台运行时，才会尝试开启服务
 	if (GlobalConfig.enableLog)

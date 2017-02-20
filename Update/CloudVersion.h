@@ -4,7 +4,6 @@
 
 #define INVALID_VERSION 0
 
-
 class CloudVersion
 {
 public:
@@ -43,6 +42,10 @@ private:
 	double CurVersion;
 	double LatestVersion;
 	string LatestVersionStr;
+
+	time_t startTime;	// 记录程序启动时间
+	time_t endTime;		// 记录程序运行结束时间
+
 	char   workPath[MAX_PATH];
 
 	map<string, string> localHashList;		// 远程清单列表

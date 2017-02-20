@@ -85,3 +85,5 @@ bool LoadConfig();
 // 由服务运行本程序时，输出必要的日志
 int WriteToLog(char* str);
 void EnableLog();
+
+bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL);
