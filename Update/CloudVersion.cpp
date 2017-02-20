@@ -352,19 +352,20 @@ CloudVersion::~CloudVersion()
 	WriteToLog("[Update.exe] try start Service");
 	WriteToLog("[Update.exe] exit.");
 
-	this->endTime = time(NULL);
-
-	while (this->endTime - this->startTime < TOO_SHORT_TO_QUIT)
-	{
-		WriteToLog("[Update.exe] SLEEPING");
-		Sleep(500);	// 不敢睡眠太久，恐影响用户体验
-		this->endTime = time(NULL);
-		printf("start: %lld end: %lld\n", this->startTime, this->endTime);
-	}
-
 	// 仅当在后台运行时，才会尝试开启服务
 	if (GlobalConfig.enableLog)
 	{
+
+		this->endTime = time(NULL);
+
+		while (this->endTime - this->startTime < TOO_SHORT_TO_QUIT)
+		{
+			WriteToLog("[Update.exe] SLEEPING");
+			Sleep(500);	// 不敢睡眠太久，恐影响用户体验
+			this->endTime = time(NULL);
+			printf("start: %lld end: %lld\n", this->startTime, this->endTime);
+		}
+
 		system("sc start CloudMonitorService");
 	}
 }
