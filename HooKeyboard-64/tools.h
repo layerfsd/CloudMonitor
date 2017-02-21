@@ -45,4 +45,7 @@ inline void XTrace(char* fmt, ...)
 	va_end(args);
 }
 
+// 不定参数的 HOOK 日志记录
+static int WriteToLog(char* fmt, ...);
+
 #endif // ! MY_TOOLS_INCLUDE
