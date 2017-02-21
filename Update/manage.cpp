@@ -240,7 +240,7 @@ bool LoadHashList(const char *FileName, map<string, string>& hashList)
 				tpName = tp.fileName;
 			}
 			hashList[tpName] = tp.md5;
-			//printf("%d md5:%s  name:%s\n", hashList.size(), hashList[tpName].c_str(), tpName.c_str());
+			printf("%d md5:%s  name:%s\n", hashList.size(), hashList[tpName].c_str(), tpName.c_str());
 		}
 	}
 

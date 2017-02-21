@@ -1,39 +1,31 @@
-8abbdb9272623b17a7ebba1daa292e93 autoStart.exe
-60ecabbc81e2efee07f87303c8f66d28 CloudMonitor.exe
-e3a3f75c336a720a872398e6d0d793f7 Daemon.exe
-dbcc9a4bb17a0cbc2b4f513b2d7776fd DATA/config.ini
-85f964ccf07abaf3516274a472f10448 DATA/VERSION
-a16f270a85d319c01e6e7085f6088c17 RemoveSelf.exe
-9825d7aa5b8d485c8486f0f4c6d6cef9 Service.exe
-
-# maybe never change
-0680f75eb2243840b2f8f28f6af21e9d tools/7-zip.dll
-5ccfe68dc2263cc6ca937ffda63b417e tools/7z.dll
-e7957b74befe1b2451c460b111c8e86f tools/7z.exe
-004710323e580fbd9f5f9625f363967d tools/openssl.exe
-3a897c6c1d0f28af06a9c91063003d0e all2txt/a2t.id
-07937155cf40987d69bf66e0661aa5d9 all2txt/a2t.key
-2a9da20b64cd477652bf55c23842bfd5 all2txt/a2tcmd.exe
-2328d1fd678dc2738831d32a755d5cc9 all2txt/a2thlp.dll
-0940f83a7d58f33c80975d19deacb5e0 all2txt/a2thtm.dll
-06e4f2bd394d1d390aef0d7af6248464 all2txt/a2tpdf.dll
-25bf2df938010a45c05248f88645d180 all2txt/a2trtf.dll
-8dc560c0a36cf0f7dcaca49ee9a4c736 favicon.ico
+4d1ae0c544bb3c5be1fd27ca6c87bbf3 HooKeyboard-64.dll
+672d8e6364a405ce68924b3ef0453700 MonitorService-64.exe
+e692a7f757e0c6b5837013aaf027fb7f autoStart.exe
+93def7e83dbf6693b8edd62f967a0de7 CloudMonitor.exe
+6db55dcd0ac927fa012e656e64390798 Daemon.exe
+bf31658b52a75770c64e8de059714304 HooKeyboard.dll
 68acf4c15977f4693bb31e17a5991a9a libcrypto-1_1.dll
 0afd2f56ca62918d889cc81b5f964460 libssl-1_1.dll
-37b0763893c5e1c349ba5f5b5d847e87 Monitor.exe
+a2ebb0fe5d0c5cf7e64b3a5da1d9759e Monitor.exe
+9e2c2f79c0635d00171f934d9c1d4416 MonitorService.exe
 1d8c79f293ca86e8857149fb4efe4452 msvcp140.dll
 80e987dbe08677e2ec09615cd4358607 msvcr110.dll
-
-
-#uninstall apps
-a6f0ee9fb8c27c632d687c493969ec96 Uninstall.exe
-
-#update
-a4d9c25a485cedecab32a5ee194bf96e Update.exe
-
-#hooks
-cb15f10d8fc3d966c67ec42a6b28010d HooKeyboard.dll
-7e976269cfecd349c1e8b62f42bac1a7 HooKeyboard-64.dll
-7f467150a90d44c5c08e6c9c263254c8 MonitorService.exe
-0c30138ef12c67c1edf4f7e7b22e2b66 MonitorService-64.exe
+004710323e580fbd9f5f9625f363967d openssl.exe
+3199ef032767953d93f64c17b967273a RemoveSelf.exe
+924f7eaa84fd21d4bc976f9ef25ef529 Service.exe
+2ade1763d0fd3aa83ad67fbf2d0727f0 Uninstall.exe
+f131437e9642b42bf188ee9ab7bcf50b Update.exe
+b77eeaeaf5f8493189b89852f3a7a712 vcruntime140.dll
+3a897c6c1d0f28af06a9c91063003d0e all2txt\a2t.id
+07937155cf40987d69bf66e0661aa5d9 all2txt\a2t.key
+2a9da20b64cd477652bf55c23842bfd5 all2txt\a2tcmd.exe
+2328d1fd678dc2738831d32a755d5cc9 all2txt\a2thlp.dll
+0940f83a7d58f33c80975d19deacb5e0 all2txt\a2thtm.dll
+06e4f2bd394d1d390aef0d7af6248464 all2txt\a2tpdf.dll
+25bf2df938010a45c05248f88645d180 all2txt\a2trtf.dll
+dbcc9a4bb17a0cbc2b4f513b2d7776fd DATA\config.ini
+0680f75eb2243840b2f8f28f6af21e9d tools\7-zip.dll
+5ccfe68dc2263cc6ca937ffda63b417e tools\7z.dll
+e7957b74befe1b2451c460b111c8e86f tools\7z.exe
+004710323e580fbd9f5f9625f363967d tools\openssl.exe
+# update time:  2017-02-21 15:40:00
