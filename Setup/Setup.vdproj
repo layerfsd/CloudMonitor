@@ -39,12 +39,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_28FBF2737C754CF38E3EAAE6BFBBAF22"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_564FA2782AC745D1B7817BC827D7F203"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -106,12 +100,6 @@
         "Entry"
         {
         "MsmKey" = "8:_892203F6E1E14FD99FA3896036581ACC"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_951173F616634840BD6C43F4A0794BD0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -184,12 +172,6 @@
         "Entry"
         {
         "MsmKey" = "8:_DF92A5C8B8A64E17A91C138AB4544864"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E36C400B705048FBB43527EB6ED9F6CF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -380,26 +362,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_28FBF2737C754CF38E3EAAE6BFBBAF22"
-            {
-            "SourcePath" = "8:..\\Release\\DATA\\keywords.txt"
-            "TargetName" = "8:keywords.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_F69287E259F841CCB902FC90AE423ADE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5675C18B19C141A4A1C818F14E956481"
             {
             "SourcePath" = "8:..\\Release\\all2txt\\a2tpdf.dll"
@@ -560,26 +522,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_951173F616634840BD6C43F4A0794BD0"
-            {
-            "SourcePath" = "8:..\\touch.txt"
-            "TargetName" = "8:touch.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_331D607A740B4594850443325E2ADE36"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9E4CEE044B2B47B191BD97405F435525"
             {
             "SourcePath" = "8:..\\Release\\libcrypto-1_1.dll"
@@ -700,26 +642,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E36C400B705048FBB43527EB6ED9F6CF"
-            {
-            "SourcePath" = "8:..\\touch.txt"
-            "TargetName" = "8:touch.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_B0E5A1FC64744B208355EC6FAF163F35"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E3E0394883D34B3D83F94E6411BF8568"
             {
             "SourcePath" = "8:..\\Monitor\\res\\favicon.ico"
@@ -796,17 +718,6 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_331D607A740B4594850443325E2ADE36"
-                    {
-                    "Name" = "8:log"
-                    "AlwaysCreate" = "11:FALSE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_256E188DE50F46C3ABBDB396C3E03F04"
-                        "Folders"
-                        {
-                        }
-                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_572103570EDA4D2BBE0EE9B8BCCC6C7E"
                     {
                     "Name" = "8:all2txt"
@@ -825,17 +736,6 @@
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
                     "Property" = "8:_96ABADE85A744B7294270B50BB2619C4"
-                        "Folders"
-                        {
-                        }
-                    }
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_B0E5A1FC64744B208355EC6FAF163F35"
-                    {
-                    "Name" = "8:TMP"
-                    "AlwaysCreate" = "11:FALSE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_ED1BD86305464267BB3CA7D4ABFD2F57"
                         "Folders"
                         {
                         }
