@@ -24,6 +24,7 @@ inline void killCloudMonitor()
 		if (NULL != dwPid) {
 			TerminateProcess(hnh, 0);
 			CloseHandle(hnh);
+			WriteToLog(MASTER_APP_NAME " KILLED OK");
 		}
 	}
 }
@@ -32,12 +33,13 @@ BOOL WINAPI ConsoleHandler(DWORD event)
 {
 	if (CTRL_SHUTDOWN_EVENT)
 	{
+		// stop service
+		ServiceStatus.dwCurrentState = SERVICE_STOPPED;
+
 		WriteToLog("Closing " MASTER_APP_NAME);
 		//kill CloudMonitor.exe
 		killCloudMonitor();
 
-		// stop service
-		ServiceStatus.dwCurrentState = SERVICE_STOPPED;
 		WriteToLog("POWER OFF");
 	}
 	return TRUE;

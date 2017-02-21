@@ -101,6 +101,9 @@ bool StartHookService()
 		}
 		else
 		{
+			// 发现初次在win7-32安装后无法hook到任何IO
+			// 尝试延时启动hook程序
+			Sleep(1000);
 			Start32HookService();
 		}
 	}

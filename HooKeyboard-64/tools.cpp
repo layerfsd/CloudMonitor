@@ -142,6 +142,7 @@ BOOL InitTcpConnection()
 		ret = TRUE;
 	}
 
+	WriteToLog("connecting to master");
 	return ret;
 }
 
@@ -541,7 +542,7 @@ REGET_TASK:
 
 			if (sent <= 0)
 			{
-				printf("Connect to Local Failed\n");
+				WriteToLog("Connect to Local Failed\n");
 				isConnectionOK = FALSE;
 				reConnectTime += 1;
 				printf("ReConnect [%d] time\n", reConnectTime);
@@ -550,6 +551,7 @@ REGET_TASK:
 			}
 			else
 			{
+				WriteToLog("IS ALIVE");
 				reConnectTime = 0;
 			}
 			// 发送本地‘心跳包’后，无论成功与否，都跳过下面的代码
@@ -572,6 +574,7 @@ REGET_TASK:
 				memset(timeBuf, 0, sizeof(timeBuf));
 				FormatTime(timeBuf, sizeof(timeBuf));
 				printf("[SEND:%s] %s\n", timeBuf, tsk.path);
+				WriteToLog(tsk.path);		
 				fflush(stdout);
 				sent = send(GLOBAL_SOCKET, tsk.path, tsk.len, 0);
 
@@ -649,4 +652,49 @@ bool FormatTime(char *buffer, int bufSize)
 	//strftime(buffer, bufSize, "Now is %Y/%m/%d %H:%M:%S", timeinfo);
 
 	return true;
+}
+
+
+// 不定参数的 HOOK 日志记录
+static int WriteToLog(char* fmt, ...)
+{
+	static const char *appName = "HOOK";
+
+	static char LogFile[] = "Service.txt";
+	static char timeBuf[32];
+	static char logBuf[256];
+
+
+	// 得到日志内容
+	va_list args;
+	va_start(args, fmt);
+
+	memset(logBuf, 0, sizeof(logBuf));
+	snprintf(logBuf, sizeof(logBuf), fmt, args);
+	
+	va_end(args);
+
+	// 获取当前时间
+	time_t timep;
+	struct tm *p;
+	time(&timep);
+	p = localtime(&timep);
+
+	// 拼接日志时间
+	memset(timeBuf, 0, sizeof(timeBuf));
+	snprintf(timeBuf, sizeof(timeBuf), "[%d-%02d-%02d %02d:%02d:%02d] %s ", \
+		1900 + p->tm_year, 1 + p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, appName);
+
+
+	FILE* log;
+	fopen_s(&log, LogFile, "a+");
+
+	if (log == NULL)
+		return -1;
+
+	// 打印 当前时间，日志内容到日志文件中
+	fprintf(log, "%s%s\n", timeBuf, logBuf);
+
+	fclose(log);
+	return 0;
 }

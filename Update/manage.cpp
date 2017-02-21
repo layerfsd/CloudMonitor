@@ -229,7 +229,7 @@ bool LoadHashList(const char *FileName, map<string, string>& hashList)
 	{
 		memset(&tp, 0, sizeof(tp));
 		fscanf(fp, "%s  %s", tp.md5, tp.fileName);
-		if (strnlen(tp.fileName, sizeof(tp.fileName)) > 0 && strnlen(tp.md5, 32) > 0)
+		if (strnlen(tp.fileName, sizeof(tp.fileName)) > 0 && strnlen(tp.md5, 32) == 32)
 		{
 			if ('.' == tp.fileName[0] && '/' == tp.fileName[1])
 			{
@@ -240,7 +240,7 @@ bool LoadHashList(const char *FileName, map<string, string>& hashList)
 				tpName = tp.fileName;
 			}
 			hashList[tpName] = tp.md5;
-			//printf("md5:%s  name:%s\n", hashList[tpName].c_str(), tpName.c_str());
+			//printf("%d md5:%s  name:%s\n", hashList.size(), hashList[tpName].c_str(), tpName.c_str());
 		}
 	}
 
