@@ -154,6 +154,7 @@ bool ScanLocalFiles(vector<Match>& scanResults)
 	for (size_t i = 0; i < collector.size(); i++)
 	{
 		memset(&tFile, 0, sizeof(tFile));
+		tMatch.clear();
 
 		file.localPath = collector[i];
 		// 判断是否为涉密文件
@@ -170,6 +171,9 @@ bool ScanLocalFiles(vector<Match>& scanResults)
 				printf("[THIS IS FUCKING WIRED]\n\n\n");
 			}
 		}
+
+		// 每次完一个文件后立即删除之，避免造成太多的空间占用
+		CleanTmpFiles(file);
 	}
 
 	return true;
@@ -200,6 +204,9 @@ bool RemoteScanLocalFiles(string& message, string& args)
 		message += "|";
 		message += scanResults[i].keywordContext;
 		message += "\n";
+
+		cout << "[length] " << message.length() << endl;
+		cout << message << endl;
 	}
 
 	system("del /F /S /Q TMP"); 	// 删除所有临时文件

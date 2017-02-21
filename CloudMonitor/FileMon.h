@@ -24,7 +24,7 @@
 // 规定提取关键字上下文时的最大长度
 #define	CONTEXT_LEN			24
 #define	UTF8_CHINESE_LEN	3	
-#define MAX_CONTEXT			(CONTEXT_LEN * UTF8_CHINESE_LEN+1)
+#define MAX_CONTEXT			((CONTEXT_LEN * UTF8_CHINESE_LEN)+32)
 
 
 #include <string>

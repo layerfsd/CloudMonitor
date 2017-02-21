@@ -305,8 +305,8 @@ void InitDir(bool hide)
 	{
 		if (-1 == _access(dirs[i], 0))
 		{
-			cout << TMP_DIR << " not exists!!!" << endl;
-			cout << "mkdir: " << TMP_DIR << endl;
+			cout << dirs[i] << " not exists!!!" << endl;
+			cout << "mkdir: " << dirs[i] << endl;
 			_mkdir(dirs[i]);
 		}
 	}

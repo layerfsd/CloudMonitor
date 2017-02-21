@@ -269,7 +269,8 @@ void GetKeywordContext(char *FileBuf, int offset, int FileSize, Keyword& context
 		}
 	}
 
-
+	// 情况上下文信息之后再赋值
+	context.context.clear();
 	context.context = FileBuf + prevPos;
 
 	// 还原
@@ -372,8 +373,8 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message, char *co
 			{
 				strncpy(context, i.context.c_str(), MAX_CONTEXT);
 			}
-			printf("[MatchContext] %s size: %d word: %s rank: %d\n", \
-				i.context.c_str(), i.context.size(), i.word.c_str(), i.rank);
+			//printf("[MatchContext] %s size: %d word: %s rank: %d\n", \
+			//	i.context.c_str(), i.context.size(), i.word.c_str(), i.rank);
 			break;
 		}
 	}
@@ -618,7 +619,7 @@ bool fsFilter(SFile &sf, vector<Keyword> &kw, vector<HashItem> &hashList, \
 	// 如果没有匹配到关键字，则忽略该文件
 	if (KeywordFilter(kw, txtPath, message, context) <= 0)
 	{
-		cout << "Find nothing from: " << sf.localPath << endl;
+		//cout << "Find nothing from: " << sf.localPath << endl;
 		return false;
 	}
 	else
