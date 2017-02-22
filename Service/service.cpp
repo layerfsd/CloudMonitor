@@ -132,7 +132,7 @@ BOOL FindProcessPid(LPCSTR ProcessName, DWORD& dwPid)
 
 int WriteToLog(char* str)
 {
-	static char LogFile[] = "Service.txt";
+	static char LogFile[] = LOG_FILE_PATH;
 	static char timeBuf[MAX_PATH];
 
 
@@ -253,6 +253,57 @@ bool IsUpdateChecked()
 	return ret;
 }
 
+
+
+static int GetFileSize(char *FileName, size_t *FileSize)
+{
+	FILE *fp;
+
+	if ((fp = fopen(FileName, "rb")) == NULL)
+		return -1;
+
+	//printf("%s open OK\n", FileName);
+	fseek(fp, 0, SEEK_END);
+	*FileSize = ftell(fp);
+
+	fclose(fp);
+	fp = NULL;
+
+	return 0;
+}
+
+
+bool SysRun(const char* cmd)
+{
+	FILE* execfd = NULL;
+
+	printf("cmd: [%s]\n", cmd);
+
+	execfd = _popen(cmd, "r");
+
+	if (NULL == execfd)
+	{
+		return false;
+	}
+
+	return (0 == _pclose(execfd));
+}
+
+// 根据日志文件大小，决定是否删除由本软件产生的日志文件
+void DecideCleanLogFile()
+{
+	size_t fileSize = 0;
+	if (0 != GetFileSize(LOG_FILE_PATH, &fileSize))
+	{
+		return;
+	}
+	if (fileSize >= LOGFILE_MAX_SIZE)
+	{
+		SysRun("del /f LOG_FILE_PATH");
+	}
+}
+
+
 // Service initialization
 // 返回非0，则退出本服务
 int InitService()
@@ -261,6 +312,8 @@ int InitService()
 	
 	int result;
 	DWORD dwPid;
+
+	DecideCleanLogFile();
 	
 	//snprintf(Gcmd, sizeof(Gcmd), "%s %s", MASTER_APP_NAME, MASTER_APP_ARGS);
 
@@ -270,7 +323,7 @@ int InitService()
 	{
 		// unable to install handler... 
 		// display message to the user
-		WriteToLog("Unable to install handler!\n");
+		WriteToLog("Unable to install ConsoleHandler !\n");
 		return -1;
 	}
 

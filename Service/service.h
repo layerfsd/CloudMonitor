@@ -15,6 +15,9 @@
 #define MASTER_APP_NAME		"CloudMonitor.exe"
 #define MASTER_APP_ARGS		"--start"
 
+#define LOG_FILE_PATH		"Service.txt"
+
+#define LOGFILE_MAX_SIZE	(1024 * 1024 * 3)	// 日志文件最大值为3MB
 
 #define SLEEP_TIME 2500		// seconds
 
