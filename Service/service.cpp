@@ -217,6 +217,7 @@ void ServiceMain(int argc, char** argv)
 		// 如果找不到该进程则启动之
 		if (!FindProcessPid(MASTER_APP_NAME, dwPid))
 		{
+			Sleep(DELAY_START_TIME);
 			// 以admin身份启动 CloudMonitor 进程
 			if (MyCreateProcess(MASTER_APP_NAME, MASTER_APP_ARGS))
 			{

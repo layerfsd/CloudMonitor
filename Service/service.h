@@ -19,6 +19,8 @@
 
 #define LOGFILE_MAX_SIZE	(1024 * 1024 * 3)	// 日志文件最大值为3MB
 
+#define DELAY_START_TIME	(1000 * 2)			// 延时启动
+
 #define SLEEP_TIME 2500		// seconds
 
 void SetWorkPath();
