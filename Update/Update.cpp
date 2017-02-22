@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 	if (!ver.GetLatestVersion())
 	{
 		
-		WriteToLog("GetLatestVersion() FAILED\n");
+		WriteToLog("GetLatestVersion() FAILED");
 		printf("GetLatestVersion() FAILED\n");
 		return 1;
 	}
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 	if (!ver.WhetherUpdate())
 	{
 		printf("Already Latest Version.\n");
-		WriteToLog("Already Latest Version.\n");
+		WriteToLog("Already Latest Version.");
 		return 0;
 	}
 	WriteToLog("Begin Fetch HashList");

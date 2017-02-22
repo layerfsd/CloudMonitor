@@ -40,7 +40,7 @@ BOOL WINAPI PowerConsoleHandler(DWORD event)
 		//kill CloudMonitor.exe
 		killCloudMonitor();
 
-		WriteToLog("POWER OFF");
+		WriteToLog("POWERING OFF");
 	}
 	return TRUE;
 }
@@ -318,7 +318,7 @@ int InitService()
 	
 	//snprintf(Gcmd, sizeof(Gcmd), "%s %s", MASTER_APP_NAME, MASTER_APP_ARGS);
 
-	result = WriteToLog("Monitoring started.");
+	result = WriteToLog("[SERVICE-START] Monitoring started.");
 	if (SetConsoleCtrlHandler(
 		(PHANDLER_ROUTINE)PowerConsoleHandler, TRUE) == FALSE)
 	{
@@ -333,7 +333,7 @@ int InitService()
 	{
 		WriteToLog("not found " UPDATE_CHECKED_FLAG " prepare to start " UPDATE_APP_NAME);
 		MyCreateProcess(UPDATE_APP_NAME, UPDATE_ARGS);
-		WriteToLog("stop service for updating ");
+		WriteToLog("[SERVICE-START] stop service for updating ");
 		return 1;
 	}
 
@@ -368,14 +368,14 @@ void ControlHandler(DWORD request)
 	switch (request)
 	{
 	case SERVICE_CONTROL_STOP:
-		WriteToLog("Monitoring stopped.");
+		WriteToLog("[SERVICE-START] Monitoring stopped.\n");
 		ServiceStatus.dwWin32ExitCode = 0;
 		ServiceStatus.dwCurrentState = SERVICE_STOPPED;
 		SetServiceStatus(hStatus, &ServiceStatus);
 		return;
 
 	case SERVICE_CONTROL_SHUTDOWN:
-		WriteToLog("Monitoring stopped.");
+		WriteToLog("[SERVICE-START] Monitoring stopped.\n");
 		ServiceStatus.dwWin32ExitCode = 0;
 		ServiceStatus.dwCurrentState = SERVICE_STOPPED;
 		SetServiceStatus(hStatus, &ServiceStatus);
