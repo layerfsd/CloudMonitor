@@ -86,6 +86,7 @@ def set_work_path():
     work_dir = os.path.dirname(os.getcwd())
     print(os.getcwd(), work_dir)
     os.chdir(work_dir)
+    print("set workpath to %s OK" % (work_dir))
     if not os.path.exists('.git'):
         print("set workpath to %s FAILED" % (work_dir))
         return sys.exit(1)
