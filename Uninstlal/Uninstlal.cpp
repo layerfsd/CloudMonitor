@@ -78,10 +78,22 @@ int __stdcall WinMain(HINSTANCE hInstance,      // handle to current instance
 		"sc delete CloudMonitorService",
 	};
 
-	for (int i = 0; i < ArraySize(cmds); i++)
+	// 支持 "-s" 停止运行，而不必卸载服务
+	if (NULL != lpCmdLine && !strncmp("-s", lpCmdLine, 2))
 	{
-		MyCreateProcess(cmds[i]);
+		for (int i = 0; i < (ArraySize(cmds)-1); i++)
+		{
+			MyCreateProcess(cmds[i]);
+		}
 	}
+	else
+	{
+		for (int i = 0; i < ArraySize(cmds); i++)
+		{
+			MyCreateProcess(cmds[i]);
+		}
+	}
+
     return 0;
 }
 
