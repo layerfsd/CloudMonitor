@@ -48,6 +48,6 @@ inline void XTrace(char* fmt, ...)
 	va_end(args);
 }
 
-VOID __stdcall DoStartSvc(const char* szSvcName);
+int __stdcall DoStartSvc(const char* szSvcName);
 
 #endif // ! _PATCHES_ALBERT__

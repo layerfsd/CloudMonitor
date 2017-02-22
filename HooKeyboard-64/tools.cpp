@@ -551,7 +551,6 @@ REGET_TASK:
 			}
 			else
 			{
-				WriteToLog("IS ALIVE");
 				reConnectTime = 0;
 			}
 			// 发送本地‘心跳包’后，无论成功与否，都跳过下面的代码

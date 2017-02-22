@@ -32,14 +32,22 @@ bool InformUser(int info);
 // 检查守护服务是否开启
 void CheckDaemonService()
 {
-	if (!IsServiceRunning())
+	static int status = -1;
+
+	// -1 说明权限不够，如果权限不够，我们以后也不会去尝试重启服务
+	if (1 != status && !IsServiceRunning())
 	{
 		// 判断是否自更新程序正在运行
 		if ((_access(UPDATE_CHECKED_FLAG, 0) != 0))
 		{
 			WriteToLog("[CloudMonitor] " SERVICE_NAME " is not runing");
 			WriteToLog("[CloudMonitor] I will start the Service.exe");
-			DoStartSvc(SERVICE_NAME);
+			status = DoStartSvc(SERVICE_NAME);
+			if (1 == status)
+			{
+				WriteToLog("[CloudMonitor] I will not try to start the service Cause permission");
+			}
+
 		}
 	}
 
@@ -422,9 +430,11 @@ bool IsWin7()
 //   Starts the service if possible.
 //
 // Return value:
-//   None
-//
-VOID __stdcall DoStartSvc(const char* szSvcName)
+//   0 start ok
+//   1 permission deny 
+//   > 1 other reasons which doesn't matter
+
+int __stdcall DoStartSvc(const char* szSvcName)
 {
 	SERVICE_STATUS_PROCESS ssStatus;
 	DWORD dwOldCheckPoint;
@@ -442,7 +452,7 @@ VOID __stdcall DoStartSvc(const char* szSvcName)
 	if (NULL == schSCManager)
 	{
 		//printf("OpenSCManager failed (%d)\n", GetLastError());
-		return;
+		return 1;
 	}
 
 	// Get a handle to the service.
@@ -456,7 +466,7 @@ VOID __stdcall DoStartSvc(const char* szSvcName)
 	{
 		printf("OpenService failed (%d)\n", GetLastError());
 		CloseServiceHandle(schSCManager);
-		return;
+		return 2;
 	}
 
 	// Check the status in case the service is not stopped. 
@@ -471,7 +481,7 @@ VOID __stdcall DoStartSvc(const char* szSvcName)
 		printf("QueryServiceStatusEx failed (%d)\n", GetLastError());
 		CloseServiceHandle(schService);
 		CloseServiceHandle(schSCManager);
-		return;
+		return 3;
 	}
 
 	// Check if the service is already running. It would be possible 
@@ -482,7 +492,7 @@ VOID __stdcall DoStartSvc(const char* szSvcName)
 		printf("Cannot start the service because it is already running\n");
 		CloseServiceHandle(schService);
 		CloseServiceHandle(schSCManager);
-		return;
+		return 4;
 	}
 
 	// Save the tick count and initial checkpoint.
@@ -519,7 +529,7 @@ VOID __stdcall DoStartSvc(const char* szSvcName)
 			printf("QueryServiceStatusEx failed (%d)\n", GetLastError());
 			CloseServiceHandle(schService);
 			CloseServiceHandle(schSCManager);
-			return;
+			return 4;
 		}
 
 		if (ssStatus.dwCheckPoint > dwOldCheckPoint)
@@ -536,7 +546,7 @@ VOID __stdcall DoStartSvc(const char* szSvcName)
 				printf("Timeout waiting for service to stop\n");
 				CloseServiceHandle(schService);
 				CloseServiceHandle(schSCManager);
-				return;
+				return 4;
 			}
 		}
 	}
@@ -551,7 +561,7 @@ VOID __stdcall DoStartSvc(const char* szSvcName)
 		printf("StartService failed (%d)\n", GetLastError());
 		CloseServiceHandle(schService);
 		CloseServiceHandle(schSCManager);
-		return;
+		return 4;
 	}
 	else printf("Service start pending...\n");
 
@@ -567,7 +577,7 @@ VOID __stdcall DoStartSvc(const char* szSvcName)
 		printf("QueryServiceStatusEx failed (%d)\n", GetLastError());
 		CloseServiceHandle(schService);
 		CloseServiceHandle(schSCManager);
-		return;
+		return 4;
 	}
 
 	// Save the tick count and initial checkpoint.
@@ -637,6 +647,7 @@ VOID __stdcall DoStartSvc(const char* szSvcName)
 
 	CloseServiceHandle(schService);
 	CloseServiceHandle(schSCManager);
+	return 0;
 }
 
 
