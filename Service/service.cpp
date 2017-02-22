@@ -29,7 +29,7 @@ inline void killCloudMonitor()
 	}
 }
 
-BOOL WINAPI ConsoleHandler(DWORD event)
+BOOL WINAPI PowerConsoleHandler(DWORD event)
 {
 	if (CTRL_SHUTDOWN_EVENT)
 	{
@@ -319,7 +319,7 @@ int InitService()
 
 	result = WriteToLog("Monitoring started.");
 	if (SetConsoleCtrlHandler(
-		(PHANDLER_ROUTINE)ConsoleHandler, TRUE) == FALSE)
+		(PHANDLER_ROUTINE)PowerConsoleHandler, TRUE) == FALSE)
 	{
 		// unable to install handler... 
 		// display message to the user
