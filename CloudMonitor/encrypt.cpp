@@ -13,12 +13,12 @@ void testFile()
 
 bool EncreptFile(const char* oriFileName, const char* encFileName, const char* passwd)
 {
-	char* CMD_FMT = "tools\\7z a -p%s \"%s\"  \"%s\" ";	//防止文件路径中包含空格
+	char* CMD_FMT = "tools\\openssl.exe enc -e -aes-128-cbc -in \"%s\" -out \"%s\" -k \"%s\"";
 	char  cmd[_MAX_PATH];
 	FILE* execfd = NULL;
 
 	memset(cmd, 0, sizeof(cmd));
-	sprintf(cmd, CMD_FMT, passwd, encFileName, oriFileName);
+	sprintf(cmd, CMD_FMT, oriFileName, encFileName, passwd);
 	printf("cmd: [%s]\n", cmd);
 
 	execfd = _popen(cmd, "r");
