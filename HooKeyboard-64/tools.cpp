@@ -178,7 +178,7 @@ BOOL GetTask(TASK* tsk)
 
 	if (head == tail)
 	{
-		 printf("end queue\n");
+		 //printf("end queue\n");
 		//ReleaseSemaphore(semhd, 1, NULL);
 		// release lock: gll_tail
 		return bRet;
@@ -189,6 +189,7 @@ BOOL GetTask(TASK* tsk)
 
 	bRet = FALSE;
 	//printf("IN FOR\n");
+
 
 	for (; (bRet != TRUE) && (head != tail); )
 	{
@@ -222,7 +223,7 @@ BOOL GetTask(TASK* tsk)
 		}
 	}
 
-	printf("IGNORE [%d:%d] tail: *%s*\n", head, tail, gll_queue[tail].path);
+	//printf("IGNORE [%d:%d] tail: *%s*\n", head, tail, gll_queue[tail].path);
 
 	// 更新游标
 	gll_head = head;

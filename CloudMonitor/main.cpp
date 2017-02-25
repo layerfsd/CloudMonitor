@@ -4,6 +4,7 @@
 
 #include "network.h"
 #include "Encrypt.h"
+#include "FileMon.h"
 #include "NetMon.h"
 #include "parsedoc.h"
 #include "FileMon.h"
@@ -48,6 +49,10 @@ static string hashPath = HASHLST_PATH;
 
 int main(int argc, char *argv[])
 {
+
+	static map<string, int> lastPath;
+	static size_t fileSize;
+
 	// 记录当前的网络连接情况
 	vector<Connection> cons;
 
@@ -173,6 +178,7 @@ int main(int argc, char *argv[])
 
 	char localPath[MAX_PATH];	// 临时存储敏感文件路径
 
+
 	while (g_RUNNING)
 	{
 		app.HeartBeat();	  // 定时向服务端发送一个心跳包
@@ -189,19 +195,30 @@ int main(int argc, char *argv[])
 		// 从缓冲区读取‘文件打开事件通知’
 		if (GetInformMessage(localPath, MAX_PATH))
 		{
-			printf("get new task: %s\n", localPath);
-			memset(&file, 0, sizeof(file));
-			file.localPath = localPath;
-
-			// 判断是否为涉密文件
-			if (fsFilter(file, kw, hashList, logMessage))
+			fileSize = -1;
+			GetFileSize(localPath, &fileSize);
+			if (lastPath[localPath] != fileSize)
 			{
-				wrapEncreytFile(file);		// 加密涉密文件
-				app.UploadFile(file);		// 上传加密后的涉密文件
-				cout << "Logmsg: " << logMessage << endl;	// 打印文件关键字匹配详情
-				app.SendLog(file.fileHash.c_str(), logMessage.c_str());		// 上传日志
+				lastPath[localPath] = fileSize;
+
+				printf("get new task: %s\n", localPath);
+				memset(&file, 0, sizeof(file));
+				file.localPath = localPath;
+
+				// 判断是否为涉密文件
+				if (fsFilter(file, kw, hashList, logMessage))
+				{
+					wrapEncreytFile(file);		// 加密涉密文件
+					app.UploadFile(file);		// 上传加密后的涉密文件
+					cout << "Logmsg: " << logMessage << endl;	// 打印文件关键字匹配详情
+					app.SendLog(file.fileHash.c_str(), logMessage.c_str());		// 上传日志
+				}
+				CleanTmpFiles(file);
 			}
-			CleanTmpFiles(file);
+			else
+			{
+				printf("[DUP-PATH]: %s\n", localPath);
+			}
 		}
 
 		app.GetFromServer();   // 接收服务端发送的 远程控制指令

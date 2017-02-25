@@ -123,9 +123,6 @@ bool PickLocalPath(vector<string>& collector)
 	{
 		driveList.push(szDrive);
 		szDrive += (lstrlen(szDrive) + 1);
-
-		// 为测试方便，暂时只扫描本地的第一个盘符
-		break;
 	} while (*szDrive != '\x00');
 
 	while (!driveList.empty())
