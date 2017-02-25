@@ -153,7 +153,7 @@ BOOL InitTcpConnection()
 // 其工作原理是: 接收到 Hook 通知后,将·路径·记录到队列中立刻返回
 // 由一个专有线程负责从队列中读取数据通知另外一个程序
 
-static 	map<string,TASK> LastTask;
+static 	map<string, TASK> LastTask;
 
 BOOL GetTask(TASK* tsk)
 {
@@ -172,77 +172,67 @@ BOOL GetTask(TASK* tsk)
 
 	//printf("------------->>>WaitForSingleObject\n");
 	WaitForSingleObject(semhd, INFINITE);
-	if (gll_head == gll_tail)
+	size_t head = gll_head;
+	size_t tail = gll_tail;
+	ReleaseSemaphore(semhd, 1, NULL);
+
+	if (head == tail)
 	{
-		// printf("<<<-------------ReleaseSemaphore\n");
-		ReleaseSemaphore(semhd, 1, NULL);
+		 printf("end queue\n");
+		//ReleaseSemaphore(semhd, 1, NULL);
 		// release lock: gll_tail
 		return bRet;
 	}
-	ReleaseSemaphore(semhd, 1, NULL);
 	//printf("<<<-------------ReleaseSemaphore\n");
 
 	DWORD nxtPos = 0;
 
+	bRet = FALSE;
 	//printf("IN FOR\n");
-	for ( ; gll_head != gll_tail; )
+
+	for (; (bRet != TRUE) && (head != tail); )
 	{
 		memset(&cur, 0, sizeof(TASK));
 		memset(&nxt, 0, sizeof(TASK));
 
-		nxtPos = (gll_head + 1) % MAX_QUEUE_SIZE;
+		nxtPos = (head + 1) % MAX_QUEUE_SIZE;
 
-		cur = gll_queue[gll_head];
+		cur = gll_queue[head];
 		nxt = gll_queue[nxtPos];
-		gll_head = nxtPos;
+		head = nxtPos;
 
-
-		// 如果当前路径与下一个路径相等，则跳过当前路径
-		if (0  == memcmp(cur.path, nxt.path, cur.len) )
+		// 如果当前路径曾经发送过，判断其文件大小是否发生了变化
+		if (LastTask.count(cur.path))
 		{
-			continue;
+			if ( (cur.ltime - LastTask[cur.path].ltime > 1) && !GetFileSize(cur.path, &cur.fileSize) && (cur.fileSize != LastTask[cur.path].fileSize))
+			{
+				printf("[DIFF-SIZE] %s %Iu %Iu\n", cur.path, cur.fileSize, cur.ltime);
+				bRet = TRUE;
+			}
 		}
 		else
 		{
-			bRet = TRUE;
-			break;
+			// 当前路径尚未发送过,计算文件大小,仅当文件大小不为空时才检查
+			GetFileSize(cur.path, &cur.fileSize);
+			if (cur.fileSize > 0)
+			{
+				printf("[FILE] %s %Iu %Iu\n", cur.path, cur.fileSize, cur.ltime);
+				bRet = TRUE;
+			}
 		}
 	}
 
-	printf("head: %Iu tail: %Iu\n", gll_head, gll_tail);
-	
-	if (bRet)	// 成功领取到任务
+	printf("IGNORE [%d:%d] tail: *%s*\n", head, tail, gll_queue[tail].path);
+
+	// 更新游标
+	gll_head = head;
+
+	if (bRet)
 	{
-		GetFileSize(cur.path, &cur.fileSize);
-		// 在一定时间内,不允许重复发送.
-		// 检测是否与上一个任务一致
-		// 检查该路径是否在 MIN_SENT_INTERVAL 秒内重复发送过
-		for (auto it = LastTask.begin(); it != LastTask.end(); ++it)
-		{
-			if ((!memcmp(cur.path, it->first.c_str(), cur.len)) &&\
-				(cur.ltime - it->second.ltime < MIN_SENT_INTERVAL))
-			{
-				//printf("[REPEAT-INTERVAL] %s %Iu \n", it->first.c_str(), it->second.ltime);
-				bRet = FALSE;
-				break;
-			}
-			if (cur.fileSize == it->second.fileSize)
-			{
-				//printf("[REPEAT-FILESIZE] %s %Iu %Iu\n", it->first.c_str(), it->second.fileSize,it->second.ltime);
-				bRet = FALSE;
-				break;
-			}
-		}
-
-		if (bRet)
-		{
-			memset(tsk, 0, sizeof(TASK));
-			*tsk = cur;
-			LastTask[cur.path] = cur;
-		}
-		//MessageBox(NULL, lpFilePath, "Release SEM", MB_OK);
+		memset(tsk, 0, sizeof(TASK));
+		*tsk = cur;
+		LastTask[cur.path] = cur;
 	}
-
 
 	return bRet;
 }
@@ -522,7 +512,6 @@ VOID SendMsg2Backend()
 
 	while (KEEP_RUNNING)
 	{
-REGET_TASK:
 		Sleep(ONE_SECOND);
 
 		loopCount += 1;
@@ -559,20 +548,13 @@ REGET_TASK:
 		
 		if (GetTask(&tsk))
 		{
-			if (!NotIgnoreByTime(tsk.path))
-			{
-				printf("[IGNORED] %s\n", tsk.path);
-				goto REGET_TASK;
-			}
-
-
 			int   MaxRetryTime = 0;
 			while (KEEP_RUNNING && (tsk.status != TRUE) && (MaxRetryTime++ < MAX_RETRY_TIME))
 			{
 				//MessageBox(NULL, tPath, "Tell Backend", MB_OK);
 				memset(timeBuf, 0, sizeof(timeBuf));
 				FormatTime(timeBuf, sizeof(timeBuf));
-				printf("[SEND:%s] %s\n", timeBuf, tsk.path);
+				//printf("[SEND:%s] %s\n", timeBuf, tsk.path);
 				WriteToLog(tsk.path);		
 				fflush(stdout);
 				sent = send(GLOBAL_SOCKET, tsk.path, tsk.len, 0);
@@ -590,7 +572,7 @@ REGET_TASK:
 				{
 					length = recv(GLOBAL_SOCKET, tmpBuf, sizeof(tmpBuf), 0);
 					tsk.status = TRUE;		// 如果发送成功,标记发送状态为 真
-					printf("[SENT-OK:]\n");
+					//printf("[SENT-OK:]\n");
 				}
 
 				if (!tsk.status)
