@@ -150,7 +150,7 @@ bool CloudVersion::RequestHashList()
 
 	// 根据‘最新版本号’拼接 url
 	url += this->LatestVersionStr;
-	url += "/";
+	url += "/DATA/";
 	url += "hashlist.txt";
 
 	FtpFile ftpfile = {

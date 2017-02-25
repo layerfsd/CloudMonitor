@@ -39,7 +39,6 @@ def collect_files_md5(saved_path=r'Release\DAta\hashlist.txt'):
         (r'Release\MonitorService.exe', 'MonitorService.exe'),
         (r'Release\msvcp140.dll', 'msvcp140.dll'),
         (r'Release\msvcr110.dll', 'msvcr110.dll'),
-        (r'Release\openssl.exe', 'openssl.exe'),
         (r'Release\RemoveSelf.exe', 'RemoveSelf.exe'),
         (r'Release\Service.exe', 'Service.exe'),
         (r'Release\Uninstall.exe', 'Uninstall.exe'),
