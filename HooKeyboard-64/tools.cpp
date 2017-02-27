@@ -405,7 +405,7 @@ BOOL ProcessFilePath(LPCSTR lpFilePath)
 
 	for (DWORD i = 0; i < dwMatchListLen; i++)
 	{
-		if (!strcmp(pos, matchList[i]))
+		if (!_stricmp(pos, matchList[i]))
 		{
 			retValue = TRUE;
 			//SetCache(lpFilePath);

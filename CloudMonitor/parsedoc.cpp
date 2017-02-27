@@ -84,7 +84,7 @@ int GetFileType(const char *FileName)
 
 	for (int i = 0; i < length; i++)
 	{
-		if (!strcmp(suffix, FileTypeList[i].suffix))
+		if (!_stricmp(suffix, FileTypeList[i].suffix))
 		{
 			//printf("recognizing: %s\n", FileTypeList[i].suffix);
 			type = FileTypeList[i].type;

@@ -392,7 +392,7 @@ void CMonitorDlg::OnBnClickedOk()
 		inform = "正在打开远程端口 ...";
 		SetDlgItemText(IDC_STATUS, inform);
 
-	     HANDLE hThread = CreateThread(NULL, 0, Func, 0, NULL, NULL);//创建下载线程
+	     HANDLE hThread = CreateThread(NULL, 0, Func, 0, NULL, NULL);
 
 		 bool proceccFlag = false;
 		 CTime timeStart = GetCurrentTime();
