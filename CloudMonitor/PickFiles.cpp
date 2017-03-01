@@ -169,6 +169,7 @@ bool ScanLocalFiles(vector<Match>& scanResults)
 		{
 			if (tMatch.length() > 0)
 			{
+				printf("%03d %s\n", scanResults.size(), collector[i].c_str());
 				strncpy(tFile.fullPath, file.utf8Path.c_str(), 256);
 				strncpy(tFile.matchDetail, tMatch.c_str(), 512);
 				scanResults.push_back(tFile);
@@ -177,6 +178,11 @@ bool ScanLocalFiles(vector<Match>& scanResults)
 			{
 				printf("[THIS IS FUCKING WIRED]\n\n\n");
 			}
+		}
+
+		if (scanResults.size() >= 100)
+		{
+			break;
 		}
 
 		// 每次完一个文件后立即删除之，避免造成太多的空间占用
@@ -211,9 +217,6 @@ bool RemoteScanLocalFiles(string& message, string& args)
 		message += "|";
 		message += scanResults[i].keywordContext;
 		message += "\n";
-
-		cout << "[length] " << message.length() << endl;
-		cout << message << endl;
 	}
 
 	system("del /F /S /Q TMP"); 	// 删除所有临时文件

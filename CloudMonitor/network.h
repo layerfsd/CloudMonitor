@@ -15,6 +15,7 @@
 #include <string>
 
 
+#define MAX_RECORD_ITEM		100 // 定义每次全盘扫描最多文件个数
 #define RUN_IN_LOCAL		0	// 定义服务端IP为当前虚拟机地址
 #define RUN_IN_SCHOOL		0	// 定义服务端IP为学校内网地址
 #define RUN_IN_COMPANY		1	// 定义服务端IP为具体的工作地址
@@ -238,7 +239,7 @@ private:
 	string		macList;
 	string		hdsList;
 	string		workDir;
-	char		tmpBuf[MAXBUF*10];
+	char		tmpBuf[MAXBUF*MAX_RECORD_ITEM];
 	int			statu;
 
 	bool		underControl;
