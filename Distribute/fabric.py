@@ -52,9 +52,6 @@ def collect_files_md5(saved_path=r'Release\DAta\hashlist.txt'):
         (r'Release\all2txt\a2tpdf.dll', r'all2txt\a2tpdf.dll'),
         (r'Release\all2txt\a2trtf.dll', r'all2txt\a2trtf.dll'),
         (r'Release\DATA\config.ini', r'DATA\config.ini'),
-        (r'Release\tools\7-zip.dll', r'tools\7-zip.dll'),
-        (r'Release\tools\7z.dll', r'tools\7z.dll'),
-        (r'Release\tools\7z.exe', r'tools\7z.exe'),
         (r'Release\tools\openssl.exe', r'tools\openssl.exe'),
     ]
     fp = open(saved_path, 'w')

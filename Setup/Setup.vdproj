@@ -87,12 +87,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_84EDC1B5430D4D86BD76261270A23E0C"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_883A15B691C94A2885233E6DCDE13C67"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -106,12 +100,6 @@
         "Entry"
         {
         "MsmKey" = "8:_9E4CEE044B2B47B191BD97405F435525"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A981D5F59E754B91B362BE1F576E7366"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -166,12 +154,6 @@
         "Entry"
         {
         "MsmKey" = "8:_DB4DA2A8FD8D4FA3961F8D533BE2F5C2"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DF92A5C8B8A64E17A91C138AB4544864"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -448,26 +430,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_84EDC1B5430D4D86BD76261270A23E0C"
-            {
-            "SourcePath" = "8:..\\Release\\tools\\7z.dll"
-            "TargetName" = "8:7z.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_7BF2F0063835426DB8F124E5C4AE6D01"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_883A15B691C94A2885233E6DCDE13C67"
             {
             "SourcePath" = "8:..\\Release\\all2txt\\a2thtm.dll"
@@ -528,26 +490,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A981D5F59E754B91B362BE1F576E7366"
-            {
-            "SourcePath" = "8:..\\Release\\tools\\7-zip.dll"
-            "TargetName" = "8:7-zip.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_7BF2F0063835426DB8F124E5C4AE6D01"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BDA5DF23E89D48868A6CD6AB9A9E5D64"
             {
             "SourcePath" = "8:..\\Release\\msvcr110.dll"
@@ -594,26 +536,6 @@
             "TargetName" = "8:config.ini"
             "Tag" = "8:"
             "Folder" = "8:_F69287E259F841CCB902FC90AE423ADE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF92A5C8B8A64E17A91C138AB4544864"
-            {
-            "SourcePath" = "8:..\\Release\\tools\\7z.exe"
-            "TargetName" = "8:7z.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_7BF2F0063835426DB8F124E5C4AE6D01"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -778,7 +700,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:安全监管客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{E2077B81-474B-4D8E-B7D7-B7CC373D4A09}"
+        "PackageCode" = "8:{2F645DCD-6DED-4981-9111-6E6BD5169C43}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
