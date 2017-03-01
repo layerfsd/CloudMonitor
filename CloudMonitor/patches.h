@@ -13,6 +13,8 @@
 
 #define UPDATE_CHECKED_FLAG	"UPDATE_CHECKED"
 
+bool MyCreateProcess(LPCSTR appName, LPSTR appArgs);
+
 
 void InitDir(bool hide);
 bool StartHookService();	// Æô¶¯ MonitorService.exe

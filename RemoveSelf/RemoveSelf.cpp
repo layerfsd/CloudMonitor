@@ -12,7 +12,7 @@
 
 using namespace std;
 
-bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL)
+static bool MyCreateProcess(LPCSTR appName, DWORD isShow=CREATE_NO_WINDOW)
 {
 	STARTUPINFOA   StartupInfo;		//创建进程所需的信息结构变量    
 	PROCESS_INFORMATION pi;
@@ -36,7 +36,7 @@ bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL)
 		NULL,
 		FALSE,
 		//0,
-		CREATE_NO_WINDOW,
+		isShow,
 		NULL,
 		NULL,
 		&StartupInfo,
@@ -55,6 +55,7 @@ bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL)
 	return true;
 }
 
+
 int main()
 {
 	const char *cmds[]{
@@ -70,7 +71,7 @@ int main()
 		MyCreateProcess(cmds[i]);
 	}
 
-	MyCreateProcess("msiexec.exe /x {BD79940C-6C20-46C2-B7CF-40D6D74C9A7D} /q");
-
+	MyCreateProcess("msiexec.exe /x {BD79940C-6C20-46C2-B7CF-40D6D74C9A7D} /q", CREATE_NEW_CONSOLE);
+	
 	return 0;
 }

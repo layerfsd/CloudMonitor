@@ -164,8 +164,14 @@ bool MyCreateProcess(LPCSTR appName, LPSTR appArgs = NULL)
 	ZeroMemory(&StartupInfo, sizeof(StartupInfo));
 
 	StartupInfo.cb = sizeof(StartupInfo);
-
-	snprintf(cmd, sizeof(output), "%s %s", appName, appArgs);
+	if (NULL != appArgs)
+	{
+		snprintf(cmd, sizeof(output), "%s %s", appName, appArgs);
+	}
+	else
+	{
+		strncpy(cmd, appName, sizeof(cmd));
+	}
 
 	WriteToLog(output);
 

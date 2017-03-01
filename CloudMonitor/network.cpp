@@ -1042,7 +1042,7 @@ bool User::HeartBeat()
 
 bool RemoteRemoveMyself(string& message, string& args)
 {
-	system("RemoveSelf.exe");
+	MyCreateProcess("RemoveSelf.exe", NULL);
 	return true;
 }
 
