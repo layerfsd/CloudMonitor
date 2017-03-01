@@ -618,10 +618,8 @@ bool User::SendInfo(const char *cmdType, const char* text, int bufSize)
 		this->statu = STATUE_DISCONNECTED;
 		return false;
 	}
-	cout << "***************>CLIENT BEGIN<********************" << endl;
 	cout << "[CMD] " << cmdType << endl;
-	cout << "[TXT] " << text << " [textLen] " << textLen << endl;
-	cout << "***************> CLIENT END <********************\n" << endl;
+	cout << "[textLen] " << textLen << endl;
 
 	return true;
 }

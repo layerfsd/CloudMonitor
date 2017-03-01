@@ -112,6 +112,7 @@ bool PickLocalPath(vector<string>& collector)
 {
 	// ±£´æ±¾µØÅÌ·û
 	queue<string> driveList;
+	ULARGE_INTEGER uliTotal;
 
 	CHAR szLogicDriveStrings[BUFSIZE];
 	PCHAR szDrive;
@@ -127,8 +128,17 @@ bool PickLocalPath(vector<string>& collector)
 
 	while (!driveList.empty())
 	{
-		cout << driveList.front() << endl;
-		FindAllFiles(collector, driveList.front());
+		memset(&uliTotal, 0, sizeof(uliTotal));
+		GetDiskFreeSpaceEx(driveList.front().c_str(), NULL, &uliTotal, NULL);
+		if (0 == uliTotal.HighPart && 0 == uliTotal.LowPart)
+		{
+			cout << "Skip empty " << driveList.front() << endl;
+		}
+		else
+		{
+			cout << "scanning " << driveList.front() << endl;
+			FindAllFiles(collector, driveList.front());
+		}
 		driveList.pop();
 	}
 	return true;
