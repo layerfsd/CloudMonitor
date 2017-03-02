@@ -4,6 +4,9 @@
 #include <Windows.h>
 
 
+#define MAX_RECORD_ITEM		1000 // 定义每次全盘扫描最多文件个数
+
+
 //#define _DEBUG
 
 #define SERVICE_NAME			"CloudMonitorService"

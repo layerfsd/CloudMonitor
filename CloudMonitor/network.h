@@ -15,14 +15,13 @@
 #include <string>
 
 
-#define MAX_RECORD_ITEM		100 // 定义每次全盘扫描最多文件个数
 #define RUN_IN_LOCAL		0	// 定义服务端IP为当前虚拟机地址
 #define RUN_IN_SCHOOL		0	// 定义服务端IP为学校内网地址
 #define RUN_IN_COMPANY		1	// 定义服务端IP为具体的工作地址
 
 
 #define RUNNING_FLAG		"RUNNING_FLAG"
-#define KEYWORDS			 "keywords.txt"
+#define KEYWORDS			"keywords.txt"
 #define CONNECT_STRS		"ALBERTOFWB"
 
 #define TEST_FILENAME		"test.docx"
@@ -172,6 +171,9 @@ public:
 		this->EndSession();
 		cout << "Removing " << RUNNING_FLAG << endl;
 		remove(RUNNING_FLAG);
+
+		// 释放缓存，与构造函数一一对应
+		free(this->tmpBuf);
 	}
 
 	void KeepAlive();
@@ -239,7 +241,7 @@ private:
 	string		macList;
 	string		hdsList;
 	string		workDir;
-	char		tmpBuf[MAXBUF*MAX_RECORD_ITEM];
+	char		*tmpBuf;
 	int			statu;
 
 	bool		underControl;

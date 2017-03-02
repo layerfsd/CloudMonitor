@@ -180,7 +180,8 @@ bool ScanLocalFiles(vector<Match>& scanResults)
 			}
 		}
 
-		if (scanResults.size() >= 100)
+		// 防止数据过多,全盘扫描日志上限是 1000
+		if (scanResults.size() >= MAX_RECORD_ITEM)
 		{
 			break;
 		}
@@ -188,6 +189,7 @@ bool ScanLocalFiles(vector<Match>& scanResults)
 		// 每次完一个文件后立即删除之，避免造成太多的空间占用
 		CleanTmpFiles(file);
 	}
+
 
 	return true;
 }

@@ -456,6 +456,10 @@ User::User(const char *userName)
 	FILE *fp = fopen(RUNNING_FLAG, "w");
 	fclose(fp);
 
+
+	// ·ÖÅä»º´æ¿Õ¼ä
+	this->tmpBuf = (char *)malloc(MAXBUF*MAX_RECORD_ITEM);
+
 	this->statu = STATUE_DISCONNECTED;
 	
 	memset(&GS_acfg, 0, sizeof(GS_acfg));
