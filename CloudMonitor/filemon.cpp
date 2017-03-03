@@ -292,6 +292,7 @@ int KeywordFilter(vector<Keyword> &kw, char *FileName, string &message, char *co
 		// printf("GetFileSize error");
 		return -1;
 	}
+	FileSize -= 102;	// 我们使用的第三方a2txt工具无法取得正版授权，对于所有转换的文件，会在其文件末尾生成102字节的提示信息
 	if ((FileBuf = (char *)malloc(FileSize)) == NULL)
 	{
 		perror("FileBuf");
