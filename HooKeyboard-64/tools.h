@@ -6,12 +6,15 @@
 // 设置最大重复通知次数
 #define MAX_RETRY_TIME	5
 
+#define CRC_BUFFER_SIZE  8192
+
 #include <Windows.h>
 
 
 // 初始化 TCP 连接,后期需要加上双向身份认证功能
 BOOL InitTcpConnection();
 
+int Crc32_ComputeFile(const char *fileName, unsigned long *outCrc32);
 
 // 向后台程序发送一条信息
 VOID SendMsg2Backend();

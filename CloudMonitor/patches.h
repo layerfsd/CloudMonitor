@@ -16,6 +16,9 @@
 
 #define UPDATE_CHECKED_FLAG	"UPDATE_CHECKED"
 
+
+int Crc32_ComputeFile(const char* fileName, unsigned long *outCrc32);
+
 bool MyCreateProcess(LPCSTR appName, LPSTR appArgs);
 
 

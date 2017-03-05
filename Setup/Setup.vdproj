@@ -247,17 +247,17 @@
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_7CC9E1A8FAF048DF9272CB9EABEECDE2"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_4B309D14795E413D80B057B8ADAC79EC"
             {
             "Name" = "8:主输出 from Uninstall (Active)"
             "Condition" = "8:"
             "Object" = "8:_DB4DA2A8FD8D4FA3961F8D533BE2F5C2"
             "FileType" = "3:2"
-            "InstallAction" = "3:1"
-            "Arguments" = "8:/Install"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:/Uninstall"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_572F4F5C_BB68_44FF_9B4F_1B6311595446"
+            "Identifier" = "8:_5E128930_BADD_41C0_A8F9_775CA54FC20C"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
@@ -700,7 +700,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:安全监管客户端"
         "ProductCode" = "8:{BD79940C-6C20-46C2-B7CF-40D6D74C9A7D}"
-        "PackageCode" = "8:{2F645DCD-6DED-4981-9111-6E6BD5169C43}"
+        "PackageCode" = "8:{A2BA532A-0728-4ABA-ADA4-BF7F81B7F536}"
         "UpgradeCode" = "8:{A609679A-B17B-40A0-96B3-D35A34182C22}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

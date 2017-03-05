@@ -50,8 +50,8 @@ static string hashPath = HASHLST_PATH;
 int main(int argc, char *argv[])
 {
 
-	static map<string, int> lastPath;
-	static size_t fileSize;
+	static map<string, unsigned long> lastPath;
+	static unsigned long fileCrc;
 
 	// 记录当前的网络连接情况
 	vector<Connection> cons;
@@ -195,11 +195,11 @@ int main(int argc, char *argv[])
 		// 从缓冲区读取‘文件打开事件通知’
 		if (GetInformMessage(localPath, MAX_PATH))
 		{
-			fileSize = -1;
-			GetFileSize(localPath, &fileSize);
-			if (lastPath[localPath] != fileSize)
+			fileCrc = 0;
+			Crc32_ComputeFile(localPath, &fileCrc);
+			if (lastPath[localPath] != fileCrc)
 			{
-				lastPath[localPath] = fileSize;
+				lastPath[localPath] = fileCrc;
 
 				printf("get new task: %s\n", localPath);
 				memset(&file, 0, sizeof(file));
@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				printf("[DUP-PATH]: %s\n", localPath);
+				printf("[DUP-CRC]: %s\n", localPath);
 			}
 		}
 
