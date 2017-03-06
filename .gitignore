@@ -270,3 +270,9 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+# python tmps
+*/__pycache__
+
+# pycharm tmps
+*/.idea
