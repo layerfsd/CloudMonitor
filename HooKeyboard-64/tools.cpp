@@ -158,17 +158,18 @@ int Crc32_ComputeFile(const char* fileName, unsigned long *outCrc32) {
 
 	/** accumulate crc32 from file **/
 	*outCrc32 = 0;
-	while (1) {
-		bufLen = fread(buf, 1, CRC_BUFFER_SIZE, file);
-		if (bufLen == 0) {
-			if (ferror(file)) {
-				fprintf(stderr, "error reading file\n");
-				return -1;
-			}
-			break;
+
+	bufLen = fread(buf, 1, CRC_BUFFER_SIZE, file);
+	fclose(file);
+
+	if (bufLen == 0) {
+		if (ferror(file)) {
+			fprintf(stderr, "error reading file\n");
+			return -1;
 		}
-		*outCrc32 = Crc32_ComputeBuf(*outCrc32, buf, bufLen);
 	}
+	*outCrc32 = Crc32_ComputeBuf(*outCrc32, buf, bufLen);
+
 	return 0;
 }
 
