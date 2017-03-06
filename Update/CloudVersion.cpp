@@ -150,8 +150,7 @@ bool CloudVersion::RequestHashList()
 
 	// 根据‘最新版本号’拼接 url
 	url += this->LatestVersionStr;
-	url += "/DATA/";
-	url += "hashlist.txt";
+	url += "/hashlist.txt";
 
 	FtpFile ftpfile = {
 		TMP_HASHLIST, // name to store the file as if succesful//  
@@ -246,7 +245,7 @@ bool CloudVersion::ReplaceFiles(const char * keepDir)
 	string baseDir = TMPDOWN_DIR;
 	baseDir += "/";
 	string tpName, srcName;
-	BOOL   bRet = FALSE;
+	BOOL   bRet = TRUE;
 
 	// 先关闭正在工作的进程，以防止替换时由于其正在运行时导致失败
 	for (int i = 0; i < ArraySize(cmds); i++)
@@ -279,6 +278,7 @@ bool CloudVersion::ReplaceFiles(const char * keepDir)
 
 	if (bRet)
 	{
+		printf("updating DATA/VERSION to %s\n", this->LatestVersionStr.c_str());
 		bRet = MoveFileExA(TMP_HASHLIST, LOCAL_HASHLIST, MOVEFILE_REPLACE_EXISTING);
 	}
 
